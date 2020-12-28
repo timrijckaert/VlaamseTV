@@ -1,0 +1,19 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath Plugins.kotlinGradle
+        classpath Plugins.androidGradle
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
