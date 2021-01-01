@@ -2,15 +2,14 @@ package be.tapped.vlaamsetv
 
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.util.EventLogger
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 public val SimpleExoPlayer.eventFlow: Flow<VideoEvent>
     get() =
-        callbackFlow {
-            with(this@eventFlow) {
+        with(this) {
+            callbackFlow {
                 val eventLogger = EventLogger(null)
                 val delegatingAnalyticsListener = DelegatingAnalyticsListener(channel)
                 val delegatingPlayerEventListener = DelegatingPlayerEventListener(channel)
