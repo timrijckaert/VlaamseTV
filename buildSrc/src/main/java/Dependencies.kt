@@ -9,23 +9,34 @@ object Dependencies {
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlinVersion}"
 
     private const val exoPlayerVersion = "2.12.2"
+
     // ExoPlayer
     // Required
     const val exoplayerCore = "com.google.android.exoplayer:exoplayer-core:${exoPlayerVersion}"
+
     // Optional
     const val exoplayerDash = "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVersion}"
     const val exoplayerHLS = "com.google.android.exoplayer:exoplayer-hls:${exoPlayerVersion}"
-    const val exoplayerSmoothStreaming = "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
+    const val exoplayerSmoothStreaming =
+        "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
     const val exoplayerUi = "com.google.android.exoplayer:exoplayer-ui:${exoPlayerVersion}"
+
     // Extensions
     const val exoplayerExtCast = "com.google.android.exoplayer:extension-cast:${exoPlayerVersion}"
-    const val exoplayerExtLeanback = "com.google.android.exoplayer:extension-leanback:${exoPlayerVersion}"
-    const val exoplayerExtMedia2 = "com.google.android.exoplayer:extension-media2:${exoPlayerVersion}"
-    const val exoplayerExtMediaSession  = "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
+    const val exoplayerExtLeanback =
+        "com.google.android.exoplayer:extension-leanback:${exoPlayerVersion}"
+    const val exoplayerExtMedia2 =
+        "com.google.android.exoplayer:extension-media2:${exoPlayerVersion}"
+    const val exoplayerExtMediaSession =
+        "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
+    const val exoplayerExtWorkManager =
+        "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
 
     const val coreKtx = "androidx.core:core-ktx:1.3.2"
     const val appCompat = "androidx.appcompat:appcompat:1.2.0"
     const val material = "com.google.android.material:material:1.2.1"
+    const val constraintLayout = "androidx.constraintlayout:constraintlayout:2.0.4"
+    const val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
 
     private const val arrowVersion = "0.12.0-SNAPSHOT"
     const val arrowCore = "io.arrow-kt:arrow-core:${arrowVersion}"

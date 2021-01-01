@@ -4,6 +4,10 @@ plugins {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
+
     compileSdkVersion Versions.compileSdkVersion
 
     defaultConfig {
@@ -28,6 +32,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += [
+                "-Xinline-classes",
+                "-Xexplicit-api=strict",
+                "-Xopt-in=kotlin.RequiresOptIn",
+                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        ]
     }
 }
 
@@ -36,6 +46,15 @@ dependencies {
     implementation Dependencies.coreKtx
     implementation Dependencies.appCompat
     implementation Dependencies.material
+    implementation Dependencies.constraintLayout
+
+    implementation Dependencies.coroutinesCore
+    implementation Dependencies.lifecycleRuntimeKtx
+
+    implementation Dependencies.exoplayerUi
+    implementation Dependencies.exoplayerHLS
+    implementation Dependencies.exoplayerCore
+    implementation Dependencies.exoplayerDash
 
     androidTestImplementation Testing.junit
     androidTestImplementation Testing.espresso
