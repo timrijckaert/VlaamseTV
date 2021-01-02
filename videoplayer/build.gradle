@@ -1,49 +1,8 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
 }
-
-android {
-    buildFeatures {
-        viewBinding true
-    }
-
-    compileSdkVersion Versions.compileSdkVersion
-
-    defaultConfig {
-        applicationId "be.tapped.vlaamsetv"
-        minSdkVersion Versions.minSdkVersion
-        targetSdkVersion Versions.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-        freeCompilerArgs += [
-                "-Xinline-classes",
-                "-Xexplicit-api=strict",
-                "-Xopt-in=kotlin.RequiresOptIn",
-                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-        ]
-    }
-
-    packagingOptions {
-        exclude "META-INF/*"
-    }
-}
+apply from: "${rootDir}/common.gradle"
 
 dependencies {
     implementation Dependencies.kotlinStdLib
@@ -66,7 +25,4 @@ dependencies {
     implementation "be.tapped.vlaamsetv:vier"
     implementation "be.tapped.vlaamsetv:vrtnu"
     implementation "be.tapped.vlaamsetv:vtmgo"
-
-    androidTestImplementation Testing.junit
-    androidTestImplementation Testing.espresso
 }

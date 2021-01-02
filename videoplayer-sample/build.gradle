@@ -1,0 +1,24 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+apply from: "${rootDir}/common.gradle"
+
+android {
+    defaultConfig {
+        applicationId "${Versions.packageName}.sample"
+    }
+}
+
+dependencies {
+    implementation Dependencies.kotlinStdLib
+    implementation Dependencies.coreKtx
+    implementation Dependencies.appCompat
+    implementation Dependencies.material
+    implementation Dependencies.constraintLayout
+
+    implementation Dependencies.coroutinesCore
+    implementation Dependencies.lifecycleRuntimeKtx
+
+    implementation project(":videoplayer")
+}

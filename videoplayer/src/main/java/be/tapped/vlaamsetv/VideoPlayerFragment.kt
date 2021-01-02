@@ -3,9 +3,9 @@ package be.tapped.vlaamsetv
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import be.tapped.vlaamsetv.databinding.ActivityVideoBinding
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -16,24 +16,25 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-public class VideoActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityVideoBinding
-    private val videoView: StyledPlayerView get() = binding.playerView
+@Suppress("unused")
+public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityVideoBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private lateinit var playerView: StyledPlayerView
+    private val exoPlayer: SimpleExoPlayer by lazy {
+        SimpleExoPlayer.Builder(requireContext()).build()
+    }
 
-        val simpleExoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(this).build()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        playerView = view.findViewById(R.id.playerView)
+        playerView.player = exoPlayer
+
         lifecycleScope.launch {
-            simpleExoPlayer.eventFlow
-                .flowOn(Dispatchers.IO)
+            exoPlayer.eventFlow.flowOn(Dispatchers.Default)
                 .collect {
-                    Log.d("VideoPlayer", "$it")
+                    Log.d("${this::class.simpleName}", "$it")
                 }
         }
-        videoView.player = simpleExoPlayer
 
         val mediaItem = MediaItem.Builder()
             .setUri(
@@ -53,7 +54,12 @@ public class VideoActivity : AppCompatActivity() {
             //.setDrmLicenseRequestHeaders(httpRequestHeaders)
             .setDrmMultiSession(true)
             .build()
-        simpleExoPlayer.setMediaItem(mediaItem)
-        simpleExoPlayer.prepare()
+        exoPlayer.setMediaItem(mediaItem)
+        exoPlayer.prepare()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        playerView.player = null
     }
 }

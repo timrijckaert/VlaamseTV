@@ -1,5 +1,7 @@
-include ':videoplayer'
 rootProject.name = "Vlaamse TV"
+
+include ':videoplayer'
+include ':videoplayer-sample'
 
 includeBuild('../vrtnu-vtmgo-vier-service') {
     dependencySubstitution {
