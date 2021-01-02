@@ -13,6 +13,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import java.io.IOException
 
 public sealed class VideoEvent {
+    public object Unknown : VideoEvent()
+
     public sealed class Device : VideoEvent() {
         public data class InfoChanged(val deviceInfo: DeviceInfo) : Device()
         public data class VolumeChanged(val volume: Int, val muted: Boolean) : Device()

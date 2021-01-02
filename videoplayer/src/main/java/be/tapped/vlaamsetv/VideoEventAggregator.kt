@@ -6,7 +6,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-public val SimpleExoPlayer.eventFlow: Flow<VideoEvent>
+internal val SimpleExoPlayer.eventFlow: Flow<VideoEvent>
     get() =
         with(this) {
             callbackFlow {
