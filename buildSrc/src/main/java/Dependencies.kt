@@ -32,6 +32,8 @@ object Dependencies {
     const val exoplayerExtWorkManager =
         "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
 
+    const val okHttp3 = "com.squareup.okhttp3:okhttp:4.9.0"
+
     const val coreKtx = "androidx.core:core-ktx:1.3.2"
     const val appCompat = "androidx.appcompat:appcompat:1.2.0"
     const val material = "com.google.android.material:material:1.2.1"

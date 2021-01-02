@@ -1,2 +1,10 @@
 include ':videoplayer'
 rootProject.name = "Vlaamse TV"
+
+includeBuild('../vrtnu-vtmgo-vier-service') {
+    dependencySubstitution {
+        substitute module('be.tapped.vlaamsetv:vier') with project(':vier')
+        substitute module('be.tapped.vlaamsetv:vrtnu') with project(':vrtnu')
+        substitute module('be.tapped.vlaamsetv:vtmgo') with project(':vtmgo')
+    }
+}
