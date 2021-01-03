@@ -75,7 +75,7 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
             player.eventFlow.flowOn(Dispatchers.Default)
                 .collect(_videoEvents::emit)
         }
-        player.playWhenReady = true
+        player.playWhenReady = startAutoPlay
         playerView.player = player
 
         val haveStartPosition = startWindow != C.INDEX_UNSET
