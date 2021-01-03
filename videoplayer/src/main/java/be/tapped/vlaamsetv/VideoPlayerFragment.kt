@@ -3,12 +3,17 @@ package be.tapped.vlaamsetv
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import be.tapped.vlaamsetv.PlayerManager._videoEvents
+import be.tapped.vlaamsetv.VideoItem.Companion.DEFAULT_START_WINDOW
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.DebugTextViewHelper
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -20,45 +25,38 @@ import kotlin.math.max
 public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
 
     private lateinit var playerView: StyledPlayerView
-    private lateinit var player: SimpleExoPlayer
+    private lateinit var debugTextView: TextView
 
-    private var startAutoPlay = false
-    private var startWindow = C.INDEX_UNSET
-    private var startPosition: Long = C.INDEX_UNSET.toLong()
+    private var player: SimpleExoPlayer? = null
+    private var debugViewHelper: DebugTextViewHelper? = null
 
-    private companion object {
-        private const val KEY_WINDOW = "window"
-        private const val KEY_POSITION = "position"
-        private const val KEY_AUTO_PLAY = "auto_play"
+    private lateinit var videoItem: VideoItem
+
+    public companion object {
+        private const val VIDEO_ITEM_KEY = "be.tapped.vlaamsetv.VideoPlayerFragment.VIDEO_ITEM"
+
+        public fun newInstance(videoItem: VideoItem): VideoPlayerFragment =
+            VideoPlayerFragment().apply {
+                arguments = bundleOf(VIDEO_ITEM_KEY to videoItem)
+            }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val bundle = checkNotNull(savedInstanceState ?: arguments)
+        videoItem = checkNotNull(bundle.getParcelable(VIDEO_ITEM_KEY))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
-            startAutoPlay = savedInstanceState.getBoolean(KEY_AUTO_PLAY)
-            startWindow = savedInstanceState.getInt(KEY_WINDOW)
-            startPosition = savedInstanceState.getLong(KEY_POSITION)
-        }
         playerView = view.findViewById(R.id.playerView)
+        debugTextView = view.findViewById(R.id.debug_text_view)
         playerView.requestFocus()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        updateStartPosition()
-        outState.putBoolean(KEY_AUTO_PLAY, startAutoPlay)
-        outState.putInt(KEY_WINDOW, startWindow)
-        outState.putLong(KEY_POSITION, startPosition)
     }
 
     override fun onStart() {
         super.onStart()
         initializePlayer()
-        playerView.onResume()
-    }
-
-    override fun onResume() {
-        super.onResume()
         playerView.onResume()
     }
 
@@ -68,46 +66,80 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
         releasePlayer()
     }
 
-    private fun initializePlayer() {
-        player = PlayerManager.exoPlayer(requireContext())
-        @Suppress("ConvertReferenceToLambda")
-        lifecycleScope.launch {
-            player.eventFlow.flowOn(Dispatchers.Default)
-                .collect(_videoEvents::emit)
-        }
-        player.playWhenReady = startAutoPlay
-        playerView.player = player
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        updateStartPosition()
+        outState.putParcelable(VIDEO_ITEM_KEY, videoItem)
+    }
 
-        val haveStartPosition = startWindow != C.INDEX_UNSET
+    private fun initializePlayer() {
+        if (player == null) {
+            PlayerManager.exoPlayer(requireContext()).let { p ->
+                @Suppress("ConvertReferenceToLambda")
+                lifecycleScope.launch {
+                    p.eventFlow.flowOn(Dispatchers.Default).collect(_videoEvents::emit)
+                }
+                p.playWhenReady = videoItem.startAutoPlay
+                playerView.player = p
+
+                if (videoItem.showDebug) {
+                    debugTextView.isVisible = videoItem.showDebug
+                    debugViewHelper = DebugTextViewHelper(p, debugTextView)
+                    debugViewHelper?.start()
+                }
+
+                player = p
+            }
+        }
+
+        val haveStartPosition = videoItem.startWindow != DEFAULT_START_WINDOW
         if (haveStartPosition) {
-            player.seekTo(startWindow, startPosition)
+            player?.seekTo(videoItem.startWindow, videoItem.startPosition)
         }
 
         val mediaItem = MediaItem.Builder()
-            .setUri("https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears_uhd.mpd")
-            .setDrmUuid(C.WIDEVINE_UUID)
-            .setDrmLicenseUri("https://proxy.uat.widevine.com/proxy?provider=widevine_test")
-            .setSubtitles(
-                listOf(
-                    MediaItem.Subtitle(
-                        Uri.parse("https://dvt-subtitles.persgroep.be/TZITINDEF17_1F712940_12b5fdb3-b5bb-49c0-8e29-0a46b9525f0c_vtt_nl.vtt"),
-                        "text/vtt",
-                        null
+            .setUri(videoItem.url)
+            .apply {
+                videoItem.drm?.let {
+                    setDrmUuid(
+                        when (it.type) {
+                            VideoItem.Drm.DrmType.WIDEVINE -> C.WIDEVINE_UUID
+                            VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
+                        }
                     )
+                    setDrmLicenseUri(it.licenseUrl)
+                }
+
+                setSubtitles(
+                    videoItem.subtitles.map {
+                        MediaItem.Subtitle(
+                            Uri.parse(it.subtitleUrl),
+                            it.mimeType,
+                            it.language
+                        )
+                    }
                 )
-            )
+            }
             .build()
-        player.setMediaItem(mediaItem)
-        player.prepare()
+        player?.setMediaItem(mediaItem, !haveStartPosition)
+        player?.prepare()
     }
 
     private fun updateStartPosition() {
-        startAutoPlay = player.playWhenReady
-        startWindow = player.currentWindowIndex
-        startPosition = max(0, player.contentPosition)
+        player?.let {
+            videoItem = videoItem.copy(
+                startAutoPlay = it.playWhenReady,
+                startWindow = it.currentWindowIndex,
+                startPosition = max(0, it.contentPosition),
+            )
+        }
     }
 
     private fun releasePlayer() {
-        player.release()
+        updateStartPosition()
+        debugViewHelper?.stop()
+        debugViewHelper = null
+        player?.release()
+        player = null
     }
 }
