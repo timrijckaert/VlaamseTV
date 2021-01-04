@@ -16,4 +16,9 @@ dependencies {
     implementation Dependencies.appCompat
     implementation Dependencies.material
     implementation Dependencies.constraintLayout
+
+    implementation Dependencies.leanbackApp
+    implementation Dependencies.leanbackPrefs
+    implementation Dependencies.leanbackWidget
+    implementation Dependencies.leanbackPaging
 }
