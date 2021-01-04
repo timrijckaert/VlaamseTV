@@ -37,8 +37,6 @@ object Dependencies {
     private const val leanbackVersion = "1.0.0"
     const val leanbackApp = "androidx.leanback:leanback:${leanbackVersion}"
     const val leanbackPrefs = "androidx.leanback:leanback-preference:${leanbackVersion}"
-    const val leanbackWidget = "androidx.leanback:leanback-widget:${leanbackVersion}"
-    const val leanbackPaging = "androidx.leanback:leanback-paging:${leanbackVersion}"
 
     const val okHttp3 = "com.squareup.okhttp3:okhttp:4.9.0"
 

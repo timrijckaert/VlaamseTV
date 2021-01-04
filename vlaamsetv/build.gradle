@@ -19,6 +19,4 @@ dependencies {
 
     implementation Dependencies.leanbackApp
     implementation Dependencies.leanbackPrefs
-    implementation Dependencies.leanbackWidget
-    implementation Dependencies.leanbackPaging
 }
