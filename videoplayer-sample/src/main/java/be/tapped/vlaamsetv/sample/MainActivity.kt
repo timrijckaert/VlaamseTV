@@ -1,5 +1,6 @@
 package be.tapped.vlaamsetv.sample
 
+import android.app.PictureInPictureParams
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -57,6 +58,10 @@ public class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
             )
         )
     )
+
+    override fun onUserLeaveHint() {
+        enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

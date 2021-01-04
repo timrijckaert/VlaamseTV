@@ -1,7 +1,7 @@
 object Versions {
     const val packageName = "be.tapped.vlaamsetv"
     const val compileSdkVersion = 30
-    const val minSdkVersion = 24
+    const val minSdkVersion = 26
     const val targetSdkVersion = 30
     const val kotlinVersion = "1.4.21"
 }

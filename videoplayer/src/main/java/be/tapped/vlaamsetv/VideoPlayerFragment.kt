@@ -125,6 +125,14 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
         player?.prepare()
     }
 
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        if (isInPictureInPictureMode) {
+            playerView.hideController()
+        } else {
+            playerView.showController()
+        }
+    }
+
     private fun updateStartPosition() {
         player?.let {
             videoItem = videoItem.copy(
