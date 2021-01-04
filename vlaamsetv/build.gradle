@@ -1,0 +1,19 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+apply from: "${rootDir}/common.gradle"
+
+android {
+    defaultConfig {
+        applicationId Versions.packageName
+    }
+}
+
+dependencies {
+    implementation Dependencies.kotlinStdLib
+    implementation Dependencies.coreKtx
+    implementation Dependencies.appCompat
+    implementation Dependencies.material
+    implementation Dependencies.constraintLayout
+}
