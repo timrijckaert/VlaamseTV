@@ -9,6 +9,5 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
 
-    <style name="Theme.TV.VlaamseTV" parent="Theme.Leanback">
-    </style>
+    <style name="Theme.TV.VlaamseTV" parent="Theme.AppCompat.Leanback" />
 </resources>
