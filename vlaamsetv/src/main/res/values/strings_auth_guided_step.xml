@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vrtnu_title">VRT NU Authenticatie</string>
+    <string name="vrtnu_description">Om de VRT NU content te kunnen bekijken hebben we je gegevens nodig. Deze worden enkel lokaal opgeslagen.</string>
+    <string name="vrtnu_step_breadcrumb">VRT NU Authenticatie</string>
+</resources>

@@ -7,6 +7,11 @@ apply from: "${rootDir}/common.gradle"
 android {
     defaultConfig {
         applicationId Versions.packageName
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -16,7 +21,18 @@ dependencies {
     implementation Dependencies.appCompat
     implementation Dependencies.material
     implementation Dependencies.constraintLayout
+    debugImplementation Testing.fragmentTest
 
     implementation Dependencies.leanbackApp
     implementation Dependencies.leanbackPrefs
+
+    implementation "be.tapped.vlaamsetv:vier"
+    implementation "be.tapped.vlaamsetv:vrtnu"
+    implementation "be.tapped.vlaamsetv:vtmgo"
+
+    androidTestImplementation Testing.espresso
+    androidTestImplementation Testing.testRunner
+    androidTestImplementation Testing.testRules
+    androidTestImplementation Testing.junit
+    androidTestUtil Testing.testOrchestrator
 }

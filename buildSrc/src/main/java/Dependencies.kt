@@ -71,6 +71,12 @@ object Testing {
     private const val kotestProperty = "io.kotest:kotest-property:${kotestVersion}"
 
     private const val junit = "androidx.test.ext:junit:1.1.2"
-    private const val espresso = "androidx.test.espresso:espresso-core:3.3.0"
     const val mockk = "io.mockk:mockk:v1.10.2"
+
+    const val fragmentTest = "androidx.fragment:fragment-testing:1.2.5"
+
+    const val espresso = "androidx.test.espresso:espresso-core:3.3.0"
+    const val testRunner = "androidx.test:runner:1.3.0"
+    const val testRules = "androidx.test:rules:1.3.0"
+    const val testOrchestrator = "androidx.test:orchestrator:1.3.0"
 }
