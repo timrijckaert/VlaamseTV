@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.google.protobuf' version "0.8.12"
 }
 apply from: "${rootDir}/common.gradle"
 
@@ -23,6 +24,8 @@ dependencies {
     implementation Dependencies.okHttp3
     implementation Dependencies.coroutinesCore
     implementation Dependencies.arrowCore
+    implementation Dependencies.androidXDataStore
+    implementation Dependencies.protoBuf
 
     implementation "be.tapped.vlaamsetv:vier"
     implementation "be.tapped.vlaamsetv:vrtnu"
@@ -41,6 +44,24 @@ dependencies {
     androidTestImplementation Testing.junit
     androidTestImplementation Testing.kakao
     androidTestImplementation Testing.testNavigation
+    androidTestImplementation Testing.kotestAssertionsCore
+    androidTestImplementation Testing.kotestProperty
     androidTestUtil Testing.testOrchestrator
     debugImplementation Testing.fragmentTest
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }

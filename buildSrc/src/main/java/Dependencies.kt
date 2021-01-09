@@ -11,6 +11,10 @@ private const val navVersion = "2.3.2"
 object Dependencies {
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlinVersion}"
 
+    const val androidXDataStore = "androidx.datastore:datastore:1.0.0-alpha05"
+    const val androidXSecurity = "androidx.security:security-crypto:1.0.0-rc03"
+    const val protoBuf = "com.google.protobuf:protobuf-javalite:3.10.0"
+
     private const val exoPlayerVersion = "2.12.2"
 
     // ExoPlayer
