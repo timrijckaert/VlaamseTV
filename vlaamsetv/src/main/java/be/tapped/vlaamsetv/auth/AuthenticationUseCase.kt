@@ -16,7 +16,6 @@ internal interface AuthenticationUseCase {
         VIER
     }
 
-    @OptIn(ExperimentalContracts::class)
     data class Credentials(
         private val brand: Brand,
         val username: String = "",
@@ -62,12 +61,15 @@ internal class VRTAuthenticationUseCase(
         }
     }
 
+    //TODO
+    // maybe this needs to be easier in that sense that a user does not really care it just went wrong for him.
+    // Write these errors to a file for reporting reasons
     private fun mapAuthenticationFailureToUserMessage(tokenWrapper: Either.Left<ApiResponse.Failure>) =
         when (val failure = tokenWrapper.a) {
             is ApiResponse.Failure.NetworkFailure -> "Network error: ${failure.responseCode}"
             is ApiResponse.Failure.JsonParsingException -> "JSON parsing exception: ${failure.throwable.message}"
             ApiResponse.Failure.EmptyJson -> "No JSON response"
-            is ApiResponse.Failure.Authentication.FailedToLogin -> when(failure.loginResponseFailure.loginFailure) {
+            is ApiResponse.Failure.Authentication.FailedToLogin -> when (failure.loginResponseFailure.loginFailure) {
                 LoginFailure.LoginFailure.INVALID_CREDENTIALS -> "Geen geldige logingegevens of wachtwoord"
                 LoginFailure.LoginFailure.MISSING_LOGIN_ID -> "Geen logingegevens gevonden!"
                 LoginFailure.LoginFailure.MISSING_PASSWORD -> "Geen wachtwoord gevonden"
