@@ -1,13 +1,16 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'com.google.protobuf' version "0.8.12"
+    id 'com.squareup.wire'
 }
 apply from: "${rootDir}/common.gradle"
 
 android {
     defaultConfig {
         applicationId Versions.packageName
+    }
+    sourceSets {
+        main.java.srcDirs += "$buildDir/generated/source/wire"
     }
 }
 
@@ -25,7 +28,7 @@ dependencies {
     implementation Dependencies.coroutinesCore
     implementation Dependencies.arrowCore
     implementation Dependencies.androidXDataStore
-    implementation Dependencies.protoBuf
+    implementation Dependencies.wireRuntime
 
     implementation "be.tapped.vlaamsetv:vier"
     implementation "be.tapped.vlaamsetv:vrtnu"
@@ -50,18 +53,8 @@ dependencies {
     debugImplementation Testing.fragmentTest
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.10.0"
-    }
-
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
+wire {
+    kotlin {
+        android = true
     }
 }

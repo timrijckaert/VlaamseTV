@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.auth
 
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -22,7 +23,15 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
         private const val PASSWORD_FIELD = 2L
         private const val LOGIN_BUTTON = 3L
         private const val SKIP_BUTTON = 4L
+
+        private const val TAG = "VRTAuthenticationFragment"
     }
+
+    private val email get() = findActionById(EMAIL_FIELD).description?.toString() ?: ""
+    private val hasEmail get() = email.isNotBlank()
+    private val password get() = findActionById(PASSWORD_FIELD).description?.toString() ?: ""
+    private val hasPassword get() = password.isNotBlank()
+    private val hasCredentials get() = hasEmail && hasPassword
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
         GuidanceStylist.Guidance(
@@ -39,14 +48,14 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
                     .id(EMAIL_FIELD)
                     .editable(true)
                     .title(R.string.auth_flow_email)
-                    .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                    .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or InputType.TYPE_CLASS_TEXT)
                     .descriptionEditable(true)
                     .build(),
                 GuidedAction.Builder(requireContext())
                     .id(PASSWORD_FIELD)
                     .editable(true)
                     .title(R.string.auth_flow_password)
-                    .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                    .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT or InputType.TYPE_MASK_VARIATION)
                     .descriptionEditable(true)
                     .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
                     .build()
@@ -96,37 +105,32 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
         )
     }
 
+    override fun onGuidedActionEditCanceled(action: GuidedAction?) {
+        Log.d(TAG, "$email - $password")
+        super.onGuidedActionEditCanceled(action)
+    }
+
     override fun onGuidedActionClicked(action: GuidedAction) {
         lifecycleScope.launch {
             when (action.id) {
-                LOGIN_BUTTON -> {
-                    vrtAuthenticationUseCase.login()
-                }
-                SKIP_BUTTON -> {
-                    vrtAuthenticationUseCase.skip()
-                }
+                LOGIN_BUTTON -> vrtAuthenticationUseCase.login(email, password)
+                SKIP_BUTTON -> vrtAuthenticationUseCase.skip()
                 else -> super.onGuidedActionClicked(action)
             }
         }
     }
 
-    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long =
-        when (action.id) {
-            EMAIL_FIELD -> {
-                vrtAuthenticationUseCase.credentials =
-                    vrtAuthenticationUseCase.credentials.copy(username = action.description.toString())
-                PASSWORD_FIELD
-            }
-            PASSWORD_FIELD -> {
-                vrtAuthenticationUseCase.credentials =
-                    vrtAuthenticationUseCase.credentials.copy(password = action.description.toString())
-
-                if (vrtAuthenticationUseCase.credentials.allFieldsAreFilledIn) {
+    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long {
+        Log.d(TAG, "$email - $password")
+        return when (action.id) {
+            EMAIL_FIELD -> PASSWORD_FIELD
+            PASSWORD_FIELD ->
+                if (hasCredentials) {
                     LOGIN_BUTTON
                 } else {
                     SKIP_BUTTON
                 }
-            }
             else -> super.onGuidedActionEditedAndProceed(action)
         }
+    }
 }

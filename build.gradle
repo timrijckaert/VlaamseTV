@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath Plugins.kotlinGradle
         classpath Plugins.androidGradle
+        classpath Plugins.wire
     }
 }
 

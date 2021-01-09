@@ -7,6 +7,8 @@ import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.string
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -17,16 +19,16 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
         val tokenRepo = mockk<TokenRepo>()
         val vrtTokenStore = mockk<VRTTokenStore>()
         val sut = VRTAuthenticationUseCase(tokenRepo, vrtTokenStore)
+
+        val username = Arb.string().gen()
+        val password = Arb.string().gen()
         `when`("logging in") {
             val tokenWrapper = tokenWrapperArb.gen()
             coEvery {
-                tokenRepo.fetchTokenWrapper(
-                    any(),
-                    any()
-                )
+                tokenRepo.fetchTokenWrapper(username, password)
             } returns ApiResponse.Success.Authentication.Token(tokenWrapper).right()
 
-            sut.login()
+            sut.login(username, password)
 
             and("it was successful") {
                 then("it should save the retrieved token wrapper") {
@@ -40,13 +42,10 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
 
             and("it was not successful") {
                 coEvery {
-                    tokenRepo.fetchTokenWrapper(
-                        any(),
-                        any()
-                    )
+                    tokenRepo.fetchTokenWrapper(username, password)
                 } returns ApiResponse.Failure.EmptyJson.left()
 
-                sut.login()
+                sut.login(username, password)
 
                 then("it should have updated the state") {
                     sut.state.value shouldBe AuthenticationUseCase.State.Fail("No JSON response")

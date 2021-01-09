@@ -17,6 +17,7 @@ import com.agoda.kakao.recycler.KRecyclerItem
 import com.agoda.kakao.recycler.KRecyclerView
 import com.agoda.kakao.screen.Screen
 import com.agoda.kakao.screen.Screen.Companion.onScreen
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.hamcrest.Matcher
@@ -49,8 +50,70 @@ internal class VRTAuthenticationFragmentTest {
     }
 
     @Test
+    fun noCredentialsArePassed() {
+        setupVRTAuthenticationFragment()
+        onScreen<VRTAuthenticationFragmentScreen> {
+            buttonActionsList {
+                getSize() shouldBe 2
+                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                    title.hasText(R.string.auth_flow_login)
+                }
+                childAt<VRTAuthenticationFragmentScreen.GuidedActionItem>(1) {
+                    title.hasText(R.string.auth_flow_skip)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun nextFocus() {
+        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Empty })
+        onScreen<VRTAuthenticationFragmentScreen> {
+            guidedActionList {
+                getSize() shouldBe 2
+                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                    click()
+                    title.hasText(R.string.auth_flow_email)
+                    description {
+                        typeText("john.doe@vrt.be")
+                        pressImeAction()
+                    }
+                }
+                childAt<VRTAuthenticationFragmentScreen.GuidedActionItem>(1) {
+                    isFocused()
+                    title.hasText(R.string.auth_flow_password)
+                    description {
+                        typeText("my-super-secret-password")
+                        pressImeAction()
+                    }
+                }
+            }
+        }
+    }
+
+    private val testNavHostController =
+        TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
+            Handler(Looper.getMainLooper()).post {
+                setGraph(R.navigation.authentication_flow_tv)
+                setCurrentDestination(R.id.authenticationFragment)
+            }
+        }
+
+    @Test
+    internal fun authenticationWasSuccessfulShouldDo() {
+        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Successful })
+        onScreen<VRTAuthenticationFragmentScreen> {
+            buttonActionsList {
+                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                    click()
+                }
+            }
+        }
+    }
+
+    @Test
     internal fun authenticationFailedShouldShowDialog() {
-        setupVRTAuthenticationFragment(login = { AuthenticationUseCase.State.Fail("Failed to login") })
+        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Fail("Failed to login") })
         onScreen<VRTAuthenticationFragmentScreen> {
             buttonActionsList {
                 firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
@@ -66,39 +129,50 @@ internal class VRTAuthenticationFragmentTest {
         }
     }
 
-    private val testNavHostController =
-        TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
-            Handler(Looper.getMainLooper()).post {
-                setGraph(R.navigation.authentication_flow_tv)
-                setCurrentDestination(R.id.authenticationFragment)
-            }
-        }
-
     @Test
-    internal fun authenticationWasSuccessfulShouldDo() {
-        setupVRTAuthenticationFragment(login = { AuthenticationUseCase.State.Successful })
+    fun passingCredentials() {
+        var output = ""
+        setupVRTAuthenticationFragment(
+            login = { username, pass ->
+                output = "$username-$pass"
+                AuthenticationUseCase.State.Empty
+            }
+        )
         onScreen<VRTAuthenticationFragmentScreen> {
+            guidedActionList {
+                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                    click()
+                    description {
+                        typeText("john.doe@vrt.be")
+                        pressImeAction()
+                    }
+                }
+                childAt<VRTAuthenticationFragmentScreen.GuidedActionItem>(1) {
+                    description {
+                        typeText("my-super-secret-password")
+                        pressImeAction()
+                    }
+                }
+            }
             buttonActionsList {
                 firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                 }
             }
         }
+        output.toLowerCase() shouldBe "john.doe@vrt.be-my-super-secret-password"
     }
 
     private fun setupVRTAuthenticationFragment(
-        login: (() -> AuthenticationUseCase.State)? = null,
+        login: ((username: String, password: String) -> AuthenticationUseCase.State)? = null,
         skip: (() -> AuthenticationUseCase.State)? = null,
-        initialCredentials: AuthenticationUseCase.Credentials = AuthenticationUseCase.Credentials(
-            AuthenticationUseCase.Brand.VRT_NU
-        ),
         initialState: AuthenticationUseCase.State = AuthenticationUseCase.State.Empty
     ) {
         launchFragmentInContainer(themeResId = R.style.Theme_TV_VlaamseTV) {
             VRTAuthenticationFragment(object : AuthenticationUseCase {
-                override suspend fun login() {
+                override suspend fun login(username: String, password: String) {
                     if (login != null) {
-                        _state.value = login()
+                        _state.value = login(username, password)
                     }
                 }
 
@@ -108,7 +182,6 @@ internal class VRTAuthenticationFragmentTest {
                     }
                 }
 
-                override var credentials: AuthenticationUseCase.Credentials = initialCredentials
                 private val _state: MutableStateFlow<AuthenticationUseCase.State> =
                     MutableStateFlow(initialState)
                 override val state: StateFlow<AuthenticationUseCase.State> get() = _state

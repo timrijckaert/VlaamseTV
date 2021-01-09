@@ -9,8 +9,8 @@ import be.tapped.vrtnu.profile.AccessToken
 import be.tapped.vrtnu.profile.Expiry
 import be.tapped.vrtnu.profile.RefreshToken
 import be.tapped.vrtnu.profile.TokenWrapper
-import com.google.protobuf.InvalidProtocolBufferException
 import kotlinx.coroutines.flow.firstOrNull
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -31,12 +31,12 @@ public class EncryptedDataStore(private val context: Context, private val crypto
 
     private val vrtNuTokenWrapperSerializer by lazy {
         object : Serializer<TokenWrapperProto> {
-            override val defaultValue: TokenWrapperProto = TokenWrapperProto.getDefaultInstance()
+            override val defaultValue: TokenWrapperProto = TokenWrapperProto()
 
             override fun readFrom(input: InputStream): TokenWrapperProto {
                 try {
-                    return TokenWrapperProto.parseFrom(crypto.decrypt(input))
-                } catch (exception: InvalidProtocolBufferException) {
+                    return TokenWrapperProto.ADAPTER.decode(input)
+                } catch (exception: IOException) {
                     throw CorruptionException("Cannot read proto.", exception)
                 }
             }
@@ -44,16 +44,16 @@ public class EncryptedDataStore(private val context: Context, private val crypto
             override fun writeTo(
                 t: TokenWrapperProto,
                 output: OutputStream
-            ) = crypto.encrypt(t.toByteArray(), output)
+            ) = TokenWrapperProto.ADAPTER.encode(output, t)
         }
     }
 
     override suspend fun tokenWrapper(): TokenWrapper? =
         vrtNuDataStore.data.firstOrNull()?.let {
-            if (!it.accessToken.isNullOrEmpty() && !it.refreshToken.isNullOrEmpty() && it.expiry != 0L) {
+            if (it.access_token.isNotEmpty() && it.refresh_token.isNotEmpty() && it.expiry != 0L) {
                 TokenWrapper(
-                    accessToken = AccessToken(it.accessToken),
-                    refreshToken = RefreshToken(it.refreshToken),
+                    accessToken = AccessToken(it.access_token),
+                    refreshToken = RefreshToken(it.refresh_token),
                     expiry = Expiry(it.expiry),
                 )
             } else {
@@ -63,11 +63,11 @@ public class EncryptedDataStore(private val context: Context, private val crypto
 
     override suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper) {
         vrtNuDataStore.updateData {
-            it.toBuilder()
-                .setAccessToken(tokenWrapper.accessToken.token)
-                .setRefreshToken(tokenWrapper.refreshToken.token)
-                .setExpiry(tokenWrapper.expiry.date)
-                .build()
+            it.copy(
+                access_token = tokenWrapper.accessToken.token,
+                refresh_token = tokenWrapper.refreshToken.token,
+                expiry = tokenWrapper.expiry.date
+            )
         }
     }
 }

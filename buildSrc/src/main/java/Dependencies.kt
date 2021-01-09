@@ -13,7 +13,6 @@ object Dependencies {
 
     const val androidXDataStore = "androidx.datastore:datastore:1.0.0-alpha05"
     const val androidXSecurity = "androidx.security:security-crypto:1.0.0-rc03"
-    const val protoBuf = "com.google.protobuf:protobuf-javalite:3.10.0"
 
     private const val exoPlayerVersion = "2.12.2"
 
@@ -51,6 +50,7 @@ object Dependencies {
     const val material = "com.google.android.material:material:1.2.1"
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:2.0.4"
     const val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    const val wireRuntime = "com.squareup.wire:wire-runtime:3.5.0"
 
     const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
     const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$navVersion"
@@ -74,6 +74,7 @@ object Dependencies {
 object Plugins {
     const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinVersion}"
     const val androidGradle = "com.android.tools.build:gradle:4.1.1"
+    const val wire = "com.squareup.wire:wire-gradle-plugin:3.3.0"
 }
 
 object Testing {

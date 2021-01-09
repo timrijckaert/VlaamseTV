@@ -14,15 +14,18 @@ import java.security.KeyStore
 @RunWith(AndroidJUnit4::class)
 internal class EncryptedDataStoreTest {
 
-    private val encryptedDataStore = EncryptedDataStore(
-        ApplicationProvider.getApplicationContext(),
-        CryptoImpl(
+    private val cryptoImpl
+        get() = CryptoImpl(
             AesCipherProvider(
                 "keyName",
                 KeyStore.getInstance(App.KEYSTORE_NAME).apply { load(null) },
                 App.KEYSTORE_NAME
             )
         )
+
+    private val encryptedDataStore = EncryptedDataStore(
+        ApplicationProvider.getApplicationContext(),
+        cryptoImpl
     )
 
     @Test

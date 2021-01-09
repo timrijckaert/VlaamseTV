@@ -7,30 +7,13 @@ import be.tapped.vrtnu.profile.LoginFailure
 import be.tapped.vrtnu.profile.TokenRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlin.contracts.ExperimentalContracts
+import kotlinx.coroutines.flow.asStateFlow
 
 internal interface AuthenticationUseCase {
-    enum class Brand {
-        VRT_NU,
-        VTM_GO,
-        VIER
-    }
 
-    data class Credentials(
-        private val brand: Brand,
-        val username: String = "",
-        val password: String = "",
-    ) {
-        val allFieldsAreFilledIn get() = hasUsername && hasPassword
-        private val hasUsername: Boolean get() = username.isNotBlank()
-        private val hasPassword get() = password.isNotBlank()
-    }
-
-    suspend fun login()
+    suspend fun login(username: String, password: String)
 
     suspend fun skip()
-
-    var credentials: Credentials
 
     val state: StateFlow<State>
 
@@ -45,12 +28,10 @@ internal class VRTAuthenticationUseCase(
     private val tokenRepo: TokenRepo,
     private val vrtTokenStore: VRTTokenStore
 ) : AuthenticationUseCase {
-    override var credentials: AuthenticationUseCase.Credentials =
-        AuthenticationUseCase.Credentials(AuthenticationUseCase.Brand.VRT_NU)
 
-    override suspend fun login() {
+    override suspend fun login(username: String, password: String) {
         val tokenWrapper =
-            tokenRepo.fetchTokenWrapper(credentials.username, credentials.password)
+            tokenRepo.fetchTokenWrapper(username, password)
         _state.value = when (tokenWrapper) {
             is Either.Left ->
                 AuthenticationUseCase.State.Fail(mapAuthenticationFailureToUserMessage(tokenWrapper))
@@ -71,8 +52,8 @@ internal class VRTAuthenticationUseCase(
             ApiResponse.Failure.EmptyJson -> "No JSON response"
             is ApiResponse.Failure.Authentication.FailedToLogin -> when (failure.loginResponseFailure.loginFailure) {
                 LoginFailure.LoginFailure.INVALID_CREDENTIALS -> "Geen geldige logingegevens of wachtwoord"
-                LoginFailure.LoginFailure.MISSING_LOGIN_ID -> "Geen logingegevens gevonden!"
-                LoginFailure.LoginFailure.MISSING_PASSWORD -> "Geen wachtwoord gevonden"
+                LoginFailure.LoginFailure.MISSING_LOGIN_ID -> "Je hebt geen email adres ingevoerd"
+                LoginFailure.LoginFailure.MISSING_PASSWORD -> "Je hebt geen wachtwoord ingevoerd"
                 LoginFailure.LoginFailure.UNKNOWN -> "Geen idee wat er mis ging bij het aanmelden."
             }
             is ApiResponse.Failure.Authentication.MissingCookieValues -> "Missing cookies ${failure.cookieValues}"
@@ -83,8 +64,8 @@ internal class VRTAuthenticationUseCase(
     override suspend fun skip() {
     }
 
-    private val _state: MutableStateFlow<AuthenticationUseCase.State> = MutableStateFlow(
-        AuthenticationUseCase.State.Empty
-    )
-    override val state: StateFlow<AuthenticationUseCase.State> get() = _state
+    private val _state: MutableStateFlow<AuthenticationUseCase.State> =
+        MutableStateFlow(AuthenticationUseCase.State.Empty)
+
+    override val state: StateFlow<AuthenticationUseCase.State> get() = _state.asStateFlow()
 }
