@@ -27,6 +27,7 @@
 
         <activity
             android:name=".TvMainActivity"
+            android:theme="@style/Theme.TV.VlaamseTV"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|navigation"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true">

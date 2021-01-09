@@ -46,6 +46,9 @@ object Dependencies {
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:2.0.4"
     const val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
 
+    const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:2.3.2"
+    const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:2.3.2"
+
     private const val arrowVersion = "0.12.0-SNAPSHOT"
     const val arrowCore = "io.arrow-kt:arrow-core:${arrowVersion}"
     const val arrowSyntax = "io.arrow-kt:arrow-syntax:${arrowVersion}"
@@ -55,6 +58,12 @@ object Dependencies {
 
     private const val coroutineVersion = "1.4.1"
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutineVersion}"
+
+    const val uiTestJunit = "androidx.test.ext:junit:1.1.2"
+    const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+    const val uiTestRules = "androidx.test:rules:1.2.0"
+    const val espressoContribution = "androidx.test.espresso:espresso-contrib:3.2.0"
+
 }
 
 object Plugins {
@@ -75,8 +84,8 @@ object Testing {
 
     const val fragmentTest = "androidx.fragment:fragment-testing:1.2.5"
 
-    const val espresso = "androidx.test.espresso:espresso-core:3.3.0"
     const val testRunner = "androidx.test:runner:1.3.0"
     const val testRules = "androidx.test:rules:1.3.0"
     const val testOrchestrator = "androidx.test:orchestrator:1.3.0"
+    const val kakao = "com.agoda.kakao:kakao:2.4.0"
 }

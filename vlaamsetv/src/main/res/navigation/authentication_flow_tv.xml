@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/authentication_flow_tv"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/authenticationFragment">
+
+    <fragment
+        android:id="@+id/authenticationFragment"
+        tools:layout="@layout/lb_guidedstep_fragment"
+        android:name="be.tapped.vlaamsetv.auth.AuthenticationFragment"
+        android:label="AuthenticationFragment" />
+</navigation>
