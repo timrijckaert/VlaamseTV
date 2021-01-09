@@ -8,6 +8,4 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
-
-    <style name="Theme.TV.VlaamseTV" parent="Theme.AppCompat.Leanback" />
 </resources>
