@@ -1,7 +1,12 @@
 package be.tapped.vlaamsetv.auth
 
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.tapped.vlaamsetv.R
 import com.agoda.kakao.check.KCheckBox
@@ -45,21 +50,7 @@ internal class VRTAuthenticationFragmentTest {
 
     @Test
     internal fun authenticationFailedShouldShowDialog() {
-        launchFragmentInContainer(themeResId = R.style.Theme_TV_VlaamseTV) {
-            VRTAuthenticationFragment(object : AuthenticationUseCase {
-                override suspend fun login() {
-                    _state.value = AuthenticationUseCase.State.Fail("Failed to login")
-                }
-
-                override suspend fun skip() {}
-
-                override var credentials: AuthenticationUseCase.Credentials =
-                    AuthenticationUseCase.Credentials(AuthenticationUseCase.Brand.VRT_NU)
-                private val _state: MutableStateFlow<AuthenticationUseCase.State> =
-                    MutableStateFlow(AuthenticationUseCase.State.Empty)
-                override val state: StateFlow<AuthenticationUseCase.State> get() = _state
-            })
-        }
+        setupVRTAuthenticationFragment(login = { AuthenticationUseCase.State.Fail("Failed to login") })
         onScreen<VRTAuthenticationFragmentScreen> {
             buttonActionsList {
                 firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
@@ -75,27 +66,57 @@ internal class VRTAuthenticationFragmentTest {
         }
     }
 
+    private val testNavHostController =
+        TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
+            Handler(Looper.getMainLooper()).post {
+                setGraph(R.navigation.authentication_flow_tv)
+                setCurrentDestination(R.id.authenticationFragment)
+            }
+        }
+
     @Test
     internal fun authenticationWasSuccessfulShouldDo() {
-        launchFragmentInContainer(themeResId = R.style.Theme_TV_VlaamseTV) {
-            VRTAuthenticationFragment(object : AuthenticationUseCase {
-                override suspend fun login() {
-                    _state.value = AuthenticationUseCase.State.Successful
-                }
-
-                override suspend fun skip() {}
-
-                override var credentials: AuthenticationUseCase.Credentials =
-                    AuthenticationUseCase.Credentials(AuthenticationUseCase.Brand.VRT_NU)
-                private val _state: MutableStateFlow<AuthenticationUseCase.State> =
-                    MutableStateFlow(AuthenticationUseCase.State.Empty)
-                override val state: StateFlow<AuthenticationUseCase.State> get() = _state
-            })
-        }
+        setupVRTAuthenticationFragment(login = { AuthenticationUseCase.State.Successful })
         onScreen<VRTAuthenticationFragmentScreen> {
             buttonActionsList {
                 firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
                     click()
+                }
+            }
+        }
+    }
+
+    private fun setupVRTAuthenticationFragment(
+        login: (() -> AuthenticationUseCase.State)? = null,
+        skip: (() -> AuthenticationUseCase.State)? = null,
+        initialCredentials: AuthenticationUseCase.Credentials = AuthenticationUseCase.Credentials(
+            AuthenticationUseCase.Brand.VRT_NU
+        ),
+        initialState: AuthenticationUseCase.State = AuthenticationUseCase.State.Empty
+    ) {
+        launchFragmentInContainer(themeResId = R.style.Theme_TV_VlaamseTV) {
+            VRTAuthenticationFragment(object : AuthenticationUseCase {
+                override suspend fun login() {
+                    if (login != null) {
+                        _state.value = login()
+                    }
+                }
+
+                override suspend fun skip() {
+                    if (skip != null) {
+                        _state.value = skip()
+                    }
+                }
+
+                override var credentials: AuthenticationUseCase.Credentials = initialCredentials
+                private val _state: MutableStateFlow<AuthenticationUseCase.State> =
+                    MutableStateFlow(initialState)
+                override val state: StateFlow<AuthenticationUseCase.State> get() = _state
+            }).also { frag ->
+                frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                    if (viewLifecycleOwner != null) {
+                        Navigation.setViewNavController(frag.requireView(), testNavHostController)
+                    }
                 }
             }
         }

@@ -40,6 +40,7 @@ dependencies {
     androidTestImplementation Dependencies.espressoContribution
     androidTestImplementation Testing.junit
     androidTestImplementation Testing.kakao
+    androidTestImplementation Testing.testNavigation
     androidTestUtil Testing.testOrchestrator
     debugImplementation Testing.fragmentTest
 }

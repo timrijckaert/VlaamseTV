@@ -9,6 +9,7 @@ import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import be.tapped.vlaamsetv.R
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -68,6 +69,7 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
                             .show()
                     }
                     AuthenticationUseCase.State.Successful -> {
+                        findNavController()
                     }
                 }
             }

@@ -6,6 +6,8 @@ object Versions {
     const val kotlinVersion = "1.4.21"
 }
 
+private const val navVersion = "2.3.2"
+
 object Dependencies {
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlinVersion}"
 
@@ -46,8 +48,8 @@ object Dependencies {
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:2.0.4"
     const val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
 
-    const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:2.3.2"
-    const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:2.3.2"
+    const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
+    const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$navVersion"
 
     private const val arrowVersion = "0.12.0-SNAPSHOT"
     const val arrowCore = "io.arrow-kt:arrow-core:${arrowVersion}"
@@ -63,7 +65,6 @@ object Dependencies {
     const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
     const val uiTestRules = "androidx.test:rules:1.2.0"
     const val espressoContribution = "androidx.test.espresso:espresso-contrib:3.2.0"
-
 }
 
 object Plugins {
@@ -88,4 +89,6 @@ object Testing {
     const val testRules = "androidx.test:rules:1.3.0"
     const val testOrchestrator = "androidx.test:orchestrator:1.3.0"
     const val kakao = "com.agoda.kakao:kakao:2.4.0"
+
+    const val testNavigation = "androidx.navigation:navigation-testing:$navVersion"
 }
