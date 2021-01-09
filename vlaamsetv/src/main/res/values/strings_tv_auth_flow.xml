@@ -9,4 +9,6 @@
 
     <string name="auth_flow_email">Email</string>
     <string name="auth_flow_password">Wachtwoord</string>
+
+    <string name="auth_flow_fail_dialog_title">Helaas niet gelukt</string>
 </resources>

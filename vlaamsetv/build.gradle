@@ -18,22 +18,28 @@ dependencies {
     implementation Dependencies.constraintLayout
     implementation Dependencies.navigationFragment
     implementation Dependencies.navigationUiKtx
-
     implementation Dependencies.leanbackApp
     implementation Dependencies.leanbackPrefs
+    implementation Dependencies.okHttp3
+    implementation Dependencies.coroutinesCore
+    implementation Dependencies.arrowCore
 
     implementation "be.tapped.vlaamsetv:vier"
     implementation "be.tapped.vlaamsetv:vrtnu"
     implementation "be.tapped.vlaamsetv:vtmgo"
 
-    androidTestImplementation Testing.junit
-    androidTestUtil Testing.testOrchestrator
+    testImplementation Testing.kotestRunner
+    testImplementation Testing.kotestAssertionsCore
+    testImplementation Testing.kotestAssertionsArrow
+    testImplementation Testing.kotestProperty
+    testImplementation Testing.mockk
 
     androidTestImplementation Dependencies.uiTestJunit
     androidTestImplementation Dependencies.espressoCore
     androidTestImplementation Dependencies.uiTestRules
     androidTestImplementation Dependencies.espressoContribution
-
-    debugImplementation Testing.fragmentTest
+    androidTestImplementation Testing.junit
     androidTestImplementation Testing.kakao
+    androidTestUtil Testing.testOrchestrator
+    debugImplementation Testing.fragmentTest
 }

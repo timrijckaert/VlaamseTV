@@ -7,6 +7,6 @@
     <fragment
         android:id="@+id/authenticationFragment"
         tools:layout="@layout/lb_guidedstep_fragment"
-        android:name="be.tapped.vlaamsetv.auth.AuthenticationFragment"
+        android:name="be.tapped.vlaamsetv.auth.VRTAuthenticationFragment"
         android:label="AuthenticationFragment" />
 </navigation>

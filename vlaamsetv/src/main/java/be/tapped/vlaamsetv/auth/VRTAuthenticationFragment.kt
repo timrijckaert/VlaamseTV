@@ -2,21 +2,25 @@ package be.tapped.vlaamsetv.auth
 
 import android.os.Bundle
 import android.text.InputType
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
+import androidx.lifecycle.lifecycleScope
 import be.tapped.vlaamsetv.R
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-internal class AuthenticationFragment : GuidedStepSupportFragment() {
+internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: AuthenticationUseCase) :
+    GuidedStepSupportFragment() {
 
     companion object {
         private const val EMAIL_FIELD = 1L
         private const val PASSWORD_FIELD = 2L
         private const val LOGIN_BUTTON = 3L
+        private const val SKIP_BUTTON = 4L
     }
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
@@ -49,6 +53,27 @@ internal class AuthenticationFragment : GuidedStepSupportFragment() {
         )
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        lifecycleScope.launch {
+            vrtAuthenticationUseCase.state.collect {
+                when (it) {
+                    AuthenticationUseCase.State.Empty -> {
+                    }
+                    is AuthenticationUseCase.State.Fail -> {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.auth_flow_fail_dialog_title)
+                            .setMessage(it.message)
+                            .setNeutralButton(android.R.string.ok) { _, _ -> }
+                            .show()
+                    }
+                    AuthenticationUseCase.State.Successful -> {
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreateButtonActions(
         actions: MutableList<GuidedAction>,
         savedInstanceState: Bundle?
@@ -62,20 +87,44 @@ internal class AuthenticationFragment : GuidedStepSupportFragment() {
                     .build(),
                 GuidedAction
                     .Builder(context)
+                    .id(SKIP_BUTTON)
                     .title(R.string.auth_flow_skip)
                     .build(),
             )
         )
     }
 
-    override fun onGuidedActionClicked(action: GuidedAction?) {
-        super.onGuidedActionClicked(action)
+    override fun onGuidedActionClicked(action: GuidedAction) {
+        lifecycleScope.launch {
+            when (action.id) {
+                LOGIN_BUTTON -> {
+                    vrtAuthenticationUseCase.login()
+                }
+                SKIP_BUTTON -> {
+                    vrtAuthenticationUseCase.skip()
+                }
+                else -> super.onGuidedActionClicked(action)
+            }
+        }
     }
 
     override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long =
         when (action.id) {
-            EMAIL_FIELD -> PASSWORD_FIELD
-            PASSWORD_FIELD -> LOGIN_BUTTON
+            EMAIL_FIELD -> {
+                vrtAuthenticationUseCase.credentials =
+                    vrtAuthenticationUseCase.credentials.copy(username = action.description.toString())
+                PASSWORD_FIELD
+            }
+            PASSWORD_FIELD -> {
+                vrtAuthenticationUseCase.credentials =
+                    vrtAuthenticationUseCase.credentials.copy(password = action.description.toString())
+
+                if (vrtAuthenticationUseCase.credentials.allFieldsAreFilledIn) {
+                    LOGIN_BUTTON
+                } else {
+                    SKIP_BUTTON
+                }
+            }
             else -> super.onGuidedActionEditedAndProceed(action)
         }
 }
