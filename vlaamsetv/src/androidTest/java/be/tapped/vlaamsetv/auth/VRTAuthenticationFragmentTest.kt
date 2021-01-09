@@ -163,6 +163,37 @@ internal class VRTAuthenticationFragmentTest {
         output.toLowerCase() shouldBe "john.doe@vrt.be-my-super-secret-password"
     }
 
+    @Test
+    fun enteringWrongCredentialsTwiceShouldRetriggerAlertDialog() {
+        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Fail("Failed to login") })
+        onScreen<VRTAuthenticationFragmentScreen> {
+            buttonActionsList {
+                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                    click()
+                }
+            }
+
+            alertDialog {
+                isDisplayed()
+                title.hasText(R.string.auth_flow_fail_dialog_title)
+                message.hasText("Failed to login")
+                neutralButton.click()
+            }
+
+            buttonActionsList {
+                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                    click()
+                }
+            }
+
+            alertDialog {
+                isDisplayed()
+                title.hasText(R.string.auth_flow_fail_dialog_title)
+                message.hasText("Failed to login")
+            }
+        }
+    }
+
     private fun setupVRTAuthenticationFragment(
         login: ((username: String, password: String) -> AuthenticationUseCase.State)? = null,
         skip: (() -> AuthenticationUseCase.State)? = null,

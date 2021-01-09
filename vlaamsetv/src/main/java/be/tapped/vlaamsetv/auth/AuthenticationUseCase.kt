@@ -18,9 +18,17 @@ internal interface AuthenticationUseCase {
     val state: StateFlow<State>
 
     sealed class State {
-        object Empty : State()
-        data class Fail(internal val message: String) : State()
-        object Successful : State()
+        object Empty : State() {
+            override fun equals(other: Any?): Boolean = false
+        }
+
+        data class Fail(internal val message: String) : State() {
+            override fun equals(other: Any?): Boolean = false
+        }
+
+        object Successful : State() {
+            override fun equals(other: Any?): Boolean = false
+        }
     }
 }
 
