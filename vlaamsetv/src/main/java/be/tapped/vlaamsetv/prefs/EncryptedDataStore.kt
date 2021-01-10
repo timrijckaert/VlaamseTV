@@ -35,7 +35,7 @@ class EncryptedDataStore(private val context: Context, private val crypto: Crypt
 
             override fun readFrom(input: InputStream): TokenWrapperProto {
                 try {
-                    return TokenWrapperProto.ADAPTER.decode(input)
+                    return TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
                 } catch (exception: IOException) {
                     throw CorruptionException("Cannot read proto.", exception)
                 }
@@ -44,7 +44,7 @@ class EncryptedDataStore(private val context: Context, private val crypto: Crypt
             override fun writeTo(
                 t: TokenWrapperProto,
                 output: OutputStream
-            ) = TokenWrapperProto.ADAPTER.encode(output, t)
+            ) = crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
         }
     }
 
