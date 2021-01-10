@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="auth_flow_vrtnu_title">Inloggen</string>
+    <string name="auth_flow_vrtnu_title">Aanmelden</string>
     <string name="auth_flow_vrtnu_description">Om de VRT NU content te kunnen bekijken hebben we je logingegevens nodig. Deze worden enkel lokaal opgeslagen.</string>
     <string name="auth_flow_vrtnu_step_breadcrumb">VRT NU</string>
 
     <string name="auth_flow_skip">Overslaan</string>
-    <string name="auth_flow_login">Login</string>
+    <string name="auth_flow_login">Aanmelden</string>
 
     <string name="auth_flow_email">Email</string>
     <string name="auth_flow_password">Wachtwoord</string>
 
-    <string name="auth_flow_fail_dialog_title">Helaas niet gelukt</string>
+    <string name="auth_flow_fail_dialog_title">Het aanmelden is niet gelukt</string>
 </resources>

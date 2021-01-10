@@ -2,11 +2,23 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/authentication_flow_tv"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/authenticationFragment">
+    app:startDestination="@id/authenticationCoordinatorFragment">
 
     <fragment
         android:id="@+id/authenticationFragment"
         tools:layout="@layout/lb_guidedstep_fragment"
-        android:name="be.tapped.vlaamsetv.auth.VRTAuthenticationFragment"
-        android:label="AuthenticationFragment" />
+        android:name="be.tapped.vlaamsetv.auth.AuthenticationFragment"
+        android:label="AuthenticationFragment" >
+        <argument
+            android:name="config"
+            app:argType="be.tapped.vlaamsetv.auth.AuthenticationFragment$Configuration" />
+    </fragment>
+    <fragment
+        android:id="@+id/authenticationCoordinatorFragment"
+        android:name="be.tapped.vlaamsetv.auth.AuthenticationCoordinatorFragment"
+        android:label="AuthenticationCoordinatorFragment" >
+        <action
+            android:id="@+id/action_authenticationCoordinatorFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
 </navigation>

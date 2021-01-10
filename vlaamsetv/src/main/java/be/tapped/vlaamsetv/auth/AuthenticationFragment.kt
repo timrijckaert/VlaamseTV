@@ -1,9 +1,11 @@
 package be.tapped.vlaamsetv.auth
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.InputType
-import android.util.Log
 import android.view.View
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.GuidedStepSupportFragment
@@ -11,20 +13,30 @@ import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import be.tapped.vlaamsetv.R
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
-internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: AuthenticationUseCase) :
+class AuthenticationFragment(private val authenticationUseCase: AuthenticationUseCase) :
     GuidedStepSupportFragment() {
+
+    private val config by navArgs<AuthenticationFragmentArgs>()
+
+    @Parcelize
+    data class Configuration(
+        @StringRes val title: Int,
+        @StringRes val description: Int,
+        @StringRes val brand: Int,
+        @DrawableRes val icon: Int
+    ) : Parcelable
 
     companion object {
         private const val EMAIL_FIELD = 1L
         private const val PASSWORD_FIELD = 2L
         private const val LOGIN_BUTTON = 3L
         private const val SKIP_BUTTON = 4L
-
-        private const val TAG = "VRTAuthenticationFragment"
     }
 
     private val email get() = findActionById(EMAIL_FIELD).description?.toString() ?: ""
@@ -35,10 +47,10 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
         GuidanceStylist.Guidance(
-            getString(R.string.auth_flow_vrtnu_title),
-            getString(R.string.auth_flow_vrtnu_description),
-            getString(R.string.auth_flow_vrtnu_step_breadcrumb),
-            ContextCompat.getDrawable(requireContext(), R.drawable.vrt_nu_logo)
+            getString(config.config.title),
+            getString(config.config.description),
+            getString(config.config.brand),
+            ContextCompat.getDrawable(requireContext(), config.config.icon)
         )
 
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
@@ -66,7 +78,7 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
-            vrtAuthenticationUseCase.state.collect {
+            authenticationUseCase.state.collect {
                 when (it) {
                     AuthenticationUseCase.State.Empty -> {
                     }
@@ -105,24 +117,21 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
         )
     }
 
-    override fun onGuidedActionEditCanceled(action: GuidedAction?) {
-        Log.d(TAG, "$email - $password")
-        super.onGuidedActionEditCanceled(action)
-    }
-
     override fun onGuidedActionClicked(action: GuidedAction) {
         lifecycleScope.launch {
             when (action.id) {
-                LOGIN_BUTTON -> vrtAuthenticationUseCase.login(email, password)
-                SKIP_BUTTON -> vrtAuthenticationUseCase.skip()
+                LOGIN_BUTTON -> authenticationUseCase.login(email, password)
+                SKIP_BUTTON -> {
+                    authenticationUseCase.skip()
+                    findNavController().popBackStack()
+                }
                 else -> super.onGuidedActionClicked(action)
             }
         }
     }
 
-    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long {
-        Log.d(TAG, "$email - $password")
-        return when (action.id) {
+    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long =
+        when (action.id) {
             EMAIL_FIELD -> PASSWORD_FIELD
             PASSWORD_FIELD ->
                 if (hasCredentials) {
@@ -132,5 +141,4 @@ internal class VRTAuthenticationFragment(private val vrtAuthenticationUseCase: A
                 }
             else -> super.onGuidedActionEditedAndProceed(action)
         }
-    }
 }

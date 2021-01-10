@@ -14,12 +14,12 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-public interface VRTTokenStore {
-    public suspend fun tokenWrapper(): TokenWrapper?
-    public suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
+interface VRTTokenStore {
+    suspend fun tokenWrapper(): TokenWrapper?
+    suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
 }
 
-public class EncryptedDataStore(private val context: Context, private val crypto: Crypto) :
+class EncryptedDataStore(private val context: Context, private val crypto: Crypto) :
     VRTTokenStore {
 
     private val vrtNuDataStore by lazy {

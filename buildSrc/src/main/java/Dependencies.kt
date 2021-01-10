@@ -75,6 +75,8 @@ object Plugins {
     const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinVersion}"
     const val androidGradle = "com.android.tools.build:gradle:4.1.1"
     const val wire = "com.squareup.wire:wire-gradle-plugin:3.3.0"
+    const val navigationSafeArgs =
+        "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
 }
 
 object Testing {

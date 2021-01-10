@@ -25,9 +25,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class VRTAuthenticationFragmentTest {
+internal class AuthenticationFragmentTest {
 
-    private class VRTAuthenticationFragmentScreen : Screen<VRTAuthenticationFragmentScreen>() {
+    private class AuthenticationFragmentScreen : Screen<AuthenticationFragmentScreen>() {
         val guidedActionList =
             KRecyclerView(
                 builder = { withId(R.id.guidedactions_list) },
@@ -52,13 +52,13 @@ internal class VRTAuthenticationFragmentTest {
     @Test
     fun noCredentialsArePassed() {
         setupVRTAuthenticationFragment()
-        onScreen<VRTAuthenticationFragmentScreen> {
+        onScreen<AuthenticationFragmentScreen> {
             buttonActionsList {
                 getSize() shouldBe 2
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     title.hasText(R.string.auth_flow_login)
                 }
-                childAt<VRTAuthenticationFragmentScreen.GuidedActionItem>(1) {
+                childAt<AuthenticationFragmentScreen.GuidedActionItem>(1) {
                     title.hasText(R.string.auth_flow_skip)
                 }
             }
@@ -68,10 +68,10 @@ internal class VRTAuthenticationFragmentTest {
     @Test
     fun nextFocus() {
         setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Empty })
-        onScreen<VRTAuthenticationFragmentScreen> {
+        onScreen<AuthenticationFragmentScreen> {
             guidedActionList {
                 getSize() shouldBe 2
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                     title.hasText(R.string.auth_flow_email)
                     description {
@@ -79,7 +79,7 @@ internal class VRTAuthenticationFragmentTest {
                         pressImeAction()
                     }
                 }
-                childAt<VRTAuthenticationFragmentScreen.GuidedActionItem>(1) {
+                childAt<AuthenticationFragmentScreen.GuidedActionItem>(1) {
                     isFocused()
                     title.hasText(R.string.auth_flow_password)
                     description {
@@ -102,9 +102,9 @@ internal class VRTAuthenticationFragmentTest {
     @Test
     internal fun authenticationWasSuccessfulShouldDo() {
         setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Successful })
-        onScreen<VRTAuthenticationFragmentScreen> {
+        onScreen<AuthenticationFragmentScreen> {
             buttonActionsList {
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                 }
             }
@@ -114,9 +114,9 @@ internal class VRTAuthenticationFragmentTest {
     @Test
     internal fun authenticationFailedShouldShowDialog() {
         setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Fail("Failed to login") })
-        onScreen<VRTAuthenticationFragmentScreen> {
+        onScreen<AuthenticationFragmentScreen> {
             buttonActionsList {
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                 }
             }
@@ -138,16 +138,16 @@ internal class VRTAuthenticationFragmentTest {
                 AuthenticationUseCase.State.Empty
             }
         )
-        onScreen<VRTAuthenticationFragmentScreen> {
+        onScreen<AuthenticationFragmentScreen> {
             guidedActionList {
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                     description {
                         typeText("john.doe@vrt.be")
                         pressImeAction()
                     }
                 }
-                childAt<VRTAuthenticationFragmentScreen.GuidedActionItem>(1) {
+                childAt<AuthenticationFragmentScreen.GuidedActionItem>(1) {
                     description {
                         typeText("my-super-secret-password")
                         pressImeAction()
@@ -155,7 +155,7 @@ internal class VRTAuthenticationFragmentTest {
                 }
             }
             buttonActionsList {
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                 }
             }
@@ -166,9 +166,9 @@ internal class VRTAuthenticationFragmentTest {
     @Test
     fun enteringWrongCredentialsTwiceShouldRetriggerAlertDialog() {
         setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Fail("Failed to login") })
-        onScreen<VRTAuthenticationFragmentScreen> {
+        onScreen<AuthenticationFragmentScreen> {
             buttonActionsList {
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                 }
             }
@@ -181,7 +181,7 @@ internal class VRTAuthenticationFragmentTest {
             }
 
             buttonActionsList {
-                firstChild<VRTAuthenticationFragmentScreen.GuidedActionItem> {
+                firstChild<AuthenticationFragmentScreen.GuidedActionItem> {
                     click()
                 }
             }
@@ -199,8 +199,18 @@ internal class VRTAuthenticationFragmentTest {
         skip: (() -> AuthenticationUseCase.State)? = null,
         initialState: AuthenticationUseCase.State = AuthenticationUseCase.State.Empty
     ) {
-        launchFragmentInContainer(themeResId = R.style.Theme_TV_VlaamseTV) {
-            VRTAuthenticationFragment(object : AuthenticationUseCase {
+        launchFragmentInContainer(
+            themeResId = R.style.Theme_TV_VlaamseTV,
+            fragmentArgs = AuthenticationFragmentArgs(
+                AuthenticationFragment.Configuration(
+                    R.string.auth_flow_vrtnu_title,
+                    R.string.auth_flow_vrtnu_description,
+                    R.string.auth_flow_vrtnu_step_breadcrumb,
+                    R.drawable.vrt_nu_logo
+                )
+            ).toBundle()
+        ) {
+            AuthenticationFragment(object : AuthenticationUseCase {
                 override suspend fun login(username: String, password: String) {
                     if (login != null) {
                         _state.value = login(username, password)

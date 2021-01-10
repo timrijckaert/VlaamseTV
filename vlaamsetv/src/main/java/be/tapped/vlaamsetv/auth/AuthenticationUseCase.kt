@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-internal interface AuthenticationUseCase {
+interface AuthenticationUseCase {
 
     suspend fun login(username: String, password: String)
 
@@ -32,9 +32,9 @@ internal interface AuthenticationUseCase {
     }
 }
 
-internal class VRTAuthenticationUseCase(
+class VRTAuthenticationUseCase(
     private val tokenRepo: TokenRepo,
-    private val vrtTokenStore: VRTTokenStore
+    private val dataStore: VRTTokenStore
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
@@ -44,7 +44,7 @@ internal class VRTAuthenticationUseCase(
             is Either.Left ->
                 AuthenticationUseCase.State.Fail(mapAuthenticationFailureToUserMessage(tokenWrapper))
             is Either.Right -> {
-                vrtTokenStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
+                dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
                 AuthenticationUseCase.State.Successful
             }
         }
