@@ -80,8 +80,6 @@ class AuthenticationFragment(private val authenticationUseCase: AuthenticationUs
         lifecycleScope.launch {
             authenticationUseCase.state.collect {
                 when (it) {
-                    AuthenticationUseCase.State.Empty -> {
-                    }
                     is AuthenticationUseCase.State.Fail -> {
                         AlertDialog.Builder(requireContext())
                             .setTitle(R.string.auth_flow_fail_dialog_title)

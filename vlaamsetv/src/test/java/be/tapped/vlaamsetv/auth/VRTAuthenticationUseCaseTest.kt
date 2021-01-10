@@ -6,12 +6,17 @@ import be.tapped.vlaamsetv.prefs.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 
 internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
 
@@ -23,6 +28,19 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
         val username = Arb.string().gen()
         val password = Arb.string().gen()
         `when`("logging in") {
+            and("a blank username and password was provided") {
+
+                sut.login("", "")
+
+                then("it should not make a call") {
+                    coVerify(exactly = 0) { tokenRepo.fetchTokenWrapper("", "") }
+                }
+
+                then("it should update the state") {
+                    sut.state.first() shouldBe AuthenticationUseCase.State.Fail("Je hebt geen email adres ingevoerd")
+                }
+            }
+
             val tokenWrapper = tokenWrapperArb.gen()
             coEvery {
                 tokenRepo.fetchTokenWrapper(username, password)
@@ -36,7 +54,7 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 }
 
                 then("it should have updated the state") {
-                    sut.state.value shouldBe AuthenticationUseCase.State.Successful
+                    sut.state.first() shouldBe AuthenticationUseCase.State.Successful
                 }
             }
 
@@ -48,9 +66,10 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 sut.login(username, password)
 
                 then("it should have updated the state") {
-                    sut.state.value shouldBe AuthenticationUseCase.State.Fail("No JSON response")
+                    sut.state.first() shouldBe AuthenticationUseCase.State.Fail("No JSON response")
                 }
             }
         }
     }
 })
+

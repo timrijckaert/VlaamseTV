@@ -5,9 +5,9 @@ import be.tapped.vlaamsetv.prefs.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.LoginFailure
 import be.tapped.vrtnu.profile.TokenRepo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 interface AuthenticationUseCase {
 
@@ -15,20 +15,11 @@ interface AuthenticationUseCase {
 
     suspend fun skip()
 
-    val state: StateFlow<State>
+    val state: Flow<State>
 
     sealed class State {
-        object Empty : State() {
-            override fun equals(other: Any?): Boolean = false
-        }
-
-        data class Fail(internal val message: String) : State() {
-            override fun equals(other: Any?): Boolean = false
-        }
-
-        object Successful : State() {
-            override fun equals(other: Any?): Boolean = false
-        }
+        data class Fail(internal val message: String) : State()
+        object Successful : State()
     }
 }
 
@@ -38,16 +29,32 @@ class VRTAuthenticationUseCase(
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
+        if (username.isBlank()) {
+            _state.emit(AuthenticationUseCase.State.Fail("Je hebt geen email adres ingevoerd"))
+            return
+        }
+
+        if (password.isBlank()) {
+            _state.emit(AuthenticationUseCase.State.Fail("Je hebt geen wachtwoord ingevoerd"))
+            return
+        }
+
         val tokenWrapper =
             tokenRepo.fetchTokenWrapper(username, password)
-        _state.value = when (tokenWrapper) {
-            is Either.Left ->
-                AuthenticationUseCase.State.Fail(mapAuthenticationFailureToUserMessage(tokenWrapper))
-            is Either.Right -> {
-                dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
-                AuthenticationUseCase.State.Successful
+        _state.emit(
+            when (tokenWrapper) {
+                is Either.Left ->
+                    AuthenticationUseCase.State.Fail(
+                        mapAuthenticationFailureToUserMessage(
+                            tokenWrapper
+                        )
+                    )
+                is Either.Right -> {
+                    dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
+                    AuthenticationUseCase.State.Successful
+                }
             }
-        }
+        )
     }
 
     //TODO
@@ -72,8 +79,7 @@ class VRTAuthenticationUseCase(
     override suspend fun skip() {
     }
 
-    private val _state: MutableStateFlow<AuthenticationUseCase.State> =
-        MutableStateFlow(AuthenticationUseCase.State.Empty)
+    private val _state: MutableSharedFlow<AuthenticationUseCase.State> = MutableSharedFlow(1)
 
-    override val state: StateFlow<AuthenticationUseCase.State> get() = _state.asStateFlow()
+    override val state: Flow<AuthenticationUseCase.State> get() = _state.asSharedFlow()
 }

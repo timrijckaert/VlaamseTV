@@ -18,8 +18,8 @@ import com.agoda.kakao.recycler.KRecyclerView
 import com.agoda.kakao.screen.Screen
 import com.agoda.kakao.screen.Screen.Companion.onScreen
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,7 +67,7 @@ internal class AuthenticationFragmentTest {
 
     @Test
     fun nextFocus() {
-        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Empty })
+        setupVRTAuthenticationFragment()
         onScreen<AuthenticationFragmentScreen> {
             guidedActionList {
                 getSize() shouldBe 2
@@ -135,7 +135,7 @@ internal class AuthenticationFragmentTest {
         setupVRTAuthenticationFragment(
             login = { username, pass ->
                 output = "$username-$pass"
-                AuthenticationUseCase.State.Empty
+                AuthenticationUseCase.State.Successful
             }
         )
         onScreen<AuthenticationFragmentScreen> {
@@ -197,7 +197,6 @@ internal class AuthenticationFragmentTest {
     private fun setupVRTAuthenticationFragment(
         login: ((username: String, password: String) -> AuthenticationUseCase.State)? = null,
         skip: (() -> AuthenticationUseCase.State)? = null,
-        initialState: AuthenticationUseCase.State = AuthenticationUseCase.State.Empty
     ) {
         launchFragmentInContainer(
             themeResId = R.style.Theme_TV_VlaamseTV,
@@ -213,19 +212,19 @@ internal class AuthenticationFragmentTest {
             AuthenticationFragment(object : AuthenticationUseCase {
                 override suspend fun login(username: String, password: String) {
                     if (login != null) {
-                        _state.value = login(username, password)
+                        _state.emit(login(username, password))
                     }
                 }
 
                 override suspend fun skip() {
                     if (skip != null) {
-                        _state.value = skip()
+                        _state.emit(skip())
                     }
                 }
 
-                private val _state: MutableStateFlow<AuthenticationUseCase.State> =
-                    MutableStateFlow(initialState)
-                override val state: StateFlow<AuthenticationUseCase.State> get() = _state
+                private val _state: MutableSharedFlow<AuthenticationUseCase.State> =
+                    MutableSharedFlow(1)
+                override val state: Flow<AuthenticationUseCase.State> get() = _state
             }).also { frag ->
                 frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                     if (viewLifecycleOwner != null) {
