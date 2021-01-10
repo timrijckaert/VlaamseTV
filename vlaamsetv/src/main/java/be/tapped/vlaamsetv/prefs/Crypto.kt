@@ -8,7 +8,7 @@ interface Crypto {
     fun decrypt(inputStream: InputStream): ByteArray
 }
 
-class CryptoImpl constructor(private val cipherProvider: CipherProvider) : Crypto {
+class CryptoImpl(private val cipherProvider: CipherProvider) : Crypto {
 
     override fun encrypt(rawBytes: ByteArray, outputStream: OutputStream) {
         val cipher = cipherProvider.encryptCipher
