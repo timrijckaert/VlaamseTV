@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.tapped.vlaamsetv.App
 import be.tapped.vlaamsetv.gen
 import be.tapped.vlaamsetv.tokenWrapperArb
+import be.tapped.vrtnu.profile.AccessToken
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -23,10 +24,11 @@ internal class EncryptedDataStoreTest {
             )
         )
 
-    private val encryptedDataStore = EncryptedDataStore(
-        ApplicationProvider.getApplicationContext(),
-        cryptoImpl
-    )
+    private val encryptedDataStore
+        get() = EncryptedDataStore(
+            ApplicationProvider.getApplicationContext(),
+            cryptoImpl
+        )
 
     @Test
     fun nothingInsideTheDataStoreShouldReturnNull() {
@@ -39,6 +41,17 @@ internal class EncryptedDataStoreTest {
     fun savingAVRTTokenWrapperShouldBeRetrievable() {
         runBlocking {
             val tokenWrapper = tokenWrapperArb.gen()
+            encryptedDataStore.saveTokenWrapper(tokenWrapper)
+            encryptedDataStore.tokenWrapper() shouldBe tokenWrapper
+        }
+    }
+
+    @Test
+    fun savingAVRTTokenThatFailsInRealLife() {
+        runBlocking {
+            val tokenWrapper = tokenWrapperArb.gen()
+                .copy(accessToken = AccessToken("eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3Blct"))
+
             encryptedDataStore.saveTokenWrapper(tokenWrapper)
             encryptedDataStore.tokenWrapper() shouldBe tokenWrapper
         }

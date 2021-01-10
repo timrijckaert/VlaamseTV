@@ -19,33 +19,36 @@ interface VRTTokenStore {
     suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
 }
 
+class TokenWrapperProtoSerializer(
+    private val crypto: Crypto,
+    override val defaultValue: TokenWrapperProto = TokenWrapperProto()
+) :
+    Serializer<TokenWrapperProto> {
+    override fun readFrom(input: InputStream): TokenWrapperProto {
+        return if (input.available() != 0) {
+            try {
+                TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
+            } catch (exception: IOException) {
+                throw CorruptionException("Cannot read proto", exception)
+            }
+        } else {
+            TokenWrapperProto()
+        }
+    }
+
+    override fun writeTo(t: TokenWrapperProto, output: OutputStream) {
+        crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
+    }
+}
+
 class EncryptedDataStore(private val context: Context, private val crypto: Crypto) :
     VRTTokenStore {
 
     private val vrtNuDataStore by lazy {
         context.createDataStore(
             fileName = "vrtnu.pb",
-            serializer = vrtNuTokenWrapperSerializer
+            serializer = TokenWrapperProtoSerializer(crypto)
         )
-    }
-
-    private val vrtNuTokenWrapperSerializer by lazy {
-        object : Serializer<TokenWrapperProto> {
-            override val defaultValue: TokenWrapperProto = TokenWrapperProto()
-
-            override fun readFrom(input: InputStream): TokenWrapperProto {
-                try {
-                    return TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
-                } catch (exception: IOException) {
-                    throw CorruptionException("Cannot read proto.", exception)
-                }
-            }
-
-            override fun writeTo(
-                t: TokenWrapperProto,
-                output: OutputStream
-            ) = crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
-        }
     }
 
     override suspend fun tokenWrapper(): TokenWrapper? =

@@ -8,12 +8,12 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 
-public interface CipherProvider {
-    public val encryptCipher: Cipher
-    public fun decryptCipher(iv: ByteArray): Cipher
+interface CipherProvider {
+    val encryptCipher: Cipher
+    fun decryptCipher(iv: ByteArray): Cipher
 }
 
-internal class AesCipherProvider(
+class AesCipherProvider(
     private val keyName: String,
     private val keyStore: KeyStore,
     private val keyStoreName: String

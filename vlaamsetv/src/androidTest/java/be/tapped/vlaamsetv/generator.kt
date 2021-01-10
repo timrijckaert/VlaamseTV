@@ -11,9 +11,9 @@ import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 
-public val tokenWrapperArb: Arb<TokenWrapper> = arbitrary {
-    val accessToken = AccessToken(Arb.string().gen())
-    val refreshToken = RefreshToken(Arb.string().gen())
+val tokenWrapperArb: Arb<TokenWrapper> = arbitrary {
+    val accessToken = AccessToken(Arb.string(minSize = 1).gen())
+    val refreshToken = RefreshToken(Arb.string(minSize = 1).gen())
     val expiry = Expiry(Arb.long().gen())
     TokenWrapper(
         accessToken,
@@ -22,7 +22,7 @@ public val tokenWrapperArb: Arb<TokenWrapper> = arbitrary {
     )
 }
 
-public fun <T> Arb<T>.genList(amount: Int = 5, rs: RandomSource = RandomSource.Default): List<T> =
+fun <T> Arb<T>.genList(amount: Int = 5, rs: RandomSource = RandomSource.Default): List<T> =
     take(amount, rs).toList()
 
-public fun <T> Arb<T>.gen(rs: RandomSource = RandomSource.Default): T = genList(1, rs).first()
+fun <T> Arb<T>.gen(rs: RandomSource = RandomSource.Default): T = genList(1, rs).first()

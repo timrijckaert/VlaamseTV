@@ -3,12 +3,12 @@ package be.tapped.vlaamsetv.prefs
 import java.io.InputStream
 import java.io.OutputStream
 
-public interface Crypto {
-    public fun encrypt(rawBytes: ByteArray, outputStream: OutputStream)
-    public fun decrypt(inputStream: InputStream): ByteArray
+interface Crypto {
+    fun encrypt(rawBytes: ByteArray, outputStream: OutputStream)
+    fun decrypt(inputStream: InputStream): ByteArray
 }
 
-internal class CryptoImpl constructor(private val cipherProvider: CipherProvider) : Crypto {
+class CryptoImpl constructor(private val cipherProvider: CipherProvider) : Crypto {
 
     override fun encrypt(rawBytes: ByteArray, outputStream: OutputStream) {
         val cipher = cipherProvider.encryptCipher
