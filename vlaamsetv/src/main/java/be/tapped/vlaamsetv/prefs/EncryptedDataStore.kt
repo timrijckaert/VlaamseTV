@@ -19,6 +19,8 @@ interface VRTTokenStore {
     suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
 }
 
+// TODO disabled encryption because of a bug with long Strings
+// https://stackoverflow.com/questions/65653650/androidx-datastore-aes-cbc-pkcs7-javax-crypto-illegalblocksizeexception
 class TokenWrapperProtoSerializer(
     private val crypto: Crypto,
     override val defaultValue: TokenWrapperProto = TokenWrapperProto()
@@ -27,7 +29,8 @@ class TokenWrapperProtoSerializer(
     override fun readFrom(input: InputStream): TokenWrapperProto {
         return if (input.available() != 0) {
             try {
-                TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
+                //TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
+                TokenWrapperProto.ADAPTER.decode(input)
             } catch (exception: IOException) {
                 throw CorruptionException("Cannot read proto", exception)
             }
@@ -37,7 +40,8 @@ class TokenWrapperProtoSerializer(
     }
 
     override fun writeTo(t: TokenWrapperProto, output: OutputStream) {
-        crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
+        //crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
+        TokenWrapperProto.ADAPTER.encode(output, t)
     }
 }
 

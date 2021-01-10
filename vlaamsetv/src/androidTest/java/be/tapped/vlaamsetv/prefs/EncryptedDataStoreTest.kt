@@ -47,7 +47,7 @@ internal class EncryptedDataStoreTest {
     }
 
     @Test
-    fun savingAVRTTokenThatFailsInRealLife() {
+    fun savingALongTokenThatFailsWhenDecryptingWithAlgorithm_AESCBCPKCS7() {
         runBlocking {
             val tokenWrapper = tokenWrapperArb.gen()
                 .copy(accessToken = AccessToken("eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3Blct"))
