@@ -46,12 +46,11 @@ class VRTAuthenticationUseCase(
             when (tokenWrapper) {
                 is Either.Left ->
                     AuthenticationUseCase.State.Fail(
-                        mapAuthenticationFailureToUserMessage(
-                            tokenWrapper
-                        )
+                        mapAuthenticationFailureToUserMessage(tokenWrapper)
                     )
                 is Either.Right -> {
                     dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
+                    authenticationNavigator.navigateNext()
                     AuthenticationUseCase.State.Successful
                 }
             }

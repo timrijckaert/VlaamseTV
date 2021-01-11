@@ -5,50 +5,60 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
-class AuthenticationNavigator(
-    private val authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>
-) {
+interface AuthenticationNavigator {
     sealed class Screen {
         data class VRT(val secondaryButtonText: Int) : Screen()
         data class VTM(val secondaryButtonText: Int) : Screen()
         object End : Screen()
     }
 
-    private val _state: MutableSharedFlow<IndexedScreen> = MutableSharedFlow(replay = 1)
-    val state: Flow<Screen> get() = _state.map { it.second }
+    val state: Flow<Screen>
 
-    private val current get() = _state.replayCache.first()
+    suspend fun navigateNext()
 
-    init {
-        check(authenticationScreenConfig.isNotEmpty()) { "An empty authentication screen configuration was provided!" }
-        _state.tryEmit(0 to authenticationScreenConfig.first().calculateNextScreen(1))
-    }
+    companion object {
+        internal fun create(authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>): AuthenticationNavigator {
+            return object : AuthenticationNavigator {
+                private val _state: MutableSharedFlow<IndexedScreen> = MutableSharedFlow(replay = 1)
+                override val state: Flow<Screen> get() = _state.map { it.second }
 
-    suspend fun navigateNext() {
-        val (index, page) = current
+                private val current get() = _state.replayCache.first()
 
-        if (page == Screen.End) {
-            _state.emit(current)
-            return
-        }
+                init {
+                    check(authenticationScreenConfig.isNotEmpty()) { "An empty authentication screen configuration was provided!" }
+                    _state.tryEmit(0 to authenticationScreenConfig.first().calculateNextScreen(1))
+                }
 
-        val newIndex = index + 1
+                override suspend fun navigateNext() {
+                    val (index, page) = current
 
-        val newAuthenticationPage = if (newIndex >= authenticationScreenConfig.size) {
-            Screen.End
-        } else {
-            authenticationScreenConfig[newIndex].calculateNextScreen(newIndex)
-        }
-        _state.emit(newIndex to newAuthenticationPage)
-    }
+                    if (page == Screen.End) {
+                        _state.emit(current)
+                        return
+                    }
 
-    private fun AuthenticationNavigationConfiguration.calculateNextScreen(nextIndex: Int): Screen {
-        val isLastItem = nextIndex >= authenticationScreenConfig.size
-        val secondaryButtonText =
-            if (isLastItem) R.string.auth_flow_finish else R.string.auth_flow_skip
-        return when (this) {
-            AuthenticationNavigationConfiguration.VRT -> Screen.VRT(secondaryButtonText)
-            AuthenticationNavigationConfiguration.VTM -> Screen.VTM(secondaryButtonText)
+                    val newIndex = index + 1
+
+                    val newAuthenticationPage = if (newIndex >= authenticationScreenConfig.size) {
+                        Screen.End
+                    } else {
+                        authenticationScreenConfig[newIndex].calculateNextScreen(newIndex)
+                    }
+                    _state.emit(newIndex to newAuthenticationPage)
+                }
+
+                private fun AuthenticationNavigationConfiguration.calculateNextScreen(nextIndex: Int): Screen {
+                    val isLastItem = nextIndex >= authenticationScreenConfig.size
+                    val secondaryButtonText =
+                        if (isLastItem) R.string.auth_flow_finish else R.string.auth_flow_skip
+                    return when (this) {
+                        AuthenticationNavigationConfiguration.VRT ->
+                            Screen.VRT(secondaryButtonText)
+                        AuthenticationNavigationConfiguration.VTM ->
+                            Screen.VTM(secondaryButtonText)
+                    }
+                }
+            }
         }
     }
 }

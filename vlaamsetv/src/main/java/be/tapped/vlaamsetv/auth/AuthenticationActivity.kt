@@ -29,7 +29,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
     private val navigator by lazy { Navigator(navHostFragment.navController) }
 
     private val navArgs by navArgs<AuthenticationActivityArgs>()
-    private val authenticationNavigator by lazy { AuthenticationNavigator(navArgs.config) }
+    private val authenticationNavigator by lazy { AuthenticationNavigator.create(navArgs.config) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

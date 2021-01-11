@@ -14,12 +14,13 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 
-internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
+class VRTAuthenticationUseCaseTest : BehaviorSpec({
 
     given("A ${VRTAuthenticationUseCase::class.simpleName}") {
         val tokenRepo = mockk<TokenRepo>()
         val vrtTokenStore = mockk<VRTTokenStore>()
-        val sut = VRTAuthenticationUseCase(tokenRepo, vrtTokenStore,)
+        val authenticationNavigator = mockk<AuthenticationNavigator>()
+        val sut = VRTAuthenticationUseCase(tokenRepo, vrtTokenStore, authenticationNavigator)
 
         val username = Arb.string().gen()
         val password = Arb.string().gen()
@@ -49,6 +50,10 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
                     coVerify { vrtTokenStore.saveTokenWrapper(tokenWrapper) }
                 }
 
+                then("it should have navigated to the next screen") {
+                    coVerify { authenticationNavigator.navigateNext() }
+                }
+
                 then("it should have updated the state") {
                     sut.state.first() shouldBe AuthenticationUseCase.State.Successful
                 }
@@ -64,6 +69,14 @@ internal class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 then("it should have updated the state") {
                     sut.state.first() shouldBe AuthenticationUseCase.State.Fail("No JSON response")
                 }
+            }
+        }
+
+        `when`("skipping") {
+            sut.skip()
+
+            then("it should navigate to the next screen") {
+                coVerify { authenticationNavigator.navigateNext() }
             }
         }
     }

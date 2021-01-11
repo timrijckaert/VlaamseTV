@@ -14,6 +14,7 @@ import androidx.leanback.widget.GuidedAction
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import be.tapped.vlaamsetv.R
+import be.tapped.vlaamsetv.exhaustive
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -87,10 +88,12 @@ class VRTAuthenticationFragment(private val authenticationUseCase: Authenticatio
                             .setMessage(it.message)
                             .setNeutralButton(android.R.string.ok) { _, _ -> }
                             .show()
+                        Unit
                     }
                     AuthenticationUseCase.State.Successful -> {
+
                     }
-                }
+                }.exhaustive
             }
         }
     }
