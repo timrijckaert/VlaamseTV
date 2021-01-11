@@ -25,7 +25,8 @@ interface AuthenticationUseCase {
 
 class VRTAuthenticationUseCase(
     private val tokenRepo: TokenRepo,
-    private val dataStore: VRTTokenStore
+    private val dataStore: VRTTokenStore,
+    private val authenticationNavigator: AuthenticationNavigator
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
@@ -77,6 +78,7 @@ class VRTAuthenticationUseCase(
         }
 
     override suspend fun skip() {
+        authenticationNavigator.navigateNext()
     }
 
     private val _state: MutableSharedFlow<AuthenticationUseCase.State> = MutableSharedFlow(1)

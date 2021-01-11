@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tv_graph"
-    app:startDestination="@id/authentication_flow_tv">
+    app:startDestination="@id/mainFragment">
 
-    <include app:graph="@navigation/authentication_flow_tv" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="be.tapped.vlaamsetv.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_authentication_flow_tv"
+            app:destination="@id/authenticationActivity" />
+    </fragment>
+
+    <activity
+        android:id="@+id/authenticationActivity"
+        android:name="be.tapped.vlaamsetv.auth.AuthenticationActivity"
+        android:label="AuthenticationActivity" >
+        <argument
+            android:name="config"
+            app:argType="be.tapped.vlaamsetv.auth.AuthenticationNavigationConfiguration[]" />
+    </activity>
+
 </navigation>

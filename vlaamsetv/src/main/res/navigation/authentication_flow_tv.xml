@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/authentication_flow_tv"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/authenticationCoordinatorFragment">
+    android:id="@+id/authentication_flow_tv"
+    app:startDestination="@id/authenticationFragment">
 
     <fragment
         android:id="@+id/authenticationFragment"
-        tools:layout="@layout/lb_guidedstep_fragment"
         android:name="be.tapped.vlaamsetv.auth.AuthenticationFragment"
-        android:label="AuthenticationFragment" >
+        android:label="AuthenticationFragment" />
+
+    <fragment
+        android:id="@+id/vrtAuthenticationFragment"
+        android:name="be.tapped.vlaamsetv.auth.VRTAuthenticationFragment"
+        android:label="AuthenticationFragment"
+        tools:layout="@layout/lb_guidedstep_fragment">
         <argument
             android:name="config"
-            app:argType="be.tapped.vlaamsetv.auth.AuthenticationFragment$Configuration" />
+            app:argType="be.tapped.vlaamsetv.auth.VRTAuthenticationFragment$Configuration" />
     </fragment>
-    <fragment
-        android:id="@+id/authenticationCoordinatorFragment"
-        android:name="be.tapped.vlaamsetv.auth.AuthenticationCoordinatorFragment"
-        android:label="AuthenticationCoordinatorFragment" >
-        <action
-            android:id="@+id/action_authenticationCoordinatorFragment_to_authenticationFragment"
-            app:destination="@id/authenticationFragment" />
-    </fragment>
+
+    <action
+        android:id="@+id/action_to_vrt_authentication_fragment"
+        app:destination="@id/vrtAuthenticationFragment" />
+
 </navigation>

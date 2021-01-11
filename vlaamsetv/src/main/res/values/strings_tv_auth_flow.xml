@@ -5,6 +5,7 @@
     <string name="auth_flow_vrtnu_step_breadcrumb">VRT NU</string>
 
     <string name="auth_flow_skip">Overslaan</string>
+    <string name="auth_flow_finish">Klaar</string>
     <string name="auth_flow_login">Aanmelden</string>
 
     <string name="auth_flow_email">Email</string>

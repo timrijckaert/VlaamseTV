@@ -29,6 +29,10 @@
         </activity>
 
         <activity
+            android:theme="@style/Theme.TV.VlaamseTV"
+            android:name=".auth.AuthenticationActivity"/>
+
+        <activity
             android:name=".TvMainActivity"
             android:theme="@style/Theme.TV.VlaamseTV"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|navigation"
