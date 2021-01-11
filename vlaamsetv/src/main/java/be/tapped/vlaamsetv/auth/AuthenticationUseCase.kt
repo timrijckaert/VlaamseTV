@@ -32,15 +32,16 @@ class VRTAuthenticationUseCase(
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
-        if (username.isBlank()) {
-            _state.emit(AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_email)))
-            return
-        }
+        if (checkPreconditions(username, password)) return
 
-        if (password.isBlank()) {
-            _state.emit(AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_password)))
-            return
-        }
+        // Simon 🪄🧙🏻
+        // Combine fetchXVRTToken + fetchTokenWrapper
+        // Run async
+        // Wait for both
+        //// Only if both are true
+        //// Emit error on first occurrence
+        // 1. tokenRepo.fetchXVRTToken(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.VRTToken>
+        // 2. tokenRepo.fetchTokenWrapper(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token>
 
         val tokenWrapper =
             tokenRepo.fetchTokenWrapper(username, password)
@@ -57,6 +58,22 @@ class VRTAuthenticationUseCase(
                 }
             }
         )
+    }
+
+    private suspend fun checkPreconditions(
+        username: String,
+        password: String
+    ): Boolean {
+        if (username.isBlank()) {
+            _state.emit(AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_email)))
+            return true
+        }
+
+        if (password.isBlank()) {
+            _state.emit(AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_password)))
+            return true
+        }
+        return false
     }
 
     override suspend fun skip() {
