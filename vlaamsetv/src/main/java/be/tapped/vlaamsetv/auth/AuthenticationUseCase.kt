@@ -1,9 +1,10 @@
 package be.tapped.vlaamsetv.auth
 
 import arrow.core.Either
+import be.tapped.vlaamsetv.ErrorMessage
+import be.tapped.vlaamsetv.ErrorMessageConverter
+import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.prefs.VRTTokenStore
-import be.tapped.vrtnu.ApiResponse
-import be.tapped.vrtnu.profile.LoginFailure
 import be.tapped.vrtnu.profile.TokenRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +19,7 @@ interface AuthenticationUseCase {
     val state: Flow<State>
 
     sealed class State {
-        data class Fail(internal val message: String) : State()
+        data class Fail(internal val errorMessage: ErrorMessage) : State()
         object Successful : State()
     }
 }
@@ -26,17 +27,18 @@ interface AuthenticationUseCase {
 class VRTAuthenticationUseCase(
     private val tokenRepo: TokenRepo,
     private val dataStore: VRTTokenStore,
-    private val authenticationNavigator: AuthenticationNavigator
+    private val authenticationNavigator: AuthenticationNavigator,
+    private val errorMessageConverter: ErrorMessageConverter
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
         if (username.isBlank()) {
-            _state.emit(AuthenticationUseCase.State.Fail("Je hebt geen email adres ingevoerd"))
+            _state.emit(AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_email)))
             return
         }
 
         if (password.isBlank()) {
-            _state.emit(AuthenticationUseCase.State.Fail("Je hebt geen wachtwoord ingevoerd"))
+            _state.emit(AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_password)))
             return
         }
 
@@ -44,10 +46,10 @@ class VRTAuthenticationUseCase(
             tokenRepo.fetchTokenWrapper(username, password)
         _state.emit(
             when (tokenWrapper) {
-                is Either.Left ->
-                    AuthenticationUseCase.State.Fail(
-                        mapAuthenticationFailureToUserMessage(tokenWrapper)
-                    )
+                is Either.Left -> {
+                    val errorMessage = errorMessageConverter.mapToHumanReadableError(tokenWrapper.a)
+                    AuthenticationUseCase.State.Fail(errorMessage)
+                }
                 is Either.Right -> {
                     dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
                     authenticationNavigator.navigateNext()
@@ -56,25 +58,6 @@ class VRTAuthenticationUseCase(
             }
         )
     }
-
-    //TODO
-    // maybe this needs to be easier in that sense that a user does not really care it just went wrong for him.
-    // Write these errors to a file for reporting reasons
-    private fun mapAuthenticationFailureToUserMessage(tokenWrapper: Either.Left<ApiResponse.Failure>) =
-        when (val failure = tokenWrapper.a) {
-            is ApiResponse.Failure.NetworkFailure -> "Network error: ${failure.responseCode}"
-            is ApiResponse.Failure.JsonParsingException -> "JSON parsing exception: ${failure.throwable.message}"
-            ApiResponse.Failure.EmptyJson -> "No JSON response"
-            is ApiResponse.Failure.Authentication.FailedToLogin -> when (failure.loginResponseFailure.loginFailure) {
-                LoginFailure.LoginFailure.INVALID_CREDENTIALS -> "Geen geldige logingegevens of wachtwoord"
-                LoginFailure.LoginFailure.MISSING_LOGIN_ID -> "Je hebt geen email adres ingevoerd"
-                LoginFailure.LoginFailure.MISSING_PASSWORD -> "Je hebt geen wachtwoord ingevoerd"
-                LoginFailure.LoginFailure.UNKNOWN -> "Geen idee wat er mis ging bij het aanmelden."
-            }
-            is ApiResponse.Failure.Authentication.MissingCookieValues -> "Missing cookies ${failure.cookieValues}"
-            is ApiResponse.Failure.Content.SearchQuery -> TODO()
-            else -> "Unknown error"
-        }
 
     override suspend fun skip() {
         authenticationNavigator.navigateNext()

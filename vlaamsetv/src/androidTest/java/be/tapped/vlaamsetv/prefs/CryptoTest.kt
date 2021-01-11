@@ -3,10 +3,9 @@ package be.tapped.vlaamsetv.prefs
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.tapped.vlaamsetv.auth.TokenWrapperProto
 import be.tapped.vlaamsetv.gen
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.ByteArrayInputStream
@@ -29,7 +28,7 @@ internal class CryptoTest {
         crypto.encrypt("Hello World".toByteArray(), outputStream)
         val string = String(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
 
-        assertThat(string, `is`("Hello World"))
+        string shouldBe "Hello World"
     }
 
     @Test
@@ -41,10 +40,7 @@ internal class CryptoTest {
         )
         val string = String(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
 
-        assertThat(
-            string,
-            `is`("eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW")
-        )
+        string shouldBe "eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW"
     }
 
     @Test
@@ -59,6 +55,7 @@ internal class CryptoTest {
 
         val tokenWrapperProto =
             TokenWrapperProto.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
-        assertThat(tokenWrapper, `is`(tokenWrapperProto))
+        tokenWrapper shouldBe tokenWrapperProto
     }
 }
+

@@ -8,6 +8,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.R
 import com.agoda.kakao.check.KCheckBox
 import com.agoda.kakao.dialog.KAlertDialog
@@ -113,7 +114,11 @@ internal class LoginFragmentTest {
 
     @Test
     internal fun authenticationFailedShouldShowDialog() {
-        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Fail("Failed to login") })
+        setupVRTAuthenticationFragment(login = { _, _ ->
+            AuthenticationUseCase.State.Fail(
+                ErrorMessage(R.string.failure_vrtnu_network, listOf(400))
+            )
+        })
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 firstChild<LoginFragmentScreen.GuidedActionItem> {
@@ -124,7 +129,7 @@ internal class LoginFragmentTest {
             alertDialog {
                 isDisplayed()
                 title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Failed to login")
+                message.hasText("Er ging iets mis met de communicatie naar de VRT NU backend. Status code: [400]")
             }
         }
     }
@@ -165,7 +170,11 @@ internal class LoginFragmentTest {
 
     @Test
     fun enteringWrongCredentialsTwiceShouldRetriggerAlertDialog() {
-        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Fail("Failed to login") })
+        setupVRTAuthenticationFragment(login = { _, _ ->
+            AuthenticationUseCase.State.Fail(
+                ErrorMessage(R.string.failure_vrtnu_network, listOf(400))
+            )
+        })
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 firstChild<LoginFragmentScreen.GuidedActionItem> {
@@ -176,7 +185,7 @@ internal class LoginFragmentTest {
             alertDialog {
                 isDisplayed()
                 title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Failed to login")
+                message.hasText("Er ging iets mis met de communicatie naar de VRT NU backend. Status code: [400]")
                 neutralButton.click()
             }
 
@@ -189,7 +198,7 @@ internal class LoginFragmentTest {
             alertDialog {
                 isDisplayed()
                 title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Failed to login")
+                message.hasText("Er ging iets mis met de communicatie naar de VRT NU backend. Status code: [400]")
             }
         }
     }

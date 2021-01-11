@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Authentication -->
+    <string name="failure_vrtnu_network">Er ging iets mis met de communicatie naar de VRT NU backend. Status code: %1$s</string>
+    <string name="failure_vrtnu_json_parsing">VRT NU antwoordde iets raar. \nError code: %1$s \nError: %1$s \nStatus code: %1$s</string>
+    <string name="failure_vrtnu_empty_json">VRT NU antwoorrde niet.</string>
+    <string name="failure_invalid_credentials">Je email adres of wachtwoord klopt niet.</string>
+    <string name="failure_missing_login_id">Je hebt geen of een ongeldig email adres opgegeven.</string>
+    <string name="failure_incorrect_pass">Je wachtwoord klopt niet.</string>
+    <string name="failure_unknown">Een onbekende fout trad op.\nError code: %1$s\nStatus code: %1$s\nStatus Reden: %1$s</string>
+    <string name="failure_missing_cookies">1 of meerdere Cookies konden niet worden teruggevonden. %1$s</string>
+
+    <!-- Search -->
+    <string name="failure_invalid_search_query">%1$s</string>
+</resources>

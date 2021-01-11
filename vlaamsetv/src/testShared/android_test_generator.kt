@@ -6,10 +6,7 @@ import be.tapped.vrtnu.profile.RefreshToken
 import be.tapped.vrtnu.profile.TokenWrapper
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.arbitrary
-import io.kotest.property.arbitrary.long
-import io.kotest.property.arbitrary.string
-import io.kotest.property.arbitrary.take
+import io.kotest.property.arbitrary.*
 
 val tokenWrapperArb: Arb<TokenWrapper> = arbitrary {
     val accessToken = AccessToken(Arb.string(minSize = 1).gen())
@@ -19,6 +16,16 @@ val tokenWrapperArb: Arb<TokenWrapper> = arbitrary {
         accessToken,
         refreshToken,
         expiry,
+    )
+}
+
+val errorMessageArb: Arb<ErrorMessage> = arbitrary {
+    val error = Arb.int().gen()
+    val extras = Arb.string().genList()
+
+    ErrorMessage(
+        error,
+        extras
     )
 }
 

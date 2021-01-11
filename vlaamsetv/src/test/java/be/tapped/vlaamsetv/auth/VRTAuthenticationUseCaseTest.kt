@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
+import be.tapped.vlaamsetv.*
 import be.tapped.vlaamsetv.prefs.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
@@ -11,6 +12,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 
@@ -20,7 +22,13 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
         val tokenRepo = mockk<TokenRepo>()
         val vrtTokenStore = mockk<VRTTokenStore>()
         val authenticationNavigator = mockk<AuthenticationNavigator>()
-        val sut = VRTAuthenticationUseCase(tokenRepo, vrtTokenStore, authenticationNavigator)
+        val errorMessageConverter = mockk<ErrorMessageConverter>()
+        val sut = VRTAuthenticationUseCase(
+            tokenRepo,
+            vrtTokenStore,
+            authenticationNavigator,
+            errorMessageConverter
+        )
 
         val username = Arb.string().gen()
         val password = Arb.string().gen()
@@ -34,7 +42,7 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 }
 
                 then("it should update the state") {
-                    sut.state.first() shouldBe AuthenticationUseCase.State.Fail("Je hebt geen email adres ingevoerd")
+                    sut.state.first() shouldBe AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_email))
                 }
             }
 
@@ -60,6 +68,8 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
             }
 
             and("it was not successful") {
+                val errorMessage = errorMessageArb.gen()
+                every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson) } returns errorMessage
                 coEvery {
                     tokenRepo.fetchTokenWrapper(username, password)
                 } returns ApiResponse.Failure.EmptyJson.left()
@@ -67,7 +77,7 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 sut.login(username, password)
 
                 then("it should have updated the state") {
-                    sut.state.first() shouldBe AuthenticationUseCase.State.Fail("No JSON response")
+                    sut.state.first() shouldBe AuthenticationUseCase.State.Fail(errorMessage)
                 }
             }
         }

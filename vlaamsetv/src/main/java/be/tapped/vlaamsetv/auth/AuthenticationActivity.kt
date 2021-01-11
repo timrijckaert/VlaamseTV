@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.App
+import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.CryptoImpl
 import be.tapped.vlaamsetv.prefs.EncryptedDataStore
 import be.tapped.vrtnu.profile.ProfileRepo
-import be.tapped.vrtnu.profile.TokenRepo
 import kotlinx.parcelize.Parcelize
 
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
@@ -33,11 +33,6 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
-            private val profileRepo: TokenRepo get() = ProfileRepo()
-            private val dataStore: EncryptedDataStore = EncryptedDataStore(
-                this@AuthenticationActivity,
-                CryptoImpl(AesCipherProvider("VlaamseTvKey", app.keyStore, App.KEYSTORE_NAME))
-            )
 
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
                 when (className) {
@@ -48,9 +43,19 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                     VRTLoginFragment::class.java.name ->
                         VRTLoginFragment(
                             VRTAuthenticationUseCase(
-                                profileRepo,
-                                dataStore,
-                                authenticationNavigator
+                                ProfileRepo(),
+                                EncryptedDataStore(
+                                    this@AuthenticationActivity,
+                                    CryptoImpl(
+                                        AesCipherProvider(
+                                            "VlaamseTvKey",
+                                            app.keyStore,
+                                            App.KEYSTORE_NAME
+                                        )
+                                    )
+                                ),
+                                authenticationNavigator,
+                                ErrorMessageConverter()
                             )
                         )
                     VTMLoginFragment::class.java.name ->

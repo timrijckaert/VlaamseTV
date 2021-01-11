@@ -12,7 +12,17 @@ android {
         applicationId Versions.packageName
     }
     sourceSets {
-        main.java.srcDirs += "$buildDir/generated/source/wire"
+        main {
+            java.srcDirs += "$buildDir/generated/source/wire"
+        }
+
+        test {
+            java.srcDirs += "$projectDir/src/testShared"
+        }
+
+        androidTest {
+            java.srcDirs += "$projectDir/src/testShared"
+        }
     }
 }
 
