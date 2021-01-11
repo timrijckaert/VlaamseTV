@@ -3,7 +3,7 @@ package be.tapped.vlaamsetv.auth
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.VRTTokenStore
+import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 import io.kotest.core.spec.style.BehaviorSpec
@@ -22,7 +22,7 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
         val tokenRepo = mockk<TokenRepo>()
         val vrtTokenStore = mockk<VRTTokenStore>()
         val authenticationNavigator = mockk<AuthenticationNavigator>()
-        val errorMessageConverter = mockk<ErrorMessageConverter>()
+        val errorMessageConverter = mockk<VRTErrorMessageConverter>()
         val sut = VRTAuthenticationUseCase(
             tokenRepo,
             vrtTokenStore,

@@ -1,17 +1,15 @@
 syntax = "proto3";
 
-option java_package = "be.tapped.vlaamsetv.prefs.vrt";
+option java_package = "be.tapped.vlaamsetv.auth.vtm";
 option java_multiple_files = true;
-
-message TokenWrapperProto {
-  string access_token = 1;
-  string refresh_token = 2;
-  int64 expiry = 3;
-}
 
 // We only use this as a back-up.
 // It is preferred to use the tokens as much as possible
-message VRTNUCredentials {
+message VTMGOCredentials {
   string user_name = 1;
   string password = 2;
+}
+
+message JWT {
+  string token = 1;
 }
