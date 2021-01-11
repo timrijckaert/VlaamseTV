@@ -10,12 +10,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onCreate(savedInstanceState)
 
         //TODO check initial navigation
-        val navigator = Navigator(findNavController())
-        navigator.navigateToAuthenticationFlow(
-            arrayOf(
-                AuthenticationNavigationConfiguration.VRT,
-                //AuthenticationNavigationConfiguration.VTM
+        if (savedInstanceState == null) {
+            val navigator = Navigator(findNavController())
+            navigator.navigateToAuthenticationFlow(
+                arrayOf(
+                    AuthenticationNavigationConfiguration.VRT,
+                    //AuthenticationNavigationConfiguration.VTM
+                )
             )
-        )
+        }
     }
 }

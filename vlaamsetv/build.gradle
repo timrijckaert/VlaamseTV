@@ -53,6 +53,7 @@ dependencies {
     androidTestImplementation Testing.kotestProperty
     androidTestUtil Testing.testOrchestrator
     debugImplementation Testing.fragmentTest
+    debugImplementation Testing.leakCanary
 }
 
 wire {

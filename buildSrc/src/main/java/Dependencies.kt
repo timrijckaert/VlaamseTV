@@ -98,4 +98,5 @@ object Testing {
     const val kakao = "com.agoda.kakao:kakao:2.4.0"
 
     const val testNavigation = "androidx.navigation:navigation-testing:$navVersion"
+    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.6"
 }
