@@ -23,7 +23,11 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
 
     override suspend fun jwt(): JWT? =
         jwtTokenDataStore.data.firstOrNull()?.let {
-            JWT(it.token)
+            if (it.token.isNotBlank()) {
+                JWT(it.token)
+            } else {
+                null
+            }
         }
 
     override suspend fun saveJWT(jwt: ApiResponse.Success.Authentication.Token) {
