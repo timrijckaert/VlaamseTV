@@ -2,9 +2,11 @@ package be.tapped.vlaamsetv.auth
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.App
@@ -14,6 +16,7 @@ import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.CryptoImpl
 import be.tapped.vlaamsetv.prefs.EncryptedDataStore
 import be.tapped.vrtnu.profile.ProfileRepo
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
@@ -32,8 +35,17 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportFragmentManager.fragmentFactory = object : FragmentFactory() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    lifecycleScope.launch {
+                        authenticationNavigator.navigateBack()
+                    }
+                }
+            })
 
+        supportFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
                 when (className) {
                     AuthenticationFragment::class.java.name ->

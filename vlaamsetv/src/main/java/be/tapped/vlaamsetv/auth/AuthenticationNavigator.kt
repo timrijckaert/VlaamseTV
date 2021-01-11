@@ -17,6 +17,8 @@ interface AuthenticationNavigator {
 
     suspend fun navigateNext()
 
+    suspend fun navigateBack()
+
     fun navigateToVRTLoginFlow(config: DefaultLoginConfiguration)
 
     fun navigateToVTMLoginFlow(config: DefaultLoginConfiguration)
@@ -32,9 +34,12 @@ interface AuthenticationNavigator {
 
                 private val current get() = _state.replayCache.first()
 
+                private val firstPage
+                    get() = 0 to authenticationScreenConfig.first().calculateNextScreen(1)
+
                 init {
                     check(authenticationScreenConfig.isNotEmpty()) { "An empty authentication screen configuration was provided!" }
-                    _state.tryEmit(0 to authenticationScreenConfig.first().calculateNextScreen(1))
+                    _state.tryEmit(firstPage)
                 }
 
                 override fun navigateToVRTLoginFlow(config: DefaultLoginConfiguration) {
@@ -52,6 +57,14 @@ interface AuthenticationNavigator {
                 }
 
                 override suspend fun navigateNext() {
+                    navigate { it + 1 }
+                }
+
+                override suspend fun navigateBack() {
+                    navigate { it - 1 }
+                }
+
+                private suspend fun navigate(indexFunc: (Int) -> Int) {
                     val (index, page) = current
 
                     if (page == Screen.End) {
@@ -59,13 +72,14 @@ interface AuthenticationNavigator {
                         return
                     }
 
-                    val newIndex = index + 1
+                    val newIndex = indexFunc(index)
 
-                    val newAuthenticationPage = if (newIndex >= authenticationScreenConfig.size) {
-                        Screen.End
-                    } else {
-                        authenticationScreenConfig[newIndex].calculateNextScreen(newIndex)
-                    }
+                    val newAuthenticationPage =
+                        if (newIndex < 0 || newIndex >= authenticationScreenConfig.size) {
+                            Screen.End
+                        } else {
+                            authenticationScreenConfig[newIndex].calculateNextScreen(newIndex)
+                        }
                     _state.emit(newIndex to newAuthenticationPage)
                 }
 

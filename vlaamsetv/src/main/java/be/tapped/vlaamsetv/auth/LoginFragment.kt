@@ -165,7 +165,7 @@ class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUseCase) :
 
 class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUseCase) :
     LoginFragment(vtmAuthenticationUseCase) {
-    private val navArg by navArgs<VRTLoginFragmentArgs>()
+    private val navArg by navArgs<VTMLoginFragmentArgs>()
 
     override val config: Configuration
         get() = Configuration(
