@@ -19,11 +19,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
-class VRTAuthenticationFragment(private val authenticationUseCase: AuthenticationUseCase) :
+abstract class LoginFragment(private val authenticationUseCase: AuthenticationUseCase) :
     GuidedStepSupportFragment() {
 
-    private val navArg by navArgs<VRTAuthenticationFragmentArgs>()
-    private val config get() = navArg.config
+    abstract val config: Configuration
 
     @Parcelize
     data class Configuration(
@@ -139,4 +138,21 @@ class VRTAuthenticationFragment(private val authenticationUseCase: Authenticatio
                 }
             else -> super.onGuidedActionEditedAndProceed(action)
         }
+}
+
+class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUseCase) :
+    LoginFragment(vrtAuthenticationUseCase) {
+
+    @Parcelize
+    data class VRTLoginConfiguration(@StringRes val secondaryButtonText: Int) : Parcelable
+
+    private val navArg by navArgs<VRTLoginFragmentArgs>()
+    override val config: Configuration
+        get() = Configuration(
+            R.string.auth_flow_vrtnu_title,
+            R.string.auth_flow_vrtnu_description,
+            R.string.auth_flow_vrtnu_step_breadcrumb,
+            R.drawable.vrt_nu_logo,
+            navArg.config.secondaryButtonText
+        )
 }

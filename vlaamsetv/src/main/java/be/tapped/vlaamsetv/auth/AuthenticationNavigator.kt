@@ -1,5 +1,6 @@
 package be.tapped.vlaamsetv.auth
 
+import androidx.navigation.NavController
 import be.tapped.vlaamsetv.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,8 +17,13 @@ interface AuthenticationNavigator {
 
     suspend fun navigateNext()
 
+    fun navigateToVRTAuthenticationFlow(config: VRTLoginFragment.VRTLoginConfiguration)
+
     companion object {
-        internal fun create(authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>): AuthenticationNavigator {
+        internal fun create(
+            navController: NavController,
+            authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>
+        ): AuthenticationNavigator {
             return object : AuthenticationNavigator {
                 private val _state: MutableSharedFlow<IndexedScreen> = MutableSharedFlow(replay = 1)
                 override val state: Flow<Screen> get() = _state.map { it.second }
@@ -27,6 +33,13 @@ interface AuthenticationNavigator {
                 init {
                     check(authenticationScreenConfig.isNotEmpty()) { "An empty authentication screen configuration was provided!" }
                     _state.tryEmit(0 to authenticationScreenConfig.first().calculateNextScreen(1))
+                }
+
+                override fun navigateToVRTAuthenticationFlow(config: VRTLoginFragment.VRTLoginConfiguration) {
+                    navController.navigate(
+                        R.id.action_to_vrt_authentication_fragment,
+                        VRTLoginFragmentArgs(config).toBundle()
+                    )
                 }
 
                 override suspend fun navigateNext() {

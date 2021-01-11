@@ -12,12 +12,12 @@
 
     <fragment
         android:id="@+id/vrtAuthenticationFragment"
-        android:name="be.tapped.vlaamsetv.auth.VRTAuthenticationFragment"
+        android:name="be.tapped.vlaamsetv.auth.VRTLoginFragment"
         android:label="AuthenticationFragment"
         tools:layout="@layout/lb_guidedstep_fragment">
         <argument
             android:name="config"
-            app:argType="be.tapped.vlaamsetv.auth.VRTAuthenticationFragment$Configuration" />
+            app:argType="be.tapped.vlaamsetv.auth.VRTLoginFragment$VRTLoginConfiguration" />
     </fragment>
 
     <action
