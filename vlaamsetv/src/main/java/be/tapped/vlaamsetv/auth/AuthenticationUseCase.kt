@@ -38,11 +38,12 @@ class VRTAuthenticationUseCase(
         // Combine fetchXVRTToken + fetchTokenWrapper
         // Run async
         // Wait for both
-        //// Only if both are true
+        //// Only if both are true we continue
         //// Emit error on first occurrence
         // 1. tokenRepo.fetchXVRTToken(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.VRTToken>
         // 2. tokenRepo.fetchTokenWrapper(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token>
 
+        // Don't worry about code underneath
         val tokenWrapper =
             tokenRepo.fetchTokenWrapper(username, password)
         _state.emit(
