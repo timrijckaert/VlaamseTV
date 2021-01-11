@@ -14,20 +14,15 @@ class CryptoImpl(private val cipherProvider: CipherProvider) : Crypto {
         val cipher = cipherProvider.encryptCipher
         val encryptedBytes = cipher.doFinal(rawBytes)
         with(outputStream) {
-            write(cipher.iv.size)
             write(cipher.iv)
-            write(encryptedBytes.size)
             write(encryptedBytes)
         }
     }
 
     override fun decrypt(inputStream: InputStream): ByteArray {
-        val ivSize = inputStream.read()
-        val iv = ByteArray(ivSize)
+        val iv = ByteArray(16)
         inputStream.read(iv)
-        val encryptedDataSize = inputStream.read()
-        val encryptedData = ByteArray(encryptedDataSize)
-        inputStream.read(encryptedData)
+        val encryptedData = inputStream.readBytes()
         val cipher = cipherProvider.decryptCipher(iv)
         return cipher.doFinal(encryptedData)
     }

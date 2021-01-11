@@ -26,22 +26,19 @@ class TokenWrapperProtoSerializer(
     override val defaultValue: TokenWrapperProto = TokenWrapperProto()
 ) :
     Serializer<TokenWrapperProto> {
-    override fun readFrom(input: InputStream): TokenWrapperProto {
-        return if (input.available() != 0) {
+    override fun readFrom(input: InputStream): TokenWrapperProto =
+        if (input.available() != 0) {
             try {
-                //TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
-                TokenWrapperProto.ADAPTER.decode(input)
+                TokenWrapperProto.ADAPTER.decode(crypto.decrypt(input))
             } catch (exception: IOException) {
                 throw CorruptionException("Cannot read proto", exception)
             }
         } else {
             TokenWrapperProto()
         }
-    }
 
     override fun writeTo(t: TokenWrapperProto, output: OutputStream) {
-        //crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
-        TokenWrapperProto.ADAPTER.encode(output, t)
+        crypto.encrypt(TokenWrapperProto.ADAPTER.encode(t), output)
     }
 }
 
