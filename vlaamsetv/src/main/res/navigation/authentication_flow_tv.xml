@@ -11,17 +11,31 @@
         android:label="AuthenticationFragment" />
 
     <fragment
-        android:id="@+id/vrtAuthenticationFragment"
+        android:id="@+id/VTMLoginFragment"
+        android:name="be.tapped.vlaamsetv.auth.VTMLoginFragment"
+        android:label="VTMLoginFragment"
+        tools:layout="@layout/lb_guidedstep_fragment">
+        <argument
+            android:name="config"
+            app:argType="be.tapped.vlaamsetv.auth.DefaultLoginConfiguration" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/VRTLoginFragment"
         android:name="be.tapped.vlaamsetv.auth.VRTLoginFragment"
         android:label="AuthenticationFragment"
         tools:layout="@layout/lb_guidedstep_fragment">
         <argument
             android:name="config"
-            app:argType="be.tapped.vlaamsetv.auth.VRTLoginFragment$VRTLoginConfiguration" />
+            app:argType="be.tapped.vlaamsetv.auth.DefaultLoginConfiguration" />
     </fragment>
 
     <action
-        android:id="@+id/action_to_vrt_authentication_fragment"
-        app:destination="@id/vrtAuthenticationFragment" />
+        android:id="@+id/action_to_vrt_login_fragment"
+        app:destination="@id/VRTLoginFragment" />
+
+    <action
+        android:id="@+id/action_to_vtm_login_fragment"
+        app:destination="@id/VTMLoginFragment" />
 
 </navigation>

@@ -15,7 +15,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             navigator.navigateToAuthenticationFlow(
                 arrayOf(
                     AuthenticationNavigationConfiguration.VRT,
-                    AuthenticationNavigationConfiguration.VTM
+                    AuthenticationNavigationConfiguration.VTM,
                 )
             )
         }

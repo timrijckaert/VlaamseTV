@@ -14,12 +14,14 @@ class AuthenticationFragment(private val authenticationNavigator: Authentication
             authenticationNavigator.state.collect { screen ->
                 when (screen) {
                     is AuthenticationNavigator.Screen.VRT -> {
-                        authenticationNavigator.navigateToVRTAuthenticationFlow(
-                            VRTLoginFragment.VRTLoginConfiguration(screen.secondaryButtonText)
+                        authenticationNavigator.navigateToVRTLoginFlow(
+                            DefaultLoginConfiguration(screen.secondaryButtonText)
                         )
                     }
                     is AuthenticationNavigator.Screen.VTM -> {
-                        throw IllegalStateException("Not able to navigate to VTM yet!")
+                        authenticationNavigator.navigateToVTMLoginFlow(
+                            DefaultLoginConfiguration(screen.secondaryButtonText)
+                        )
                     }
                     AuthenticationNavigator.Screen.End -> requireActivity().finishAfterTransition()
                 }

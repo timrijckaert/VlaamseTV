@@ -17,7 +17,9 @@ interface AuthenticationNavigator {
 
     suspend fun navigateNext()
 
-    fun navigateToVRTAuthenticationFlow(config: VRTLoginFragment.VRTLoginConfiguration)
+    fun navigateToVRTLoginFlow(config: DefaultLoginConfiguration)
+
+    fun navigateToVTMLoginFlow(config: DefaultLoginConfiguration)
 
     companion object {
         internal fun create(
@@ -35,10 +37,17 @@ interface AuthenticationNavigator {
                     _state.tryEmit(0 to authenticationScreenConfig.first().calculateNextScreen(1))
                 }
 
-                override fun navigateToVRTAuthenticationFlow(config: VRTLoginFragment.VRTLoginConfiguration) {
+                override fun navigateToVRTLoginFlow(config: DefaultLoginConfiguration) {
                     navController.navigate(
-                        R.id.action_to_vrt_authentication_fragment,
+                        R.id.action_to_vrt_login_fragment,
                         VRTLoginFragmentArgs(config).toBundle()
+                    )
+                }
+
+                override fun navigateToVTMLoginFlow(config: DefaultLoginConfiguration) {
+                    navController.navigate(
+                        R.id.action_to_vtm_login_fragment,
+                        VTMLoginFragmentArgs(config).toBundle()
                     )
                 }
 

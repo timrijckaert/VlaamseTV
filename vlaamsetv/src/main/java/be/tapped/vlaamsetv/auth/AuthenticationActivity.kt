@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.App
-import be.tapped.vlaamsetv.Navigator
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.CryptoImpl
@@ -54,6 +53,8 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 authenticationNavigator
                             )
                         )
+                    VTMLoginFragment::class.java.name ->
+                        VTMLoginFragment(VTMAuthenticationUseCase())
                     else -> super.instantiate(cls, className)
                 }
         }

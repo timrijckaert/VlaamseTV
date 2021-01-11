@@ -95,7 +95,7 @@ internal class LoginFragmentTest {
         TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
             Handler(Looper.getMainLooper()).post {
                 setGraph(R.navigation.authentication_flow_tv)
-                setCurrentDestination(R.id.vrtAuthenticationFragment)
+                setCurrentDestination(R.id.VRTLoginFragment)
             }
         }
 
@@ -198,41 +198,52 @@ internal class LoginFragmentTest {
         login: ((username: String, password: String) -> AuthenticationUseCase.State)? = null,
         skip: (() -> AuthenticationUseCase.State)? = null,
     ) {
-        launchFragmentInContainer(
-            themeResId = R.style.Theme_TV_VlaamseTV,
-            fragmentArgs = VRTAuthenticationFragmentArgs(
-                LoginFragment.Configuration(
-                    R.string.auth_flow_vrtnu_title,
-                    R.string.auth_flow_vrtnu_description,
-                    R.string.auth_flow_vrtnu_step_breadcrumb,
-                    R.drawable.vrt_nu_logo,
-                    R.string.auth_flow_skip
-                )
-            ).toBundle()
-        ) {
-            LoginFragment(object : AuthenticationUseCase {
-                override suspend fun login(username: String, password: String) {
-                    if (login != null) {
-                        _state.emit(login(username, password))
-                    }
-                }
-
-                override suspend fun skip() {
-                    if (skip != null) {
-                        _state.emit(skip())
-                    }
-                }
-
-                private val _state: MutableSharedFlow<AuthenticationUseCase.State> =
-                    MutableSharedFlow(1)
-                override val state: Flow<AuthenticationUseCase.State> get() = _state
-            }).also { frag ->
-                frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
-                    if (viewLifecycleOwner != null) {
-                        Navigation.setViewNavController(frag.requireView(), testNavHostController)
-                    }
+        val authenticationUseCase = object : AuthenticationUseCase {
+            override suspend fun login(username: String, password: String) {
+                if (login != null) {
+                    _state.emit(login(username, password))
                 }
             }
+
+            override suspend fun skip() {
+                if (skip != null) {
+                    _state.emit(skip())
+                }
+            }
+
+            private val _state: MutableSharedFlow<AuthenticationUseCase.State> =
+                MutableSharedFlow(1)
+            override val state: Flow<AuthenticationUseCase.State> get() = _state
+        }
+
+        launchFragmentInContainer(
+            themeResId = R.style.Theme_TV_VlaamseTV,
+            fragmentArgs = VRTLoginFragmentArgs(DefaultLoginConfiguration(R.string.auth_flow_skip)).toBundle()
+        ) {
+            StubbedLoginFragment(authenticationUseCase)
+                .also { frag ->
+                    frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                        if (viewLifecycleOwner != null) {
+                            Navigation.setViewNavController(
+                                frag.requireView(),
+                                testNavHostController
+                            )
+                        }
+                    }
+                }
         }
     }
+}
+
+class StubbedLoginFragment(authenticationUseCase: AuthenticationUseCase) :
+    LoginFragment(authenticationUseCase) {
+    override val config: Configuration
+        get() = Configuration(
+            R.string.auth_flow_login_title,
+            R.string.auth_flow_vrtnu_description,
+            R.string.auth_flow_vrtnu_step_breadcrumb,
+            R.drawable.vrt_nu_logo,
+            R.string.auth_flow_skip
+        )
+
 }
