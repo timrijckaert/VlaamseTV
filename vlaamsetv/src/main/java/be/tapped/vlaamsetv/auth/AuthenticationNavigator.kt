@@ -10,6 +10,8 @@ interface AuthenticationNavigator {
     sealed class Screen {
         data class VRT(val secondaryButtonText: Int) : Screen()
         data class VTM(val secondaryButtonText: Int) : Screen()
+
+        // data class VIER(val secondaryButtonText: Int) : Screen()
         object End : Screen()
     }
 
@@ -34,12 +36,9 @@ interface AuthenticationNavigator {
 
                 private val current get() = _state.replayCache.first()
 
-                private val firstPage
-                    get() = 0 to authenticationScreenConfig.first().calculateNextScreen(1)
-
                 init {
                     check(authenticationScreenConfig.isNotEmpty()) { "An empty authentication screen configuration was provided!" }
-                    _state.tryEmit(firstPage)
+                    _state.tryEmit(0 to authenticationScreenConfig.first().calculateNextScreen(1))
                 }
 
                 override fun navigateToVRTLoginFlow(config: DefaultLoginConfiguration) {
@@ -78,7 +77,7 @@ interface AuthenticationNavigator {
                         if (newIndex < 0 || newIndex >= authenticationScreenConfig.size) {
                             Screen.End
                         } else {
-                            authenticationScreenConfig[newIndex].calculateNextScreen(newIndex)
+                            authenticationScreenConfig[newIndex].calculateNextScreen(newIndex + 1)
                         }
                     _state.emit(newIndex to newAuthenticationPage)
                 }
