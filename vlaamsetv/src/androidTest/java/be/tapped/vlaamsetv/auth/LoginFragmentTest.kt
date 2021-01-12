@@ -129,7 +129,7 @@ internal class LoginFragmentTest {
             alertDialog {
                 isDisplayed()
                 title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Er ging iets mis met de communicatie naar de VRT NU backend. Status code: [400]")
+                message.hasText("Er ging iets mis met de communicatie naar de VRT NU server. Status code: [400]")
             }
         }
     }
@@ -185,7 +185,7 @@ internal class LoginFragmentTest {
             alertDialog {
                 isDisplayed()
                 title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Er ging iets mis met de communicatie naar de VRT NU backend. Status code: [400]")
+                message.hasText("Er ging iets mis met de communicatie naar de VRT NU server. Status code: [400]")
                 neutralButton.click()
             }
 
@@ -198,14 +198,40 @@ internal class LoginFragmentTest {
             alertDialog {
                 isDisplayed()
                 title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Er ging iets mis met de communicatie naar de VRT NU backend. Status code: [400]")
+                message.hasText("Er ging iets mis met de communicatie naar de VRT NU server. Status code: [400]")
             }
         }
+    }
+
+    @Test
+    fun ifIsLastScreenShouldHaveTheCorrectMessage() {
+        setupVRTAuthenticationFragment(isLastScreen = true)
+        onScreen<LoginFragmentScreen> {
+            buttonActionsList {
+                childAt<LoginFragmentScreen.GuidedActionItem>(1) {
+                    title.hasText(R.string.auth_flow_finish)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun ifIsNotLastScreenShouldHaveTheCorrectMessage() {
+        setupVRTAuthenticationFragment(isLastScreen = false)
+        onScreen<LoginFragmentScreen> {
+            buttonActionsList {
+                childAt<LoginFragmentScreen.GuidedActionItem>(1) {
+                    title.hasText(R.string.auth_flow_skip)
+                }
+            }
+        }
+
     }
 
     private fun setupVRTAuthenticationFragment(
         login: ((username: String, password: String) -> AuthenticationUseCase.State)? = null,
         skip: (() -> AuthenticationUseCase.State)? = null,
+        isLastScreen: Boolean = false
     ) {
         val authenticationUseCase = object : AuthenticationUseCase {
             override suspend fun login(username: String, password: String) {
@@ -227,9 +253,8 @@ internal class LoginFragmentTest {
 
         launchFragmentInContainer(
             themeResId = R.style.Theme_TV_VlaamseTV,
-            fragmentArgs = VRTLoginFragmentArgs(DefaultLoginConfiguration(R.string.auth_flow_skip)).toBundle()
         ) {
-            StubbedLoginFragment(authenticationUseCase)
+            StubbedLoginFragment(authenticationUseCase, isLastScreen)
                 .also { frag ->
                     frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                         if (viewLifecycleOwner != null) {
@@ -244,7 +269,10 @@ internal class LoginFragmentTest {
     }
 }
 
-class StubbedLoginFragment(authenticationUseCase: AuthenticationUseCase) :
+class StubbedLoginFragment(
+    authenticationUseCase: AuthenticationUseCase,
+    private val isLastScreen: Boolean
+) :
     LoginFragment(authenticationUseCase) {
     override val config: Configuration
         get() = Configuration(
@@ -252,7 +280,7 @@ class StubbedLoginFragment(authenticationUseCase: AuthenticationUseCase) :
             R.string.auth_flow_vrtnu_description,
             R.string.auth_flow_vrtnu_step_breadcrumb,
             R.drawable.vrt_nu_logo,
-            R.string.auth_flow_skip
+            isLastScreen,
         )
 
 }

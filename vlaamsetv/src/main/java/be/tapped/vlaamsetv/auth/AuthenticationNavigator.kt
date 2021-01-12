@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.map
 
 interface AuthenticationNavigator {
     sealed class Screen {
-        data class VRT(val secondaryButtonText: Int) : Screen()
-        data class VTM(val secondaryButtonText: Int) : Screen()
-        data class VIER(val secondaryButtonText: Int) : Screen()
+        data class VRT(val isLastScreen: Boolean) : Screen()
+        data class VTM(val isLastScreen: Boolean) : Screen()
+        data class VIER(val isLastScreen: Boolean) : Screen()
         object End : Screen()
     }
 
@@ -96,15 +96,13 @@ interface AuthenticationNavigator {
 
                 private fun AuthenticationNavigationConfiguration.calculateNextScreen(nextIndex: Int): Screen {
                     val isLastItem = nextIndex >= authenticationScreenConfig.size
-                    val secondaryButtonText =
-                        if (isLastItem) R.string.auth_flow_finish else R.string.auth_flow_skip
                     return when (this) {
                         AuthenticationNavigationConfiguration.VRT ->
-                            Screen.VRT(secondaryButtonText)
+                            Screen.VRT(isLastItem)
                         AuthenticationNavigationConfiguration.VTM ->
-                            Screen.VTM(secondaryButtonText)
+                            Screen.VTM(isLastItem)
                         AuthenticationNavigationConfiguration.VIER ->
-                            Screen.VIER(secondaryButtonText)
+                            Screen.VIER(isLastItem)
                     }
                 }
             }

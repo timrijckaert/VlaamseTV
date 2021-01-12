@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class DefaultLoginConfiguration(@StringRes val secondaryButtonText: Int) : Parcelable
+data class DefaultLoginConfiguration(val isLastScreen: Boolean) : Parcelable
 
 abstract class LoginFragment(private val authenticationUseCase: AuthenticationUseCase) :
     GuidedStepSupportFragment() {
@@ -33,7 +33,7 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
         @StringRes val description: Int,
         @StringRes val brand: Int,
         @DrawableRes val icon: Int,
-        @StringRes val secondaryButtonText: Int,
+        val isLastScreen: Boolean,
     ) : Parcelable
 
     companion object {
@@ -119,7 +119,7 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
                 GuidedAction
                     .Builder(context)
                     .id(SECONDARY_BUTTON)
-                    .title(config.secondaryButtonText)
+                    .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_skip)
                     .build(),
             )
         )
@@ -158,7 +158,7 @@ class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUseCase) :
             R.string.auth_flow_vrtnu_description,
             R.string.auth_flow_vrtnu_step_breadcrumb,
             R.drawable.vrt_nu_logo,
-            navArg.config.secondaryButtonText
+            navArg.config.isLastScreen,
         )
 }
 
@@ -172,7 +172,7 @@ class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUseCase) :
             R.string.auth_flow_vtmgo_description,
             R.string.auth_flow_vtmgo_step_breadcrumb,
             R.drawable.vtm_logo,
-            navArg.config.secondaryButtonText
+            navArg.config.isLastScreen,
         )
 }
 
@@ -186,6 +186,6 @@ class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUseCase) :
             R.string.auth_flow_vier_description,
             R.string.auth_flow_vier_step_breadcrumb,
             R.drawable.vier_logo,
-            navArg.config.secondaryButtonText
+            navArg.config.isLastScreen,
         )
 }

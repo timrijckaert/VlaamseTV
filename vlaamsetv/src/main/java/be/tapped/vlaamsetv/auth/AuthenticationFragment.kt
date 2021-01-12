@@ -16,17 +16,17 @@ class AuthenticationFragment(private val authenticationNavigator: Authentication
                 when (screen) {
                     is AuthenticationNavigator.Screen.VRT -> {
                         authenticationNavigator.navigateToVRTLoginFlow(
-                            DefaultLoginConfiguration(screen.secondaryButtonText)
+                            DefaultLoginConfiguration(screen.isLastScreen)
                         )
                     }
                     is AuthenticationNavigator.Screen.VTM -> {
                         authenticationNavigator.navigateToVTMLoginFlow(
-                            DefaultLoginConfiguration(screen.secondaryButtonText)
+                            DefaultLoginConfiguration(screen.isLastScreen)
                         )
                     }
                     is AuthenticationNavigator.Screen.VIER -> {
                         authenticationNavigator.navigateToVIERLoginFlow(
-                            DefaultLoginConfiguration(screen.secondaryButtonText)
+                            DefaultLoginConfiguration(screen.isLastScreen)
                         )
                     }
                     AuthenticationNavigator.Screen.End -> requireActivity().finishAfterTransition()

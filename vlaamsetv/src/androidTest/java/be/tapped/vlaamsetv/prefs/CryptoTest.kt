@@ -47,7 +47,7 @@ internal class CryptoTest {
     fun tokenWrapperProtoEncryptionAndDecryption() {
         val outputStream = ByteArrayOutputStream()
         val tokenWrapper =
-            TokenWrapperProto(access_token = Arb.string().gen())
+            TokenWrapperProto(accessToken = Arb.string().gen())
         crypto.encrypt(
             TokenWrapperProto.ADAPTER.encode(tokenWrapper),
             outputStream
