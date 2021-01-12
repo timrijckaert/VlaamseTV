@@ -86,6 +86,8 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 VIERErrorMessageConverter()
                             ),
                         )
+                    AuthenticationFailedDialog::class.java.name ->
+                        AuthenticationFailedDialog(authenticationNavigator)
                     else -> super.instantiate(cls, className)
                 }
         }

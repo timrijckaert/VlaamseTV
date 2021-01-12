@@ -12,7 +12,7 @@ interface AuthenticationNavigator {
         data class VRT(val isLastScreen: Boolean) : Screen()
         data class VTM(val isLastScreen: Boolean) : Screen()
         data class VIER(val isLastScreen: Boolean) : Screen()
-        object ErrorDialog : Screen()
+        data class ErrorDialog(val errorMessage: String) : Screen()
         object End : Screen()
     }
 
@@ -45,7 +45,7 @@ interface AuthenticationNavigator {
                 }
 
                 override fun navigateToErrorScreen(errorMessage: ErrorMessage) {
-                    navigate({ it + 1 }, { Screen.ErrorDialog })
+                    navigate({ it + 1 }, { Screen.ErrorDialog(errorMessage.toString(activity)) })
                 }
 
                 override fun moveToStartDestination() {
@@ -114,8 +114,11 @@ interface AuthenticationNavigator {
                         Screen.End -> {
                             activity.finishAfterTransition()
                         }
-                        Screen.ErrorDialog ->
-                            navController.navigate(R.id.action_to_authenticationFailedDialog)
+                        is Screen.ErrorDialog ->
+                            navController.navigate(
+                                R.id.action_to_authenticationFailedDialog,
+                                AuthenticationFailedDialogArgs(screen.errorMessage).toBundle()
+                            )
                     }.exhaustive
             }
     }

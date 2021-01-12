@@ -39,7 +39,11 @@
     <fragment
         android:id="@+id/authenticationFailedDialog"
         android:name="be.tapped.vlaamsetv.auth.AuthenticationFailedDialog"
-        android:label="AuthenticationFailedDialog" />
+        android:label="AuthenticationFailedDialog" >
+        <argument
+            android:name="errorMessage"
+            app:argType="string" />
+    </fragment>
 
     <action
         android:id="@+id/action_to_vrt_login_fragment"
