@@ -84,6 +84,10 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 VTMErrorMessageConverter()
                             )
                         )
+                    VIERLoginFragment::class.java.name ->
+                        VIERLoginFragment(
+                            VIERAuthenticationUseCase()
+                        )
                     else -> super.instantiate(cls, className)
                 }
         }
@@ -97,4 +101,7 @@ sealed class AuthenticationNavigationConfiguration : Parcelable {
 
     @Parcelize
     object VTM : AuthenticationNavigationConfiguration()
+
+    @Parcelize
+    object VIER : AuthenticationNavigationConfiguration()
 }

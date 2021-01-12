@@ -49,7 +49,7 @@ class VRTErrorMessageConverter : ErrorMessageConverter<VRTApiResponse.Failure> {
 }
 
 class VTMErrorMessageConverter : ErrorMessageConverter<VTMApiResponse.Failure> {
-    override fun mapToHumanReadableError(failure: be.tapped.vtmgo.ApiResponse.Failure): ErrorMessage {
+    override fun mapToHumanReadableError(failure: be.tapped.vtmgo.ApiResponse.Failure): ErrorMessage =
         when (failure) {
             is be.tapped.vtmgo.ApiResponse.Failure.NetworkFailure ->
                 ErrorMessage(
@@ -79,5 +79,4 @@ class VTMErrorMessageConverter : ErrorMessageConverter<VTMApiResponse.Failure> {
             be.tapped.vtmgo.ApiResponse.Failure.Stream.NoMPDManifestUrlFound ->
                 ErrorMessage(R.string.failure_vtmgo_general_stream, listOf(failure))
         }
-    }
 }

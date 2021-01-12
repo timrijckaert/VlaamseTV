@@ -1,8 +1,8 @@
 package be.tapped.vlaamsetv.prefs
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.tapped.vlaamsetv.auth.TokenWrapperProto
 import be.tapped.vlaamsetv.gen
+import be.tapped.vlaamsetv.prefs.vrt.TokenWrapperProto
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string

@@ -10,8 +10,7 @@ interface AuthenticationNavigator {
     sealed class Screen {
         data class VRT(val secondaryButtonText: Int) : Screen()
         data class VTM(val secondaryButtonText: Int) : Screen()
-
-        // data class VIER(val secondaryButtonText: Int) : Screen()
+        data class VIER(val secondaryButtonText: Int) : Screen()
         object End : Screen()
     }
 
@@ -24,6 +23,8 @@ interface AuthenticationNavigator {
     fun navigateToVRTLoginFlow(config: DefaultLoginConfiguration)
 
     fun navigateToVTMLoginFlow(config: DefaultLoginConfiguration)
+
+    fun navigateToVIERLoginFlow(config: DefaultLoginConfiguration)
 
     companion object {
         internal fun create(
@@ -55,6 +56,13 @@ interface AuthenticationNavigator {
                     )
                 }
 
+                override fun navigateToVIERLoginFlow(config: DefaultLoginConfiguration) {
+                    navController.navigate(
+                        R.id.action_to_vier_login_fragment,
+                        VIERLoginFragmentArgs(config).toBundle()
+                    )
+                }
+
                 override suspend fun navigateNext() {
                     navigate { it + 1 }
                 }
@@ -73,8 +81,12 @@ interface AuthenticationNavigator {
 
                     val newIndex = indexFunc(index)
 
+                    if (newIndex < 0) {
+                        return
+                    }
+
                     val newAuthenticationPage =
-                        if (newIndex < 0 || newIndex >= authenticationScreenConfig.size) {
+                        if (newIndex >= authenticationScreenConfig.size) {
                             Screen.End
                         } else {
                             authenticationScreenConfig[newIndex].calculateNextScreen(newIndex + 1)
@@ -91,6 +103,8 @@ interface AuthenticationNavigator {
                             Screen.VRT(secondaryButtonText)
                         AuthenticationNavigationConfiguration.VTM ->
                             Screen.VTM(secondaryButtonText)
+                        AuthenticationNavigationConfiguration.VIER ->
+                            Screen.VIER(secondaryButtonText)
                     }
                 }
             }

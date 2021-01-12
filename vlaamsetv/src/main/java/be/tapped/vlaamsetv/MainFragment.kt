@@ -16,6 +16,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 arrayOf(
                     AuthenticationNavigationConfiguration.VRT,
                     AuthenticationNavigationConfiguration.VTM,
+                    AuthenticationNavigationConfiguration.VIER,
                 )
             )
         }

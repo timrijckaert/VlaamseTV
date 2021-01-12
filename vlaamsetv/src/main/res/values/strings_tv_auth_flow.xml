@@ -4,9 +4,11 @@
 
     <string name="auth_flow_vrtnu_description">Om de VRT NU content te kunnen bekijken hebben we je logingegevens nodig. Deze worden enkel lokaal opgeslagen.</string>
     <string name="auth_flow_vtmgo_description">Met je account heb je gratis toegang tot alles van VTM GO: de beste Vlaamse programma\'s en exclusieve internationale series. Veel kijkplezier!</string>
+    <string name="auth_flow_vier_description">Om de video\'s van VIER te raadplegen hebben we je gegevens nodig. Deze worden enkel lokaal opgeslagen.</string>
 
     <string name="auth_flow_vrtnu_step_breadcrumb">VRT NU</string>
     <string name="auth_flow_vtmgo_step_breadcrumb">VTM GO</string>
+    <string name="auth_flow_vier_step_breadcrumb">VIER</string>
 
     <string name="auth_flow_skip">Overslaan</string>
     <string name="auth_flow_finish">Klaar</string>

@@ -162,7 +162,6 @@ class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUseCase) :
         )
 }
 
-
 class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUseCase) :
     LoginFragment(vtmAuthenticationUseCase) {
     private val navArg by navArgs<VTMLoginFragmentArgs>()
@@ -173,6 +172,20 @@ class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUseCase) :
             R.string.auth_flow_vtmgo_description,
             R.string.auth_flow_vtmgo_step_breadcrumb,
             R.drawable.vtm_logo,
+            navArg.config.secondaryButtonText
+        )
+}
+
+class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUseCase) :
+    LoginFragment(vierAuthenticationUseCase) {
+    private val navArg by navArgs<VIERLoginFragmentArgs>()
+
+    override val config: Configuration
+        get() = Configuration(
+            R.string.auth_flow_login_title,
+            R.string.auth_flow_vier_description,
+            R.string.auth_flow_vier_step_breadcrumb,
+            R.drawable.vier_logo,
             navArg.config.secondaryButtonText
         )
 }

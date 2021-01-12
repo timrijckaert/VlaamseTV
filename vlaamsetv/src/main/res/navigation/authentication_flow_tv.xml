@@ -7,13 +7,11 @@
 
     <fragment
         android:id="@+id/authenticationFragment"
-        android:name="be.tapped.vlaamsetv.auth.AuthenticationFragment"
-        android:label="AuthenticationFragment" />
+        android:name="be.tapped.vlaamsetv.auth.AuthenticationFragment" />
 
     <fragment
         android:id="@+id/VTMLoginFragment"
         android:name="be.tapped.vlaamsetv.auth.VTMLoginFragment"
-        android:label="VTMLoginFragment"
         tools:layout="@layout/lb_guidedstep_fragment">
         <argument
             android:name="config"
@@ -23,7 +21,15 @@
     <fragment
         android:id="@+id/VRTLoginFragment"
         android:name="be.tapped.vlaamsetv.auth.VRTLoginFragment"
-        android:label="AuthenticationFragment"
+        tools:layout="@layout/lb_guidedstep_fragment">
+        <argument
+            android:name="config"
+            app:argType="be.tapped.vlaamsetv.auth.DefaultLoginConfiguration" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/VIERLoginFragment"
+        android:name="be.tapped.vlaamsetv.auth.VIERLoginFragment"
         tools:layout="@layout/lb_guidedstep_fragment">
         <argument
             android:name="config"
@@ -32,10 +38,20 @@
 
     <action
         android:id="@+id/action_to_vrt_login_fragment"
-        app:destination="@id/VRTLoginFragment" />
+        app:destination="@id/VRTLoginFragment"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/VRTLoginFragment" />
 
     <action
         android:id="@+id/action_to_vtm_login_fragment"
-        app:destination="@id/VTMLoginFragment" />
+        app:destination="@id/VTMLoginFragment"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/VTMLoginFragment" />
+
+    <action
+        android:id="@+id/action_to_vier_login_fragment"
+        app:destination="@id/VIERLoginFragment"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/VIERLoginFragment" />
 
 </navigation>
