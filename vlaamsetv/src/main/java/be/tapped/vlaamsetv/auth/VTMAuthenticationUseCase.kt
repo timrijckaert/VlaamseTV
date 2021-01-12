@@ -15,7 +15,7 @@ class VTMAuthenticationUseCase(
     private val profileRepo: HttpProfileRepo,
     private val vtmTokenStore: VTMTokenStore,
     private val authenticationNavigator: AuthenticationNavigator,
-    private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>
+    private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
 ) : AuthenticationUseCase {
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
