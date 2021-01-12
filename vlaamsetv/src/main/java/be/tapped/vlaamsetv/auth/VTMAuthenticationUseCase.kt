@@ -27,8 +27,8 @@ class VTMAuthenticationUseCase(
                     )
                 )
             is Either.Right -> {
-                vtmTokenStore.saveJWT(jwt.b)
                 vtmTokenStore.saveVTMCredentials(username, password)
+                vtmTokenStore.saveJWT(jwt.b)
                 authenticationNavigator.navigateNext()
                 _state.emit(AuthenticationUseCase.State.Successful)
             }
