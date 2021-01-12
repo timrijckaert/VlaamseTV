@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv
 
 import androidx.annotation.StringRes
 import be.tapped.vrtnu.profile.LoginFailure
+import be.tapped.vier.ApiResponse as VIERApiResponse
 import be.tapped.vrtnu.ApiResponse as VRTApiResponse
 import be.tapped.vtmgo.ApiResponse as VTMApiResponse
 
@@ -78,5 +79,25 @@ class VTMErrorMessageConverter : ErrorMessageConverter<VTMApiResponse.Failure> {
             be.tapped.vtmgo.ApiResponse.Failure.Stream.NoPublishedEmbedUrlFound,
             be.tapped.vtmgo.ApiResponse.Failure.Stream.NoMPDManifestUrlFound ->
                 ErrorMessage(R.string.failure_vtmgo_general_stream, listOf(failure))
+        }
+}
+
+class VIERErrorMessageConverter : ErrorMessageConverter<VIERApiResponse.Failure> {
+    override fun mapToHumanReadableError(failure: be.tapped.vier.ApiResponse.Failure): ErrorMessage =
+        when (failure) {
+            is be.tapped.vier.ApiResponse.Failure.NetworkFailure -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.JsonParsingException -> TODO()
+            be.tapped.vier.ApiResponse.Failure.HTML.EmptyHTML -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.HTML.MissingAttributeValue -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.HTML.NoSelection -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.HTML.NoChildAtPosition -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.HTML.Parsing -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.Authentication.AWS -> TODO()
+            be.tapped.vier.ApiResponse.Failure.Authentication.Login -> TODO()
+            be.tapped.vier.ApiResponse.Failure.Authentication.Refresh -> TODO()
+            be.tapped.vier.ApiResponse.Failure.Authentication.Profile -> TODO()
+            be.tapped.vier.ApiResponse.Failure.Content.NoEpisodeFound -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.Stream.NoStreamFound -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.Epg.NoEpgDataFor -> TODO()
         }
 }
