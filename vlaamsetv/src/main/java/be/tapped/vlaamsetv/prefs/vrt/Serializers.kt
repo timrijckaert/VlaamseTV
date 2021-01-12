@@ -3,11 +3,11 @@ package be.tapped.vlaamsetv.prefs.vrt
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.EncryptedProtoSerializer
 
-class TokenWrapperProtoSerializer(crypto: Crypto) :
-    EncryptedProtoSerializer<TokenWrapperProto>(
+class TokenWrapperSerializer(crypto: Crypto) :
+    EncryptedProtoSerializer<TokenWrapper>(
         crypto,
-        TokenWrapperProto(),
-        TokenWrapperProto.ADAPTER
+        TokenWrapper(),
+        TokenWrapper.ADAPTER
     )
 
 class VRTNUCredentialsSerializer(crypto: Crypto) :

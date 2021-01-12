@@ -10,7 +10,7 @@ import be.tapped.vrtnu.profile.TokenWrapper
 import kotlinx.coroutines.flow.firstOrNull
 
 interface VRTTokenStore {
-    suspend fun saveCredentials(username: String, password: String)
+    suspend fun saveVRTCredentials(username: String, password: String)
     suspend fun tokenWrapper(): TokenWrapper?
     suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
 }
@@ -19,7 +19,7 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     private val vrtnuTokenDataStore by lazy {
         context.createDataStore(
             fileName = "vrtnu-token.pb",
-            serializer = TokenWrapperProtoSerializer(crypto)
+            serializer = TokenWrapperSerializer(crypto)
         )
     }
 
@@ -30,18 +30,18 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
         )
     }
 
-    override suspend fun saveCredentials(username: String, password: String) {
+    override suspend fun saveVRTCredentials(username: String, password: String) {
         credentialsDataStore.updateData {
-            it.copy(user_name = username, password = password)
+            it.copy(username = username, password = password)
         }
     }
 
     override suspend fun tokenWrapper(): TokenWrapper? =
         vrtnuTokenDataStore.data.firstOrNull()?.let {
-            if (it.access_token.isNotEmpty() && it.refresh_token.isNotEmpty() && it.expiry != 0L) {
+            if (it.accessToken.isNotEmpty() && it.refreshToken.isNotEmpty() && it.expiry != 0L) {
                 TokenWrapper(
-                    accessToken = AccessToken(it.access_token),
-                    refreshToken = RefreshToken(it.refresh_token),
+                    accessToken = AccessToken(it.accessToken),
+                    refreshToken = RefreshToken(it.refreshToken),
                     expiry = Expiry(it.expiry),
                 )
             } else {
@@ -52,8 +52,8 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     override suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper) {
         vrtnuTokenDataStore.updateData {
             it.copy(
-                access_token = tokenWrapper.accessToken.token,
-                refresh_token = tokenWrapper.refreshToken.token,
+                accessToken = tokenWrapper.accessToken.token,
+                refreshToken = tokenWrapper.refreshToken.token,
                 expiry = tokenWrapper.expiry.date
             )
         }

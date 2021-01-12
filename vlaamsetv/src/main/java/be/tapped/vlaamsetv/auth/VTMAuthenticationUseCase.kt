@@ -4,7 +4,6 @@ import arrow.core.Either
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.exhaustive
 import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
 import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.HttpProfileRepo
@@ -20,20 +19,20 @@ class VTMAuthenticationUseCase(
 ) : AuthenticationUseCase {
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
-
-        _state.emit(
-            when (val jwt = profileRepo.login(username, password)) {
-                is Either.Left ->
+        when (val jwt = profileRepo.login(username, password)) {
+            is Either.Left ->
+                _state.emit(
                     AuthenticationUseCase.State.Fail(
                         errorMessageConverter.mapToHumanReadableError(jwt.a)
                     )
-                is Either.Right -> {
-                    vtmTokenStore.saveJWT(jwt.b)
-                    authenticationNavigator.navigateNext()
-                    AuthenticationUseCase.State.Successful
-                }
-            }.exhaustive
-        )
+                )
+            is Either.Right -> {
+                vtmTokenStore.saveJWT(jwt.b)
+                vtmTokenStore.saveVTMCredentials(username, password)
+                authenticationNavigator.navigateNext()
+                _state.emit(AuthenticationUseCase.State.Successful)
+            }
+        }
     }
 
     private suspend fun checkPreconditions(

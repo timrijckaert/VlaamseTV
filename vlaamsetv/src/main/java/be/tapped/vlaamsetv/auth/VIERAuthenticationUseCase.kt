@@ -6,28 +6,39 @@ import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
+import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class VIERAuthenticationUseCase(
     private val profileRepo: HttpProfileRepo,
-    val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
+    private val vierTokenStore: VIERTokenStore,
+    private val authenticationNavigator: AuthenticationNavigator,
+    private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
-
         when (val token = profileRepo.fetchTokens(username, password)) {
             is Either.Left -> {
-
+                _state.emit(
+                    AuthenticationUseCase.State.Fail(
+                        errorMessageConverter.mapToHumanReadableError(token.a)
+                    )
+                )
             }
-
+            is Either.Right -> {
+                vierTokenStore.saveVierCredentials(username, password)
+                vierTokenStore.saveTokenWrapper(token.b)
+                authenticationNavigator.navigateNext()
+                _state.emit(AuthenticationUseCase.State.Successful)
+            }
         }
     }
 
     override suspend fun skip() {
-
+        authenticationNavigator.navigateNext()
     }
 
     private suspend fun checkPreconditions(

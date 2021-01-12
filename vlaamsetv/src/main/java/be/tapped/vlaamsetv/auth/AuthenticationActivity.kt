@@ -9,17 +9,15 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
-import be.tapped.vlaamsetv.App
-import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.VRTErrorMessageConverter
-import be.tapped.vlaamsetv.VTMErrorMessageConverter
+import be.tapped.vlaamsetv.*
 import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.CryptoImpl
-import be.tapped.vlaamsetv.prefs.EncryptedDataStore
+import be.tapped.vlaamsetv.prefs.EncryptedTokenDataStore
 import be.tapped.vrtnu.profile.ProfileRepo
-import be.tapped.vtmgo.profile.HttpProfileRepo
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
+import be.tapped.vtmgo.profile.HttpProfileRepo as VTMHttpProfileRepo
 
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
 
@@ -48,7 +46,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
             })
 
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
-            private val dataStore = EncryptedDataStore(
+            private val dataStore = EncryptedTokenDataStore(
                 this@AuthenticationActivity,
                 CryptoImpl(
                     AesCipherProvider(
@@ -78,7 +76,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                     VTMLoginFragment::class.java.name ->
                         VTMLoginFragment(
                             VTMAuthenticationUseCase(
-                                HttpProfileRepo(),
+                                VTMHttpProfileRepo(),
                                 dataStore,
                                 authenticationNavigator,
                                 VTMErrorMessageConverter()
@@ -86,7 +84,12 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         )
                     VIERLoginFragment::class.java.name ->
                         VIERLoginFragment(
-                            VIERAuthenticationUseCase()
+                            VIERAuthenticationUseCase(
+                                VierHttpProfileRepo(),
+                                dataStore,
+                                authenticationNavigator,
+                                VIERErrorMessageConverter()
+                            )
                         )
                     else -> super.instantiate(cls, className)
                 }

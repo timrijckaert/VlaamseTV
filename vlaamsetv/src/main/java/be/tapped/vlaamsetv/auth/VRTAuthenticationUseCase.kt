@@ -30,22 +30,18 @@ class VRTAuthenticationUseCase(
         // 2. tokenRepo.fetchTokenWrapper(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token>
 
         // Don't worry about code underneath
-        val tokenWrapper =
-            tokenRepo.fetchTokenWrapper(username, password)
-        _state.emit(
-            when (tokenWrapper) {
-                is Either.Left -> {
-                    val errorMessage =
-                        VRTErrorMessageConverter.mapToHumanReadableError(tokenWrapper.a)
-                    AuthenticationUseCase.State.Fail(errorMessage)
-                }
-                is Either.Right -> {
-                    dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
-                    authenticationNavigator.navigateNext()
-                    AuthenticationUseCase.State.Successful
-                }
+        when (val tokenWrapper = tokenRepo.fetchTokenWrapper(username, password)) {
+            is Either.Left -> {
+                val errorMessage =
+                    VRTErrorMessageConverter.mapToHumanReadableError(tokenWrapper.a)
+                _state.emit(AuthenticationUseCase.State.Fail(errorMessage))
             }
-        )
+            is Either.Right -> {
+                dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
+                authenticationNavigator.navigateNext()
+                _state.emit(AuthenticationUseCase.State.Successful)
+            }
+        }
     }
 
     private suspend fun checkPreconditions(

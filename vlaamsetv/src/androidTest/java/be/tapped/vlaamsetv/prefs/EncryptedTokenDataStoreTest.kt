@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import java.security.KeyStore
 
 @RunWith(AndroidJUnit4::class)
-internal class EncryptedDataStoreTest {
+internal class EncryptedTokenDataStoreTest {
 
     private val cryptoImpl
         get() = CryptoImpl(
@@ -25,7 +25,7 @@ internal class EncryptedDataStoreTest {
         )
 
     private val encryptedDataStore
-        get() = EncryptedDataStore(
+        get() = EncryptedTokenDataStore(
             ApplicationProvider.getApplicationContext(),
             cryptoImpl
         )

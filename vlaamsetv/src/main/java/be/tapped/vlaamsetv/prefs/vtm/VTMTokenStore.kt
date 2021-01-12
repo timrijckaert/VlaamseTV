@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.firstOrNull
 interface VTMTokenStore {
     suspend fun jwt(): JWT?
     suspend fun saveJWT(jwt: ApiResponse.Success.Authentication.Token)
+    suspend fun saveVTMCredentials(username: String, password: String)
 }
 
 class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
@@ -18,6 +19,13 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
         context.createDataStore(
             fileName = "vtmgo-jwt.pb",
             serializer = JWTProtoSerializer(crypto)
+        )
+    }
+
+    private val credentialsDataStore by lazy {
+        context.createDataStore(
+            fileName = "vtmgo-credentials.pb",
+            serializer = VTMCredentialsSerializer(crypto)
         )
     }
 
@@ -32,5 +40,11 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
 
     override suspend fun saveJWT(jwt: ApiResponse.Success.Authentication.Token) {
         jwtTokenDataStore.updateData { it.copy(token = jwt.jwt.token) }
+    }
+
+    override suspend fun saveVTMCredentials(username: String, password: String) {
+        credentialsDataStore.updateData {
+            it.copy(username = username, password = password)
+        }
     }
 }
