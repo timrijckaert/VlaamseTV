@@ -87,12 +87,7 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
                     is AuthenticationUseCase.State.Fail -> {
                         AlertDialog.Builder(requireContext())
                             .setTitle(R.string.auth_flow_fail_dialog_title)
-                            .setMessage(
-                                requireContext().getString(
-                                    it.errorMessage.error,
-                                    it.errorMessage.extras
-                                )
-                            )
+                            .setMessage(it.errorMessage.toString(requireContext()))
                             .setNeutralButton(android.R.string.ok) { _, _ -> }
                             .show()
                         Unit

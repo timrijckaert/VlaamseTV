@@ -1,12 +1,16 @@
 package be.tapped.vlaamsetv
 
+import android.content.Context
 import androidx.annotation.StringRes
 import be.tapped.vrtnu.profile.LoginFailure
 import be.tapped.vier.ApiResponse as VIERApiResponse
 import be.tapped.vrtnu.ApiResponse as VRTApiResponse
 import be.tapped.vtmgo.ApiResponse as VTMApiResponse
 
-data class ErrorMessage(@StringRes val error: Int, val extras: List<Any?> = emptyList())
+data class ErrorMessage(@StringRes val error: Int, val extras: List<Any?> = emptyList()) {
+    fun toString(context: Context): String =
+        context.getString(error, extras)
+}
 
 interface ErrorMessageConverter<in T> {
     fun mapToHumanReadableError(failure: T): ErrorMessage
