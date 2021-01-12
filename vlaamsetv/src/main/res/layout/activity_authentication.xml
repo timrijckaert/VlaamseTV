@@ -2,7 +2,7 @@
 <androidx.fragment.app.FragmentContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_host_fragment"
+    android:id="@id/nav_host_fragment"
     android:background="@color/black"
     android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="match_parent"

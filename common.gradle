@@ -19,6 +19,7 @@ android {
     // ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.class=be.tapped.vlaamsetv.prefs.EncryptedDataStoreTest
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
+        unitTests.returnDefaultValues = true
         animationsDisabled true
     }
 

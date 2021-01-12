@@ -7,14 +7,9 @@ import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
 import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.HttpProfileRepo
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.first
+import io.mockk.*
 
 class VTMAuthenticationUseCaseTest : BehaviorSpec() {
     init {
@@ -41,8 +36,8 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
                         coVerify(exactly = 0) { profileRepo.login("", "") }
                     }
 
-                    then("it should update the state") {
-                        sut.state.first() shouldBe AuthenticationUseCase.State.Fail(ErrorMessage(R.string.failure_generic_no_email))
+                    then("it should navigate to the error screen") {
+                        verify { authenticationNavigator.navigateToErrorScreen(ErrorMessage(R.string.failure_generic_no_email)) }
                     }
                 }
 
@@ -68,10 +63,6 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
                     then("it should have navigated to the next screen") {
                         coVerify { authenticationNavigator.navigateNext() }
                     }
-
-                    then("it should have updated the state") {
-                        sut.state.first() shouldBe AuthenticationUseCase.State.Successful
-                    }
                 }
 
                 and("it was not successful") {
@@ -83,8 +74,10 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
 
                     sut.login(username, password)
 
-                    then("it should have updated the state") {
-                        sut.state.first() shouldBe AuthenticationUseCase.State.Fail(errorMessage)
+                    then("it should navigate to the error screen") {
+                        verify {
+                            authenticationNavigator.navigateToErrorScreen(errorMessage)
+                        }
                     }
                 }
             }

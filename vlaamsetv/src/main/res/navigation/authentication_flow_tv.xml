@@ -36,6 +36,11 @@
             app:argType="be.tapped.vlaamsetv.auth.DefaultLoginConfiguration" />
     </fragment>
 
+    <fragment
+        android:id="@+id/authenticationFailedDialog"
+        android:name="be.tapped.vlaamsetv.auth.AuthenticationFailedDialog"
+        android:label="AuthenticationFailedDialog" />
+
     <action
         android:id="@+id/action_to_vrt_login_fragment"
         app:destination="@id/VRTLoginFragment"
@@ -53,5 +58,10 @@
         app:destination="@id/VIERLoginFragment"
         app:launchSingleTop="true"
         app:popUpTo="@id/VIERLoginFragment" />
+
+    <action
+        android:id="@+id/action_to_authenticationFailedDialog"
+        app:destination="@id/authenticationFailedDialog"
+        app:launchSingleTop="true" />
 
 </navigation>

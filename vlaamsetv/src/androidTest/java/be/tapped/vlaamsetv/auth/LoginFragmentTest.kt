@@ -8,7 +8,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.R
 import com.agoda.kakao.check.KCheckBox
 import com.agoda.kakao.dialog.KAlertDialog
@@ -19,8 +18,6 @@ import com.agoda.kakao.recycler.KRecyclerView
 import com.agoda.kakao.screen.Screen
 import com.agoda.kakao.screen.Screen.Companion.onScreen
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,8 +35,6 @@ internal class LoginFragmentTest {
             KRecyclerView(
                 builder = { withId(R.id.guidedactions_list2) },
                 itemTypeBuilder = { itemType(::GuidedActionItem) })
-
-        val alertDialog = KAlertDialog()
 
         class GuidedActionItem(parent: Matcher<View>) : KRecyclerItem<GuidedActionItem>(parent) {
             val checkMark = KCheckBox(parent) { withId(R.id.guidedactions_item_checkmark) }
@@ -102,103 +97,12 @@ internal class LoginFragmentTest {
 
     @Test
     internal fun authenticationWasSuccessfulShouldDo() {
-        setupVRTAuthenticationFragment(login = { _, _ -> AuthenticationUseCase.State.Successful })
+        setupVRTAuthenticationFragment()
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 firstChild<LoginFragmentScreen.GuidedActionItem> {
                     click()
                 }
-            }
-        }
-    }
-
-    @Test
-    internal fun authenticationFailedShouldShowDialog() {
-        setupVRTAuthenticationFragment(login = { _, _ ->
-            AuthenticationUseCase.State.Fail(
-                ErrorMessage(R.string.failure_vrtnu_network, listOf(400))
-            )
-        })
-        onScreen<LoginFragmentScreen> {
-            buttonActionsList {
-                firstChild<LoginFragmentScreen.GuidedActionItem> {
-                    click()
-                }
-            }
-
-            alertDialog {
-                isDisplayed()
-                title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Er ging iets mis met de communicatie naar de VRT NU server. Status code: [400]")
-            }
-        }
-    }
-
-    @Test
-    fun passingCredentials() {
-        var output = ""
-        setupVRTAuthenticationFragment(
-            login = { username, pass ->
-                output = "$username-$pass"
-                AuthenticationUseCase.State.Successful
-            }
-        )
-        onScreen<LoginFragmentScreen> {
-            guidedActionList {
-                firstChild<LoginFragmentScreen.GuidedActionItem> {
-                    click()
-                    description {
-                        typeText("john.doe@vrt.be")
-                        pressImeAction()
-                    }
-                }
-                childAt<LoginFragmentScreen.GuidedActionItem>(1) {
-                    description {
-                        typeText("my-super-secret-password")
-                        pressImeAction()
-                    }
-                }
-            }
-            buttonActionsList {
-                firstChild<LoginFragmentScreen.GuidedActionItem> {
-                    click()
-                }
-            }
-        }
-        output.toLowerCase() shouldBe "john.doe@vrt.be-my-super-secret-password"
-    }
-
-    @Test
-    fun enteringWrongCredentialsTwiceShouldRetriggerAlertDialog() {
-        setupVRTAuthenticationFragment(login = { _, _ ->
-            AuthenticationUseCase.State.Fail(
-                ErrorMessage(R.string.failure_vrtnu_network, listOf(400))
-            )
-        })
-        onScreen<LoginFragmentScreen> {
-            buttonActionsList {
-                firstChild<LoginFragmentScreen.GuidedActionItem> {
-                    click()
-                }
-            }
-
-            alertDialog {
-                isDisplayed()
-                title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Er ging iets mis met de communicatie naar de VRT NU server. Status code: [400]")
-                neutralButton.click()
-            }
-
-            buttonActionsList {
-                firstChild<LoginFragmentScreen.GuidedActionItem> {
-                    click()
-                }
-            }
-
-            alertDialog {
-                isDisplayed()
-                title.hasText(R.string.auth_flow_fail_dialog_title)
-                message.hasText("Er ging iets mis met de communicatie naar de VRT NU server. Status code: [400]")
             }
         }
     }
@@ -228,27 +132,15 @@ internal class LoginFragmentTest {
 
     }
 
-    private fun setupVRTAuthenticationFragment(
-        login: ((username: String, password: String) -> AuthenticationUseCase.State)? = null,
-        skip: (() -> AuthenticationUseCase.State)? = null,
-        isLastScreen: Boolean = false
-    ) {
+    private fun setupVRTAuthenticationFragment(isLastScreen: Boolean = false) {
         val authenticationUseCase = object : AuthenticationUseCase {
             override suspend fun login(username: String, password: String) {
-                if (login != null) {
-                    _state.emit(login(username, password))
-                }
+
             }
 
             override suspend fun skip() {
-                if (skip != null) {
-                    _state.emit(skip())
-                }
-            }
 
-            private val _state: MutableSharedFlow<AuthenticationUseCase.State> =
-                MutableSharedFlow(1)
-            override val state: Flow<AuthenticationUseCase.State> get() = _state
+            }
         }
 
         launchFragmentInContainer(

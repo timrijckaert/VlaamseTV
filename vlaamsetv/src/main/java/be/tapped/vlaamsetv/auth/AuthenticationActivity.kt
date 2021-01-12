@@ -6,7 +6,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.*
@@ -14,7 +13,6 @@ import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.CryptoImpl
 import be.tapped.vlaamsetv.prefs.EncryptedTokenDataStore
 import be.tapped.vrtnu.profile.ProfileRepo
-import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
 import be.tapped.vtmgo.profile.HttpProfileRepo as VTMHttpProfileRepo
@@ -29,6 +27,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
     private val navArgs by navArgs<AuthenticationActivityArgs>()
     private val authenticationNavigator by lazy {
         AuthenticationNavigator.create(
+            this,
             navHostFragment.navController,
             navArgs.config
         )
@@ -39,9 +38,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    lifecycleScope.launch {
-                        authenticationNavigator.navigateBack()
-                    }
+                    authenticationNavigator.navigateBack()
                 }
             })
 
@@ -60,9 +57,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
                 when (className) {
                     AuthenticationFragment::class.java.name ->
-                        AuthenticationFragment(
-                            authenticationNavigator
-                        )
+                        AuthenticationFragment(authenticationNavigator)
                     VRTLoginFragment::class.java.name -> {
                         VRTLoginFragment(
                             VRTAuthenticationUseCase(
@@ -70,7 +65,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 dataStore,
                                 authenticationNavigator,
                                 VRTErrorMessageConverter()
-                            )
+                            ),
                         )
                     }
                     VTMLoginFragment::class.java.name ->
@@ -80,7 +75,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 dataStore,
                                 authenticationNavigator,
                                 VTMErrorMessageConverter()
-                            )
+                            ),
                         )
                     VIERLoginFragment::class.java.name ->
                         VIERLoginFragment(
@@ -89,7 +84,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 dataStore,
                                 authenticationNavigator,
                                 VIERErrorMessageConverter()
-                            )
+                            ),
                         )
                     else -> super.instantiate(cls, className)
                 }

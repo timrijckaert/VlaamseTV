@@ -3,10 +3,8 @@ package be.tapped.vlaamsetv.auth
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputType
-import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
@@ -14,8 +12,6 @@ import androidx.leanback.widget.GuidedAction
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.exhaustive
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -77,27 +73,6 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
                     .build()
             )
         )
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            authenticationUseCase.state.collect {
-                when (it) {
-                    is AuthenticationUseCase.State.Fail -> {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle(R.string.auth_flow_fail_dialog_title)
-                            .setMessage(it.errorMessage.toString(requireContext()))
-                            .setNeutralButton(android.R.string.ok) { _, _ -> }
-                            .show()
-                        Unit
-                    }
-                    AuthenticationUseCase.State.Successful -> {
-
-                    }
-                }.exhaustive
-            }
-        }
     }
 
     override fun onCreateButtonActions(

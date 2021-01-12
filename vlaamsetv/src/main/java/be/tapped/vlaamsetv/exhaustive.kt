@@ -1,3 +1,3 @@
 package be.tapped.vlaamsetv
 
-val <T> T.exhaustive: T get() = this
+val <T> T.exhaustive: Unit get() = Unit
