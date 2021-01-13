@@ -55,6 +55,10 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
             sut.login(username, password)
 
             and("it was successful") {
+                then("it should save the VRT NU credentials") {
+                    coVerify { vrtTokenStore.saveVRTCredentials(username, password) }
+                }
+
                 then("it should save the retrieved token wrapper") {
                     coVerify { vrtTokenStore.saveTokenWrapper(tokenWrapper) }
                 }

@@ -38,8 +38,11 @@ class VRTAuthenticationUseCase(
                 )
             }
             is Either.Right -> {
-                dataStore.saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
-                dataStore.saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
+                with(dataStore) {
+                    saveVRTCredentials(username, password)
+                    saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
+                    saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
+                }
                 authenticationNavigator.navigateNext()
             }
         }
