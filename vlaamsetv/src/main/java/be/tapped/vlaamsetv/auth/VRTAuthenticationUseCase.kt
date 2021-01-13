@@ -1,10 +1,12 @@
 package be.tapped.vlaamsetv.auth
 
 import arrow.core.Either
+import arrow.core.computations.either
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.VRTErrorMessageConverter
 import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
+import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 
 class VRTAuthenticationUseCase(
@@ -17,26 +19,24 @@ class VRTAuthenticationUseCase(
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
 
-        // Simon 🪄🧙🏻
-        // Combine fetchXVRTToken + fetchTokenWrapper
-        // Run async
-        // Wait for both
-        //// Only if both are true we continue
-        //// Emit error on first occurrence
-        // 1. tokenRepo.fetchXVRTToken(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.VRTToken>
-        // 2. tokenRepo.fetchTokenWrapper(username, password) //Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token>
+        val tokenWrapperWithXVRTToken =
+            either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
+                val xVRTToken = !tokenRepo.fetchXVRTToken(username, password)
+                val tokenWrapper = !tokenRepo.fetchTokenWrapper(username, password)
+                tokenWrapper to xVRTToken
+            }
 
-        // Don't worry about code underneath
-        when (val tokenWrapper = tokenRepo.fetchTokenWrapper(username, password)) {
+        when (tokenWrapperWithXVRTToken) {
             is Either.Left -> {
                 authenticationNavigator.navigateToErrorScreen(
                     VRTErrorMessageConverter.mapToHumanReadableError(
-                        tokenWrapper.a
+                        tokenWrapperWithXVRTToken.a
                     )
                 )
             }
             is Either.Right -> {
-                dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
+                dataStore.saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
+                dataStore.saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
                 authenticationNavigator.navigateNext()
             }
         }

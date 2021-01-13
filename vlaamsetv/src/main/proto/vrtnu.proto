@@ -9,6 +9,10 @@ message TokenWrapper {
   int64 expiry = 3;
 }
 
+message XVRTToken {
+  string token = 1;
+}
+
 // We only use this as a back-up.
 // It is preferred to use the tokens as much as possible
 message VRTNUCredentials {

@@ -1,10 +1,11 @@
 package be.tapped.vlaamsetv.auth
 
+import androidx.core.app.ComponentActivity
 import androidx.navigation.NavController
-import be.tapped.vlaamsetv.errorMessageArb
-import be.tapped.vlaamsetv.gen
+import be.tapped.vlaamsetv.ErrorMessage
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.every
 import io.mockk.mockk
 
 class AuthenticationNavigatorTest : FreeSpec() {
@@ -13,6 +14,8 @@ class AuthenticationNavigatorTest : FreeSpec() {
         "An ${AuthenticationNavigatorTest::class.java.simpleName}" - {
             val navController: NavController = mockk()
 
+            val activity = mockk<ComponentActivity>()
+
             "and it has only 1 destination" - {
                 val authenticationScreenConfig =
                     arrayOf<AuthenticationNavigationConfiguration>(
@@ -20,7 +23,7 @@ class AuthenticationNavigatorTest : FreeSpec() {
                     )
 
                 val sut = AuthenticationNavigator.create(
-                    mockk(),
+                    activity,
                     navController,
                     authenticationScreenConfig
                 )
@@ -46,9 +49,12 @@ class AuthenticationNavigatorTest : FreeSpec() {
                 }
 
                 "when navigating to the error dialog" - {
-                    sut.navigateToErrorScreen(errorMessageArb.gen())
+                    val errorMessage = mockk<ErrorMessage> {
+                        every { toString(activity) } returns "Some Error Message"
+                    }
+                    sut.navigateToErrorScreen(errorMessage)
                     "then it should navigate to the error dialog" - {
-                        sut.currentScreen shouldBe AuthenticationNavigator.Screen.ErrorDialog
+                        sut.currentScreen shouldBe AuthenticationNavigator.Screen.ErrorDialog("Some Error Message")
 
                         "when returning to the previous screen" - {
                             sut.navigateBack()
@@ -69,7 +75,7 @@ class AuthenticationNavigatorTest : FreeSpec() {
                     )
 
                 val sut = AuthenticationNavigator.create(
-                    mockk(),
+                    activity,
                     navController,
                     authenticationScreenConfig
                 )

@@ -16,3 +16,11 @@ class VRTNUCredentialsSerializer(crypto: Crypto) :
         VRTNUCredentials(),
         VRTNUCredentials.ADAPTER
     )
+
+class XVRTTokenSerializer(crypto: Crypto) :
+    EncryptedProtoSerializer<XVRTToken>(
+        crypto,
+        XVRTToken(),
+        XVRTToken.ADAPTER
+    )
+

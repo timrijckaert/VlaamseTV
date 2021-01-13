@@ -7,11 +7,9 @@ import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.mockk.*
-import kotlinx.coroutines.flow.first
 
 class VRTAuthenticationUseCaseTest : BehaviorSpec({
 
@@ -44,15 +42,25 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
             }
 
             val tokenWrapper = tokenWrapperArb.gen()
+            val xVRTToken = xVRTTokenArb.gen()
+
             coEvery {
                 tokenRepo.fetchTokenWrapper(username, password)
             } returns ApiResponse.Success.Authentication.Token(tokenWrapper).right()
+
+            coEvery {
+                tokenRepo.fetchXVRTToken(username, password)
+            } returns ApiResponse.Success.Authentication.VRTToken(xVRTToken).right()
 
             sut.login(username, password)
 
             and("it was successful") {
                 then("it should save the retrieved token wrapper") {
                     coVerify { vrtTokenStore.saveTokenWrapper(tokenWrapper) }
+                }
+
+                then("it should save the XVRT token") {
+                    coVerify { vrtTokenStore.saveXVRTToken(xVRTToken) }
                 }
 
                 then("it should have navigated to the next screen") {
