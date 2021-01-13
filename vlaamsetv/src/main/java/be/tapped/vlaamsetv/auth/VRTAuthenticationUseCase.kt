@@ -2,12 +2,14 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.Either
 import arrow.core.computations.either
+import arrow.fx.coroutines.parMapN
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.VRTErrorMessageConverter
 import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
+import kotlinx.coroutines.Dispatchers
 
 class VRTAuthenticationUseCase(
     private val tokenRepo: TokenRepo,
@@ -21,9 +23,12 @@ class VRTAuthenticationUseCase(
 
         val tokenWrapperWithXVRTToken =
             either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
-                val xVRTToken = !tokenRepo.fetchXVRTToken(username, password)
-                val tokenWrapper = !tokenRepo.fetchTokenWrapper(username, password)
-                tokenWrapper to xVRTToken
+                parMapN(
+                    Dispatchers.IO,
+                    { !tokenRepo.fetchTokenWrapper(username, password) },
+                    { !tokenRepo.fetchXVRTToken(username, password) },
+                    ::Pair
+                )
             }
 
         when (tokenWrapperWithXVRTToken) {
