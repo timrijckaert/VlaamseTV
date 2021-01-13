@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.AesCipherProvider
-import be.tapped.vlaamsetv.prefs.CryptoImpl
-import be.tapped.vlaamsetv.prefs.EncryptedTokenDataStore
+import be.tapped.vlaamsetv.prefs.vier.VIERTokenStoreImpl
+import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
+import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
 import kotlinx.parcelize.Parcelize
 import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
@@ -20,6 +20,7 @@ import be.tapped.vtmgo.profile.HttpProfileRepo as VTMHttpProfileRepo
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
 
     private val app get() = application as App
+    private val crypto get() = app.crypto
 
     private val navHostFragment
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -43,17 +44,6 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
             })
 
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
-            private val dataStore = EncryptedTokenDataStore(
-                this@AuthenticationActivity,
-                CryptoImpl(
-                    AesCipherProvider(
-                        "VlaamseTvKey",
-                        app.keyStore,
-                        App.KEYSTORE_NAME
-                    )
-                )
-            )
-
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
                 when (className) {
                     AuthenticationFragment::class.java.name ->
@@ -62,7 +52,10 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         VRTLoginFragment(
                             VRTAuthenticationUseCase(
                                 ProfileRepo(),
-                                dataStore,
+                                VRTTokenStoreImpl(
+                                    this@AuthenticationActivity,
+                                    crypto
+                                ),
                                 authenticationNavigator,
                                 VRTErrorMessageConverter()
                             ),
@@ -72,7 +65,10 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         VTMLoginFragment(
                             VTMAuthenticationUseCase(
                                 VTMHttpProfileRepo(),
-                                dataStore,
+                                VTMTokenStoreImpl(
+                                    this@AuthenticationActivity,
+                                    crypto
+                                ),
                                 authenticationNavigator,
                                 VTMErrorMessageConverter()
                             ),
@@ -81,7 +77,10 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         VIERLoginFragment(
                             VIERAuthenticationUseCase(
                                 VierHttpProfileRepo(),
-                                dataStore,
+                                VIERTokenStoreImpl(
+                                    this@AuthenticationActivity,
+                                    crypto
+                                ),
                                 authenticationNavigator,
                                 VIERErrorMessageConverter()
                             ),
