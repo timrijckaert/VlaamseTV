@@ -39,6 +39,7 @@ dependencies {
     implementation Dependencies.okHttp3
     implementation Dependencies.coroutinesCore
     implementation Dependencies.arrowCore
+    implementation Dependencies.arrowFxCoroutines
     implementation Dependencies.androidXDataStore
     implementation Dependencies.wireRuntime
 

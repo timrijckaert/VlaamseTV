@@ -3,12 +3,18 @@ package be.tapped.vlaamsetv.prefs.vier
 import android.content.Context
 import androidx.datastore.createDataStore
 import be.tapped.vier.ApiResponse
+import be.tapped.vier.profile.AccessToken
+import be.tapped.vier.profile.IdToken
+import be.tapped.vier.profile.RefreshToken
+import be.tapped.vlaamsetv.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.vrt.VRTNUCredentialsSerializer
+import kotlinx.coroutines.flow.firstOrNull
 
 interface VIERTokenStore {
     suspend fun saveVierCredentials(username: String, password: String)
-    suspend fun token(): ApiResponse.Success.Authentication.Token
+    suspend fun vierCredentials(): Credential?
+    suspend fun token(): ApiResponse.Success.Authentication.Token?
     suspend fun saveTokenWrapper(token: ApiResponse.Success.Authentication.Token)
 }
 
@@ -34,9 +40,32 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
         }
     }
 
-    override suspend fun token(): ApiResponse.Success.Authentication.Token {
-        TODO("Not yet implemented")
-    }
+    override suspend fun vierCredentials(): Credential? =
+        credentialsDataStore.data.firstOrNull()?.let {
+            if (it.username.isNotBlank() && it.password.isNotBlank()) {
+                Credential(
+                    username = it.username,
+                    password = it.password
+                )
+            } else {
+                null
+            }
+        }
+
+    override suspend fun token(): ApiResponse.Success.Authentication.Token? =
+        vierTokenDataStore.data.firstOrNull()?.let {
+            if (it.accessToken.isNotBlank() && it.expiresIn != 1 && it.tokenType.isNotBlank() && it.refreshToken.isNotBlank() && it.idToken.isNotBlank()) {
+                ApiResponse.Success.Authentication.Token(
+                    accessToken = AccessToken(it.accessToken),
+                    expiresIn = it.expiresIn,
+                    tokenType = it.tokenType,
+                    refreshToken = RefreshToken(it.refreshToken),
+                    idToken = IdToken(it.idToken),
+                )
+            } else {
+                null
+            }
+        }
 
     override suspend fun saveTokenWrapper(token: ApiResponse.Success.Authentication.Token) {
         vierTokenDataStore.updateData {

@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.prefs.vtm
 
 import android.content.Context
 import androidx.datastore.createDataStore
+import be.tapped.vlaamsetv.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.JWT
@@ -11,6 +12,7 @@ interface VTMTokenStore {
     suspend fun jwt(): JWT?
     suspend fun saveJWT(jwt: ApiResponse.Success.Authentication.Token)
     suspend fun saveVTMCredentials(username: String, password: String)
+    suspend fun vtmCredentials(): Credential?
 }
 
 class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
@@ -47,4 +49,16 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
             it.copy(username = username, password = password)
         }
     }
+
+    override suspend fun vtmCredentials(): Credential? =
+        credentialsDataStore.data.firstOrNull()?.let {
+            if (it.username.isNotBlank() && it.password.isNotBlank()) {
+                Credential(
+                    username = it.username,
+                    password = it.password
+                )
+            } else {
+                null
+            }
+        }
 }

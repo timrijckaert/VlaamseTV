@@ -7,6 +7,8 @@ import be.tapped.vlaamsetv.gen
 import be.tapped.vlaamsetv.tokenWrapperArb
 import be.tapped.vrtnu.profile.AccessToken
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.string
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,6 +56,24 @@ internal class EncryptedTokenDataStoreTest {
 
             encryptedDataStore.saveTokenWrapper(tokenWrapper)
             encryptedDataStore.tokenWrapper() shouldBe tokenWrapper
+        }
+    }
+
+    @Test
+    fun shouldReturnFalseIfNoCredentialsArePresent() {
+        runBlocking {
+            encryptedDataStore.hasCredentialsForAtLeastOneBrand() shouldBe false
+        }
+    }
+
+    @Test
+    fun shouldReturnTrueIfHasAtLeastStoredOneCredential() {
+        runBlocking {
+            val string = Arb.string()
+            val username = string.gen()
+            val password = string.gen()
+            encryptedDataStore.saveVRTCredentials(username, password)
+            encryptedDataStore.hasCredentialsForAtLeastOneBrand() shouldBe true
         }
     }
 }

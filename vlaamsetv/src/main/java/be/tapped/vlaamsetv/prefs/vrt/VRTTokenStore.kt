@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.prefs.vrt
 
 import android.content.Context
 import androidx.datastore.createDataStore
+import be.tapped.vlaamsetv.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vrtnu.profile.AccessToken
 import be.tapped.vrtnu.profile.Expiry
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.firstOrNull
 
 interface VRTTokenStore {
     suspend fun saveVRTCredentials(username: String, password: String)
+    suspend fun vrtCredentials(): Credential?
     suspend fun tokenWrapper(): TokenWrapper?
     suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
 }
@@ -35,6 +37,18 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
             it.copy(username = username, password = password)
         }
     }
+
+    override suspend fun vrtCredentials(): Credential? =
+        credentialsDataStore.data.firstOrNull()?.let {
+            if (it.username.isNotBlank() && it.password.isNotBlank()) {
+                Credential(
+                    username = it.username,
+                    password = it.password
+                )
+            } else {
+                null
+            }
+        }
 
     override suspend fun tokenWrapper(): TokenWrapper? =
         vrtnuTokenDataStore.data.firstOrNull()?.let {
