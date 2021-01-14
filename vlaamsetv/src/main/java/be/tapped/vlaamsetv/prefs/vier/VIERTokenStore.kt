@@ -9,7 +9,6 @@ import be.tapped.vier.profile.IdToken
 import be.tapped.vier.profile.RefreshToken
 import be.tapped.vlaamsetv.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
-import be.tapped.vlaamsetv.prefs.vrt.VRTNUCredentialsSerializer
 import kotlinx.coroutines.flow.firstOrNull
 
 interface VIERTokenStore {
@@ -31,7 +30,7 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
     private val credentialsDataStore by lazy {
         context.createDataStore(
             fileName = "vier-credentials.pb",
-            serializer = VRTNUCredentialsSerializer(crypto)
+            serializer = VIERCredentialsSerializer(crypto)
         )
     }
 
