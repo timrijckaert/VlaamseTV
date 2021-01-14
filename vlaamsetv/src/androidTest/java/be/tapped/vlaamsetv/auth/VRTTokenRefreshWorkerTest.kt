@@ -35,16 +35,6 @@ class VRTTokenRefreshWorkerTest {
 
     private val context get() = ApplicationProvider.getApplicationContext<App>()
 
-    @Before
-    fun setUp() {
-        val config = Configuration.Builder()
-            .setMinimumLoggingLevel(Log.DEBUG)
-            .setExecutor(SynchronousExecutor())
-            .build()
-
-        WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-    }
-
     @Test
     fun noRefreshTokenInStoreShouldFailure() {
         val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
