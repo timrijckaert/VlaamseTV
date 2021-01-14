@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.firstOrNull
 interface VRTTokenStore {
     suspend fun saveVRTCredentials(username: String, password: String)
     suspend fun vrtCredentials(): Credential?
-    suspend fun tokenWrapper(): TokenWrapper?
+    suspend fun token(): TokenWrapper?
     suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper)
     suspend fun saveXVRTToken(xVRTToken: XVRTToken)
     suspend fun xVRTToken(): XVRTToken?
@@ -22,7 +22,7 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     private val vrtnuTokenDataStore by lazy {
         context.createDataStore(
             fileName = "vrtnu-token.pb",
-            serializer = TokenWrapperSerializer(crypto)
+            serializer = VRTTokenWrapperSerializer(crypto)
         )
     }
 
@@ -58,7 +58,7 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
             }
         }
 
-    override suspend fun tokenWrapper(): TokenWrapper? =
+    override suspend fun token(): TokenWrapper? =
         vrtnuTokenDataStore.data.firstOrNull()?.let {
             if (it.accessToken.isNotBlank() && it.refreshToken.isNotBlank() && it.expiry != 0L) {
                 TokenWrapper(

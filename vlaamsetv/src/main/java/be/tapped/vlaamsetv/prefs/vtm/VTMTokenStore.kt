@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.datastore.createDataStore
 import be.tapped.vlaamsetv.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
-import be.tapped.vtmgo.ApiResponse
+import be.tapped.vtmgo.profile.Expiry
 import be.tapped.vtmgo.profile.JWT
+import be.tapped.vtmgo.profile.TokenWrapper
 import kotlinx.coroutines.flow.firstOrNull
 
 interface VTMTokenStore {
-    suspend fun jwt(): JWT?
-    suspend fun saveJWT(jwt: ApiResponse.Success.Authentication.Token)
+    suspend fun token(): TokenWrapper?
+    suspend fun saveToken(token: TokenWrapper)
     suspend fun saveVTMCredentials(username: String, password: String)
     suspend fun vtmCredentials(): Credential?
 }
@@ -20,7 +21,7 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
     private val jwtTokenDataStore by lazy {
         context.createDataStore(
             fileName = "vtmgo-jwt.pb",
-            serializer = JWTProtoSerializer(crypto)
+            serializer = TokenWrapperSerializer(crypto)
         )
     }
 
@@ -31,17 +32,25 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
         )
     }
 
-    override suspend fun jwt(): JWT? =
+    override suspend fun token(): TokenWrapper? =
         jwtTokenDataStore.data.firstOrNull()?.let {
-            if (it.token.isNotBlank()) {
-                JWT(it.token)
+            if (it.token.isNotBlank() && it.expiry != 0L) {
+                TokenWrapper(
+                    JWT(it.token),
+                    Expiry(it.expiry)
+                )
             } else {
                 null
             }
         }
 
-    override suspend fun saveJWT(jwt: ApiResponse.Success.Authentication.Token) {
-        jwtTokenDataStore.updateData { it.copy(token = jwt.jwt.token) }
+    override suspend fun saveToken(token: TokenWrapper) {
+        jwtTokenDataStore.updateData {
+            it.copy(
+                token = token.jwt.token,
+                expiry = token.expiry.date
+            )
+        }
     }
 
     override suspend fun saveVTMCredentials(username: String, password: String) {

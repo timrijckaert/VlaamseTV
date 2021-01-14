@@ -6,7 +6,15 @@ import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
 
 interface TokenUseCase {
+    enum class Brand {
+        VRT,
+        VTM,
+        VIER,
+    }
+
     suspend fun hasCredentialsForAtLeastOneBrand(): Boolean
+
+    suspend fun isTokenExpired(brand: Brand): Boolean
 }
 
 class CompositeTokenCollectorUseCase(
@@ -23,4 +31,11 @@ class CompositeTokenCollectorUseCase(
         )
         return hasVrtCredentials || hasVtmCredentials || hasVierCredentials
     }
+
+    override suspend fun isTokenExpired(brand: TokenUseCase.Brand): Boolean = when (brand) {
+        TokenUseCase.Brand.VRT -> vrtTokenStore.token()?.expiry?.date ?: -1 <= System.currentTimeMillis()
+        TokenUseCase.Brand.VTM -> vtmTokenStore.token()?.expiry?.date ?: -1 <= System.currentTimeMillis()
+        TokenUseCase.Brand.VIER -> false
+    }
+
 }

@@ -5,7 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.tapped.vlaamsetv.App
 import be.tapped.vlaamsetv.gen
 import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
-import be.tapped.vlaamsetv.tokenWrapperArb
+import be.tapped.vlaamsetv.vrtTokenWrapperArb
 import be.tapped.vrtnu.profile.AccessToken
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -33,27 +33,27 @@ class VRTTokenStoreImplTest {
     @Test
     fun nothingInsideTheDataStoreShouldReturnNull() {
         runBlocking {
-            vrtnuTokenStore.tokenWrapper() shouldBe null
+            vrtnuTokenStore.token() shouldBe null
         }
     }
 
     @Test
     fun savingAVRTTokenWrapperShouldBeRetrievable() {
         runBlocking {
-            val tokenWrapper = tokenWrapperArb.gen()
+            val tokenWrapper = vrtTokenWrapperArb.gen()
             vrtnuTokenStore.saveTokenWrapper(tokenWrapper)
-            vrtnuTokenStore.tokenWrapper() shouldBe tokenWrapper
+            vrtnuTokenStore.token() shouldBe tokenWrapper
         }
     }
 
     @Test
     fun savingALongToken() {
         runBlocking {
-            val tokenWrapper = tokenWrapperArb.gen()
+            val tokenWrapper = vrtTokenWrapperArb.gen()
                 .copy(accessToken = AccessToken("eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3Blct"))
 
             vrtnuTokenStore.saveTokenWrapper(tokenWrapper)
-            vrtnuTokenStore.tokenWrapper() shouldBe tokenWrapper
+            vrtnuTokenStore.token() shouldBe tokenWrapper
         }
     }
 

@@ -41,7 +41,7 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 }
             }
 
-            val tokenWrapper = tokenWrapperArb.gen()
+            val tokenWrapper = vrtTokenWrapperArb.gen()
             val xVRTToken = xVRTTokenArb.gen()
 
             coEvery {

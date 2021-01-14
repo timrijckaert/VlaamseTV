@@ -41,7 +41,7 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
                     }
                 }
 
-                val token = ApiResponse.Success.Authentication.Token(vtmJWTArb.gen())
+                val token = ApiResponse.Success.Authentication.Token(vtmTokenWrapper.gen())
                 coEvery {
                     profileRepo.login(
                         username,
@@ -57,7 +57,7 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
                     }
 
                     then("it should save the JWT token") {
-                        coVerify { vtmTokenStore.saveJWT(token) }
+                        coVerify { vtmTokenStore.saveToken(token.token) }
                     }
 
                     then("it should have navigated to the next screen") {

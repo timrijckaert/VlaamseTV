@@ -8,7 +8,7 @@ import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.*
 
-val tokenWrapperArb: Arb<TokenWrapper> = arbitrary {
+val vrtTokenWrapperArb: Arb<TokenWrapper> = arbitrary {
     val accessToken = AccessToken(Arb.string(minSize = 1).gen())
     val refreshToken = RefreshToken(Arb.string(minSize = 1).gen())
     val expiry = Expiry(Arb.long().gen())
@@ -45,6 +45,14 @@ val vierTokenArb: Arb<ApiResponse.Success.Authentication.Token> = arbitrary {
 }
 
 val vtmJWTArb: Arb<JWT> = arbitrary { JWT(Arb.string().gen()) }
+val expiryArb: Arb<be.tapped.vtmgo.profile.Expiry> =
+    arbitrary { be.tapped.vtmgo.profile.Expiry(Arb.long().gen()) }
+val vtmTokenWrapper: Arb<be.tapped.vtmgo.profile.TokenWrapper> = arbitrary {
+    be.tapped.vtmgo.profile.TokenWrapper(
+        vtmJWTArb.gen(),
+        expiryArb.gen()
+    )
+}
 val xVRTTokenArb: Arb<XVRTToken> = arbitrary { XVRTToken(Arb.string().gen()) }
 
 fun <T> Arb<T>.genList(amount: Int = 5, rs: RandomSource = RandomSource.Default): List<T> =
