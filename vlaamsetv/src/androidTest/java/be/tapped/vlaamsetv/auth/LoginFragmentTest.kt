@@ -10,7 +10,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.tapped.vlaamsetv.R
 import com.agoda.kakao.check.KCheckBox
-import com.agoda.kakao.dialog.KAlertDialog
 import com.agoda.kakao.edit.KEditText
 import com.agoda.kakao.image.KImageView
 import com.agoda.kakao.recycler.KRecyclerItem
@@ -47,7 +46,7 @@ internal class LoginFragmentTest {
 
     @Test
     fun noCredentialsArePassed() {
-        setupVRTAuthenticationFragment()
+        setupAuthenticationFragment()
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 getSize() shouldBe 2
@@ -63,7 +62,7 @@ internal class LoginFragmentTest {
 
     @Test
     fun nextFocus() {
-        setupVRTAuthenticationFragment()
+        setupAuthenticationFragment()
         onScreen<LoginFragmentScreen> {
             guidedActionList {
                 getSize() shouldBe 2
@@ -97,7 +96,7 @@ internal class LoginFragmentTest {
 
     @Test
     fun ifIsLastScreenShouldHaveTheCorrectMessage() {
-        setupVRTAuthenticationFragment(isLastScreen = true)
+        setupAuthenticationFragment(isLastScreen = true)
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 childAt<LoginFragmentScreen.GuidedActionItem>(1) {
@@ -109,7 +108,7 @@ internal class LoginFragmentTest {
 
     @Test
     fun ifIsNotLastScreenShouldHaveTheCorrectMessage() {
-        setupVRTAuthenticationFragment(isLastScreen = false)
+        setupAuthenticationFragment(isLastScreen = false)
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 childAt<LoginFragmentScreen.GuidedActionItem>(1) {
@@ -120,7 +119,7 @@ internal class LoginFragmentTest {
 
     }
 
-    private fun setupVRTAuthenticationFragment(isLastScreen: Boolean = false) {
+    private fun setupAuthenticationFragment(isLastScreen: Boolean = false) {
         val authenticationUseCase = object : AuthenticationUseCase {
             override suspend fun login(username: String, password: String) {
 
