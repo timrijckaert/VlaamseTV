@@ -42,6 +42,7 @@ dependencies {
     implementation Dependencies.arrowFxCoroutines
     implementation Dependencies.androidXDataStore
     implementation Dependencies.wireRuntime
+    implementation Dependencies.workRuntime
 
     implementation "be.tapped.vlaamsetv:vier"
     implementation "be.tapped.vlaamsetv:vrtnu"
@@ -53,15 +54,18 @@ dependencies {
     testImplementation Testing.kotestProperty
     testImplementation Testing.mockk
 
-    androidTestImplementation Dependencies.uiTestJunit
-    androidTestImplementation Dependencies.espressoCore
-    androidTestImplementation Dependencies.uiTestRules
-    androidTestImplementation Dependencies.espressoContribution
+    androidTestImplementation Testing.junit
+    androidTestImplementation Testing.espressoCore
+    androidTestImplementation Testing.uiTestRules
+    androidTestImplementation Testing.espressoContribution
     androidTestImplementation Testing.junit
     androidTestImplementation Testing.kakao
     androidTestImplementation Testing.testNavigation
     androidTestImplementation Testing.kotestAssertionsCore
     androidTestImplementation Testing.kotestProperty
+    // adb shell am broadcast -a "androidx.work.diagnostics.REQUEST_DIAGNOSTICS" -p "be.tapped.vlaamsetv"
+    // adb shell dumpsys jobscheduler
+    androidTestImplementation Testing.workManagerTest
     androidTestUtil Testing.testOrchestrator
     debugImplementation Testing.fragmentTest
     debugImplementation Testing.leakCanary

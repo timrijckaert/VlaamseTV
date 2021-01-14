@@ -7,6 +7,7 @@ object Versions {
 }
 
 private const val navVersion = "2.3.2"
+private const val workVersion = "2.4.0"
 
 object Dependencies {
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlinVersion}"
@@ -62,13 +63,10 @@ object Dependencies {
     const val arrowFx = "io.arrow-kt:arrow-fx:${arrowVersion}"
     const val arrowFxCoroutines = "io.arrow-kt:arrow-fx-coroutines:${arrowVersion}"
 
+    const val workRuntime = "androidx.work:work-runtime-ktx:$workVersion"
+
     private const val coroutineVersion = "1.4.1"
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutineVersion}"
-
-    const val uiTestJunit = "androidx.test.ext:junit:1.1.2"
-    const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
-    const val uiTestRules = "androidx.test:rules:1.2.0"
-    const val espressoContribution = "androidx.test.espresso:espresso-contrib:3.2.0"
 }
 
 object Plugins {
@@ -92,10 +90,14 @@ object Testing {
 
     const val fragmentTest = "androidx.fragment:fragment-testing:1.2.5"
 
+    const val espressoCore = "androidx.test.espresso:espresso-core:3.2.0"
+    const val espressoContribution = "androidx.test.espresso:espresso-contrib:3.2.0"
+    const val uiTestRules = "androidx.test:rules:1.2.0"
     const val testRunner = "androidx.test:runner:1.3.0"
     const val testRules = "androidx.test:rules:1.3.0"
     const val testOrchestrator = "androidx.test:orchestrator:1.3.0"
     const val kakao = "com.agoda.kakao:kakao:2.4.0"
+    const val workManagerTest = "androidx.work:work-testing:$workVersion"
 
     const val testNavigation = "androidx.navigation:navigation-testing:$navVersion"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.6"

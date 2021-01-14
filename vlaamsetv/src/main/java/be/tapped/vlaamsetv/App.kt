@@ -1,12 +1,15 @@
 package be.tapped.vlaamsetv
 
 import android.app.Application
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import be.tapped.vlaamsetv.auth.AuthenticationWorkerFactory
 import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.CryptoImpl
 import java.security.KeyStore
 
-class App : Application() {
+class App : Application(), Configuration.Provider {
 
     companion object {
         private const val KEYSTORE_NAME: String = "AndroidKeyStore"
@@ -25,4 +28,15 @@ class App : Application() {
             )
         )
     }
+
+    override fun onCreate() {
+        super.onCreate()
+        WorkManager.getInstance(this)
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
+            .build()
 }
