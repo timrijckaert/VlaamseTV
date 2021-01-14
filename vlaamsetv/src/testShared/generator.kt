@@ -29,12 +29,17 @@ val errorMessageArb: Arb<ErrorMessage> = arbitrary {
     )
 }
 
+val vierAccessToken: Arb<be.tapped.vier.profile.AccessToken> =
+    arbitrary { be.tapped.vier.profile.AccessToken(Arb.string().gen()) }
+val vierRefreshToken: Arb<be.tapped.vier.profile.RefreshToken> =
+    arbitrary { be.tapped.vier.profile.RefreshToken(Arb.string().gen()) }
+val vierIdToken: Arb<IdToken> = arbitrary { IdToken(Arb.string().gen()) }
 val vierTokenArb: Arb<ApiResponse.Success.Authentication.Token> = arbitrary {
-    val accessToken = be.tapped.vier.profile.AccessToken(Arb.string().gen())
-    val expiresIn = Arb.int().gen()
+    val accessToken = vierAccessToken.gen()
+    val expiresIn = vierExpiry.gen()
     val tokenType = Arb.string().gen()
-    val refreshToken = be.tapped.vier.profile.RefreshToken(Arb.string().gen())
-    val idToken = IdToken(Arb.string().gen())
+    val refreshToken = vierRefreshToken.gen()
+    val idToken = vierIdToken.gen()
     ApiResponse.Success.Authentication.Token(
         accessToken,
         expiresIn,
@@ -44,6 +49,8 @@ val vierTokenArb: Arb<ApiResponse.Success.Authentication.Token> = arbitrary {
     )
 }
 
+val vierExpiry: Arb<be.tapped.vier.profile.Expiry> =
+    arbitrary { be.tapped.vier.profile.Expiry(Arb.long().gen()) }
 val vtmJWTArb: Arb<JWT> = arbitrary { JWT(Arb.string().gen()) }
 val expiryArb: Arb<be.tapped.vtmgo.profile.Expiry> =
     arbitrary { be.tapped.vtmgo.profile.Expiry(Arb.long().gen()) }

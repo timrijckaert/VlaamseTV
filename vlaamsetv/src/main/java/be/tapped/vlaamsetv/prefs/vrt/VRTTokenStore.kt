@@ -76,7 +76,7 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
             it.copy(
                 accessToken = tokenWrapper.accessToken.token,
                 refreshToken = tokenWrapper.refreshToken.token,
-                expiry = tokenWrapper.expiry.date
+                expiry = tokenWrapper.expiry.dateInMillis
             )
         }
     }

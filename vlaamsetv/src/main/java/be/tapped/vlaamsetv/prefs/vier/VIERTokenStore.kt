@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.createDataStore
 import be.tapped.vier.ApiResponse
 import be.tapped.vier.profile.AccessToken
+import be.tapped.vier.profile.Expiry
 import be.tapped.vier.profile.IdToken
 import be.tapped.vier.profile.RefreshToken
 import be.tapped.vlaamsetv.prefs.Credential
@@ -15,7 +16,7 @@ interface VIERTokenStore {
     suspend fun saveVierCredentials(username: String, password: String)
     suspend fun vierCredentials(): Credential?
     suspend fun token(): ApiResponse.Success.Authentication.Token?
-    suspend fun saveTokenWrapper(token: ApiResponse.Success.Authentication.Token)
+    suspend fun saveToken(token: ApiResponse.Success.Authentication.Token)
 }
 
 class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
@@ -54,10 +55,10 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
 
     override suspend fun token(): ApiResponse.Success.Authentication.Token? =
         vierTokenDataStore.data.firstOrNull()?.let {
-            if (it.accessToken.isNotBlank() && it.expiresIn != 1 && it.tokenType.isNotBlank() && it.refreshToken.isNotBlank() && it.idToken.isNotBlank()) {
+            if (it.accessToken.isNotBlank() && it.expiresIn != 0L && it.tokenType.isNotBlank() && it.refreshToken.isNotBlank() && it.idToken.isNotBlank()) {
                 ApiResponse.Success.Authentication.Token(
                     accessToken = AccessToken(it.accessToken),
-                    expiresIn = it.expiresIn,
+                    expiry = Expiry(it.expiresIn),
                     tokenType = it.tokenType,
                     refreshToken = RefreshToken(it.refreshToken),
                     idToken = IdToken(it.idToken),
@@ -67,11 +68,11 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
             }
         }
 
-    override suspend fun saveTokenWrapper(token: ApiResponse.Success.Authentication.Token) {
+    override suspend fun saveToken(token: ApiResponse.Success.Authentication.Token) {
         vierTokenDataStore.updateData {
             it.copy(
                 accessToken = token.accessToken.token,
-                expiresIn = token.expiresIn,
+                expiresIn = token.expiry.dateInMillis,
                 tokenType = token.tokenType,
                 refreshToken = token.refreshToken.token,
                 idToken = token.idToken.token,

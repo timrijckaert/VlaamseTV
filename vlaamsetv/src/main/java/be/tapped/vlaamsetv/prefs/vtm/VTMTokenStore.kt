@@ -48,7 +48,7 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
         jwtTokenDataStore.updateData {
             it.copy(
                 token = token.jwt.token,
-                expiry = token.expiry.date
+                expiry = token.expiry.dateInMillis
             )
         }
     }

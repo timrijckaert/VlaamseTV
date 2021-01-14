@@ -2,13 +2,10 @@ package be.tapped.vlaamsetv.prefs
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.tapped.vlaamsetv.App
-import be.tapped.vlaamsetv.gen
+import be.tapped.vlaamsetv.*
 import be.tapped.vlaamsetv.prefs.vier.VIERTokenStoreImpl
 import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStoreImpl
-import be.tapped.vlaamsetv.vrtTokenWrapperArb
-import be.tapped.vlaamsetv.vtmTokenWrapper
 import be.tapped.vrtnu.profile.Expiry
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -85,7 +82,7 @@ internal class TokenUseCaseTest {
     }
 
     @Test
-    fun shouldReturnFalseIfTokenIsExpiredForVTM() {
+    fun shouldReturnFalseIfTokenIsNotExpiredForVTM() {
         runBlocking {
             vtmgoTokenStore.saveToken(
                 vtmTokenWrapper.gen()
@@ -105,6 +102,30 @@ internal class TokenUseCaseTest {
             )
             val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VTM)
             isVTMTokenExpired shouldBe true
+        }
+    }
+
+    @Test
+    fun shouldReturnFalseIfTokenIsNotExpiredForVIER() {
+        runBlocking {
+            vierTokenStore.saveToken(
+                vierTokenArb.gen()
+                    .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() + 1 * 60 * 60 * 1000))
+            )
+            val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VIER)
+            isVIERTokenExpired shouldBe false
+        }
+    }
+
+    @Test
+    fun shouldReturnTrueIfTokenIsExpiredForVIER() {
+        runBlocking {
+            vierTokenStore.saveToken(
+                vierTokenArb.gen()
+                    .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() - 1 * 60 * 60 * 1000))
+            )
+            val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VIER)
+            isVIERTokenExpired shouldBe true
         }
     }
 }

@@ -5,7 +5,7 @@ option java_multiple_files = true;
 
 message Token {
   string accessToken = 1;
-  int32 expiresIn = 2;
+  int64 expiresIn = 2;
   string tokenType = 3;
   string refreshToken = 4;
   string idToken = 5;

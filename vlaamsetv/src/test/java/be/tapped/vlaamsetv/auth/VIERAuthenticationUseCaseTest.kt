@@ -61,7 +61,7 @@ class VIERAuthenticationUseCaseTest : BehaviorSpec() {
                     }
 
                     then("it should save the token") {
-                        coVerify { vierTokenStore.saveTokenWrapper(token) }
+                        coVerify { vierTokenStore.saveToken(token) }
                     }
 
                     then("it should have navigated to the next screen") {

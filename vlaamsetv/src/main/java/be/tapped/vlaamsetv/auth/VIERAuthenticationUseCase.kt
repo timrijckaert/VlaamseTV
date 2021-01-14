@@ -25,7 +25,7 @@ class VIERAuthenticationUseCase(
             }
             is Either.Right -> {
                 vierTokenStore.saveVierCredentials(username, password)
-                vierTokenStore.saveTokenWrapper(token.b)
+                vierTokenStore.saveToken(token.b)
                 authenticationNavigator.navigateNext()
             }
         }
