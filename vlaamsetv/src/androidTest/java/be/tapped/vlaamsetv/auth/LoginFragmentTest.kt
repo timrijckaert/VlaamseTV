@@ -96,18 +96,6 @@ internal class LoginFragmentTest {
         }
 
     @Test
-    internal fun authenticationWasSuccessfulShouldDo() {
-        setupVRTAuthenticationFragment()
-        onScreen<LoginFragmentScreen> {
-            buttonActionsList {
-                firstChild<LoginFragmentScreen.GuidedActionItem> {
-                    click()
-                }
-            }
-        }
-    }
-
-    @Test
     fun ifIsLastScreenShouldHaveTheCorrectMessage() {
         setupVRTAuthenticationFragment(isLastScreen = true)
         onScreen<LoginFragmentScreen> {
