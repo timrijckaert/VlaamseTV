@@ -13,7 +13,6 @@ object Dependencies {
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlinVersion}"
 
     const val androidXDataStore = "androidx.datastore:datastore:1.0.0-alpha05"
-    const val androidXSecurity = "androidx.security:security-crypto:1.0.0-rc03"
 
     private const val exoPlayerVersion = "2.12.2"
 
@@ -24,20 +23,15 @@ object Dependencies {
     // Optional
     const val exoplayerDash = "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVersion}"
     const val exoplayerHLS = "com.google.android.exoplayer:exoplayer-hls:${exoPlayerVersion}"
-    const val exoplayerSmoothStreaming =
-        "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
+    const val exoplayerSmoothStreaming = "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
     const val exoplayerUi = "com.google.android.exoplayer:exoplayer-ui:${exoPlayerVersion}"
 
     // Extensions
     const val exoplayerExtCast = "com.google.android.exoplayer:extension-cast:${exoPlayerVersion}"
-    const val exoplayerExtLeanback =
-        "com.google.android.exoplayer:extension-leanback:${exoPlayerVersion}"
-    const val exoplayerExtMedia2 =
-        "com.google.android.exoplayer:extension-media2:${exoPlayerVersion}"
-    const val exoplayerExtMediaSession =
-        "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
-    const val exoplayerExtWorkManager =
-        "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
+    const val exoplayerExtLeanback = "com.google.android.exoplayer:extension-leanback:${exoPlayerVersion}"
+    const val exoplayerExtMedia2 = "com.google.android.exoplayer:extension-media2:${exoPlayerVersion}"
+    const val exoplayerExtMediaSession = "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
+    const val exoplayerExtWorkManager = "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
 
     // Android TV
     const val leanbackApp = "androidx.leanback:leanback:1.1.0-beta01"
@@ -74,7 +68,7 @@ object Plugins {
     const val androidGradle = "com.android.tools.build:gradle:4.1.1"
     const val wire = "com.squareup.wire:wire-gradle-plugin:3.3.0"
     const val navigationSafeArgs =
-        "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
+            "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
 }
 
 object Testing {
