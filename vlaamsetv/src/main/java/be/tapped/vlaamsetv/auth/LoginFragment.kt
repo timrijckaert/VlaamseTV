@@ -89,7 +89,7 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
                         GuidedAction
                                 .Builder(context)
                                 .id(SECONDARY_BUTTON)
-                                .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_skip)
+                                .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_next)
                                 .build(),
                 )
         )

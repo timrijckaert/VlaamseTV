@@ -44,6 +44,14 @@ internal class LoginFragmentTest {
         }
     }
 
+    private val testNavHostController =
+            TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
+                Handler(Looper.getMainLooper()).post {
+                    setGraph(R.navigation.authentication_flow_tv)
+                    setCurrentDestination(R.id.VRTLoginFragment)
+                }
+            }
+
     @Test
     fun noCredentialsArePassed() {
         setupAuthenticationFragment()
@@ -54,7 +62,7 @@ internal class LoginFragmentTest {
                     title.hasText(R.string.auth_flow_login)
                 }
                 childAt<LoginFragmentScreen.GuidedActionItem>(1) {
-                    title.hasText(R.string.auth_flow_skip)
+                    title.hasText(R.string.auth_flow_next)
                 }
             }
         }
@@ -86,16 +94,8 @@ internal class LoginFragmentTest {
         }
     }
 
-    private val testNavHostController =
-            TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
-                Handler(Looper.getMainLooper()).post {
-                    setGraph(R.navigation.authentication_flow_tv)
-                    setCurrentDestination(R.id.VRTLoginFragment)
-                }
-            }
-
     @Test
-    fun ifIsLastScreenShouldHaveTheCorrectMessage() {
+    fun ifIsLastScreenShouldHaveTheCorrectMessageOnButton() {
         setupAuthenticationFragment(isLastScreen = true)
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
@@ -112,7 +112,7 @@ internal class LoginFragmentTest {
         onScreen<LoginFragmentScreen> {
             buttonActionsList {
                 childAt<LoginFragmentScreen.GuidedActionItem>(1) {
-                    title.hasText(R.string.auth_flow_skip)
+                    title.hasText(R.string.auth_flow_next)
                 }
             }
         }

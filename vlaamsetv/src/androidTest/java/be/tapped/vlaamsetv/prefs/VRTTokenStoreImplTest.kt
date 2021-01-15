@@ -31,14 +31,14 @@ class VRTTokenStoreImplTest {
     private val vrtnuTokenStore get() = VRTTokenStoreImpl(app, crypto)
 
     @Test
-    fun nothingInsideTheDataStoreShouldReturnNull() {
+    fun nothingInsideTheDataStoreShouldReturnANullVRTToken() {
         runBlocking {
             vrtnuTokenStore.token() shouldBe null
         }
     }
 
     @Test
-    fun savingAVRTTokenWrapperShouldBeRetrievable() {
+    fun savingAVRTTokenShouldAndRetrievingResultsInTheSameObject() {
         runBlocking {
             val tokenWrapper = vrtTokenWrapperArb.gen()
             vrtnuTokenStore.saveTokenWrapper(tokenWrapper)
@@ -46,6 +46,7 @@ class VRTTokenStoreImplTest {
         }
     }
 
+    // This test is here since this behavior broke before.
     @Test
     fun savingALongToken() {
         runBlocking {
@@ -58,7 +59,7 @@ class VRTTokenStoreImplTest {
     }
 
     @Test
-    fun savingCredentialsShouldBeRetrievableAfterwards() {
+    fun savingCredentialsShouldReturnTheSameObject() {
         runBlocking {
             vrtnuTokenStore.vrtCredentials() shouldBe null
             val stringGen = Arb.string()

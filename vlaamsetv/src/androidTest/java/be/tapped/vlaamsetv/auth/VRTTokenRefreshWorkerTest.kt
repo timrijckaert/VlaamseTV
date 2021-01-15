@@ -43,7 +43,7 @@ class VRTTokenRefreshWorkerTest {
     }
 
     @Test
-    fun tokenRefreshFailedShouldFailure() {
+    fun tokenRefreshFailedShouldResultInAFailure() {
         val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
                 .setWorkerFactory(
                         buildWorkerFactory(
@@ -59,7 +59,7 @@ class VRTTokenRefreshWorkerTest {
     }
 
     @Test
-    fun tokenRefreshShouldBeSuccessful() {
+    fun tokenRefreshWasSuccessFulShouldResultInASuccess() {
         val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
                 .setWorkerFactory(
                         buildWorkerFactory(
@@ -92,7 +92,7 @@ class VRTTokenRefreshWorkerTest {
                                     userName: String,
                                     password: String
                             ): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token> {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
 
                             override suspend fun refreshTokenWrapper(refreshToken: RefreshToken): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token> =
@@ -102,11 +102,11 @@ class VRTTokenRefreshWorkerTest {
                                     userName: String,
                                     password: String
                             ): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.VRTToken> {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
 
                             override suspend fun fetchVRTPlayerToken(xVRTToken: XVRTToken): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.PlayerToken> {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
                         },
                         object : VRTTokenStore {
@@ -114,11 +114,11 @@ class VRTTokenRefreshWorkerTest {
                                     username: String,
                                     password: String
                             ) {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
 
                             override suspend fun vrtCredentials(): Credential? {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
 
                             override suspend fun token(): TokenWrapper = tokenFunc()
@@ -127,11 +127,11 @@ class VRTTokenRefreshWorkerTest {
                             }
 
                             override suspend fun saveXVRTToken(xVRTToken: XVRTToken) {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
 
                             override suspend fun xVRTToken(): XVRTToken? {
-                                TODO("Not yet implemented")
+                                throw RuntimeException("Test is not allowed to call this method.")
                             }
 
                         }

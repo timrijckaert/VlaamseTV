@@ -10,7 +10,7 @@
     <string name="auth_flow_vtmgo_step_breadcrumb">VTM GO</string>
     <string name="auth_flow_vier_step_breadcrumb">VIER</string>
 
-    <string name="auth_flow_skip">Overslaan</string>
+    <string name="auth_flow_next">Volgende</string>
     <string name="auth_flow_finish">Klaar</string>
     <string name="auth_flow_login">Aanmelden</string>
 
