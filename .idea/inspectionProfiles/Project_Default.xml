@@ -85,7 +85,7 @@
     <inspection_tool class="NullChecksToSafeCall" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="NullableBooleanElvis" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ObjectLiteralToLambda" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="ObjectPropertyName" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="ObjectPropertyName" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="OptionalExpectation" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="OverridingDeprecatedMember" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="PackageDirectoryMismatch" enabled="true" level="ERROR" enabled_by_default="true" />
