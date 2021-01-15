@@ -26,7 +26,7 @@ interface RootNavigator {
                         val hasCredentialsForAtLeastOneBrand =
                                 tokenUseCase.hasCredentialsForAtLeastOneBrand()
                         if (hasCredentialsForAtLeastOneBrand) {
-
+                            //TODO in another story.
                         } else {
                             navigator.navigateToAuthenticationFlow(
                                     arrayOf(

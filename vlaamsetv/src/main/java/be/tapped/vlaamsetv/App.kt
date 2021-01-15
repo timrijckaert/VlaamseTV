@@ -31,6 +31,7 @@ class App : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // TODO schedule the token refresh tasks
         WorkManager.getInstance(this)
     }
 
