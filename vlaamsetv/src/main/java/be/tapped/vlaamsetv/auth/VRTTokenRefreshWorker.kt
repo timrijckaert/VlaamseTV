@@ -8,28 +8,28 @@ import be.tapped.vrtnu.profile.TokenRepo
 import java.util.concurrent.TimeUnit
 
 class VRTTokenRefreshWorker(
-    appContext: Context,
-    params: WorkerParameters,
-    private val tokenRepo: TokenRepo,
-    private val vrtDataStore: VRTTokenStore,
+        appContext: Context,
+        params: WorkerParameters,
+        private val tokenRepo: TokenRepo,
+        private val vrtDataStore: VRTTokenStore,
 ) : CoroutineWorker(appContext, params) {
 
     companion object {
         fun create(context: Context) {
             PeriodicWorkRequestBuilder<VRTTokenRefreshWorker>(1, TimeUnit.DAYS)
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                )
-                .setBackoffCriteria(
-                    BackoffPolicy.LINEAR,
-                    OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                    TimeUnit.MILLISECONDS
-                )
-                .addTag(TOKEN_REFRESH_TAG)
-                .addTag(VRT_NU)
-                .build()
+                    .setConstraints(
+                            Constraints.Builder()
+                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                    )
+                    .setBackoffCriteria(
+                            BackoffPolicy.LINEAR,
+                            OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                            TimeUnit.MILLISECONDS
+                    )
+                    .addTag(TOKEN_REFRESH_TAG)
+                    .addTag(VRT_NU)
+                    .build()
         }
     }
 

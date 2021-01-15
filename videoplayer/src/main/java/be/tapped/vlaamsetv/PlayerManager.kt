@@ -13,5 +13,5 @@ public object PlayerManager {
 
     @Suppress("ConvertLambdaToReference")
     internal fun exoPlayer(context: Context): SimpleExoPlayer =
-        SimpleExoPlayer.Builder(context).build()
+            SimpleExoPlayer.Builder(context).build()
 }

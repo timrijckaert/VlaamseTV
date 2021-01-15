@@ -5,7 +5,7 @@ import com.google.android.exoplayer2.metadata.MetadataOutput
 import kotlinx.coroutines.channels.SendChannel
 
 internal class DelegatingMetadataOutputListener(private val sendChannel: SendChannel<VideoEvent>) :
-    MetadataOutput {
+        MetadataOutput {
     override fun onMetadata(metadata: Metadata) {
         sendChannel.safeOffer(VideoEvent.Metadata(metadata))
     }

@@ -9,10 +9,10 @@ import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
 
 class VIERAuthenticationUseCase(
-    private val profileRepo: HttpProfileRepo,
-    private val vierTokenStore: VIERTokenStore,
-    private val authenticationNavigator: AuthenticationNavigator,
-    private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
+        private val profileRepo: HttpProfileRepo,
+        private val vierTokenStore: VIERTokenStore,
+        private val authenticationNavigator: AuthenticationNavigator,
+        private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
@@ -20,7 +20,7 @@ class VIERAuthenticationUseCase(
         when (val token = profileRepo.fetchTokens(username, password)) {
             is Either.Left -> {
                 authenticationNavigator.navigateToErrorScreen(
-                    errorMessageConverter.mapToHumanReadableError(token.a)
+                        errorMessageConverter.mapToHumanReadableError(token.a)
                 )
             }
             is Either.Right -> {
@@ -36,8 +36,8 @@ class VIERAuthenticationUseCase(
     }
 
     private fun checkPreconditions(
-        username: String,
-        password: String
+            username: String,
+            password: String
     ): Boolean {
         if (username.isBlank()) {
             authenticationNavigator.navigateToErrorScreen(ErrorMessage(R.string.failure_generic_no_email))

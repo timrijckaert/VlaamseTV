@@ -18,14 +18,14 @@ class AuthenticationNavigatorTest : FreeSpec() {
 
             "and it has only 1 destination" - {
                 val authenticationScreenConfig =
-                    arrayOf<AuthenticationNavigationConfiguration>(
-                        AuthenticationNavigationConfiguration.VRT
-                    )
+                        arrayOf<AuthenticationNavigationConfiguration>(
+                                AuthenticationNavigationConfiguration.VRT
+                        )
 
                 val sut = AuthenticationNavigator.create(
-                    activity,
-                    navController,
-                    authenticationScreenConfig
+                        activity,
+                        navController,
+                        authenticationScreenConfig
                 )
 
                 "when connecting to the state" - {
@@ -69,15 +69,15 @@ class AuthenticationNavigatorTest : FreeSpec() {
 
             "and it has multiple destinations" - {
                 val authenticationScreenConfig =
-                    arrayOf(
-                        AuthenticationNavigationConfiguration.VRT,
-                        AuthenticationNavigationConfiguration.VTM,
-                    )
+                        arrayOf(
+                                AuthenticationNavigationConfiguration.VRT,
+                                AuthenticationNavigationConfiguration.VTM,
+                        )
 
                 val sut = AuthenticationNavigator.create(
-                    activity,
-                    navController,
-                    authenticationScreenConfig
+                        activity,
+                        navController,
+                        authenticationScreenConfig
                 )
 
                 "when connecting to the state" - {

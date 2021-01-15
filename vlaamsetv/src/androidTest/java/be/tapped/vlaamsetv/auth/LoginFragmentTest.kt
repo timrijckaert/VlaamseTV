@@ -26,14 +26,14 @@ internal class LoginFragmentTest {
 
     private class LoginFragmentScreen : Screen<LoginFragmentScreen>() {
         val guidedActionList =
-            KRecyclerView(
-                builder = { withId(R.id.guidedactions_list) },
-                itemTypeBuilder = { itemType(::GuidedActionItem) })
+                KRecyclerView(
+                        builder = { withId(R.id.guidedactions_list) },
+                        itemTypeBuilder = { itemType(::GuidedActionItem) })
 
         val buttonActionsList =
-            KRecyclerView(
-                builder = { withId(R.id.guidedactions_list2) },
-                itemTypeBuilder = { itemType(::GuidedActionItem) })
+                KRecyclerView(
+                        builder = { withId(R.id.guidedactions_list2) },
+                        itemTypeBuilder = { itemType(::GuidedActionItem) })
 
         class GuidedActionItem(parent: Matcher<View>) : KRecyclerItem<GuidedActionItem>(parent) {
             val checkMark = KCheckBox(parent) { withId(R.id.guidedactions_item_checkmark) }
@@ -87,12 +87,12 @@ internal class LoginFragmentTest {
     }
 
     private val testNavHostController =
-        TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
-            Handler(Looper.getMainLooper()).post {
-                setGraph(R.navigation.authentication_flow_tv)
-                setCurrentDestination(R.id.VRTLoginFragment)
+            TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
+                Handler(Looper.getMainLooper()).post {
+                    setGraph(R.navigation.authentication_flow_tv)
+                    setCurrentDestination(R.id.VRTLoginFragment)
+                }
             }
-        }
 
     @Test
     fun ifIsLastScreenShouldHaveTheCorrectMessage() {
@@ -131,35 +131,35 @@ internal class LoginFragmentTest {
         }
 
         launchFragmentInContainer(
-            themeResId = R.style.Theme_TV_VlaamseTV,
+                themeResId = R.style.Theme_TV_VlaamseTV,
         ) {
             StubbedLoginFragment(authenticationUseCase, isLastScreen)
-                .also { frag ->
-                    frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
-                        if (viewLifecycleOwner != null) {
-                            Navigation.setViewNavController(
-                                frag.requireView(),
-                                testNavHostController
-                            )
+                    .also { frag ->
+                        frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                            if (viewLifecycleOwner != null) {
+                                Navigation.setViewNavController(
+                                        frag.requireView(),
+                                        testNavHostController
+                                )
+                            }
                         }
                     }
-                }
         }
     }
 }
 
 class StubbedLoginFragment(
-    authenticationUseCase: AuthenticationUseCase,
-    private val isLastScreen: Boolean
+        authenticationUseCase: AuthenticationUseCase,
+        private val isLastScreen: Boolean
 ) :
-    LoginFragment(authenticationUseCase) {
+        LoginFragment(authenticationUseCase) {
     override val config: Configuration
         get() = Configuration(
-            R.string.auth_flow_login_title,
-            R.string.auth_flow_vrtnu_description,
-            R.string.auth_flow_vrtnu_step_breadcrumb,
-            R.drawable.vrt_nu_logo,
-            isLastScreen,
+                R.string.auth_flow_login_title,
+                R.string.auth_flow_vrtnu_description,
+                R.string.auth_flow_vrtnu_step_breadcrumb,
+                R.drawable.vrt_nu_logo,
+                isLastScreen,
         )
 
 }

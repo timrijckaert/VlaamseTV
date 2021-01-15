@@ -21,11 +21,11 @@ class App : Application(), Configuration.Provider {
 
     val crypto: Crypto by lazy {
         CryptoImpl(
-            AesCipherProvider(
-                "VlaamseTvKey",
-                keyStore,
-                KEYSTORE_NAME
-            )
+                AesCipherProvider(
+                        "VlaamseTvKey",
+                        keyStore,
+                        KEYSTORE_NAME
+                )
         )
     }
 
@@ -35,8 +35,8 @@ class App : Application(), Configuration.Provider {
     }
 
     override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.DEBUG)
-            .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
-            .build()
+            Configuration.Builder()
+                    .setMinimumLoggingLevel(android.util.Log.DEBUG)
+                    .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
+                    .build()
 }

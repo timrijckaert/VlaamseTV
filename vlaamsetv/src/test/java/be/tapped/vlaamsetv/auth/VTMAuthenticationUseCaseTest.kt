@@ -19,10 +19,10 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
             val authenticationNavigator = mockk<AuthenticationNavigator>()
             val errorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
             val sut = VTMAuthenticationUseCase(
-                profileRepo,
-                vtmTokenStore,
-                authenticationNavigator,
-                errorMessageConverter,
+                    profileRepo,
+                    vtmTokenStore,
+                    authenticationNavigator,
+                    errorMessageConverter,
             )
 
             val username = Arb.string().gen()
@@ -44,8 +44,8 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
                 val token = ApiResponse.Success.Authentication.Token(vtmTokenWrapper.gen())
                 coEvery {
                     profileRepo.login(
-                        username,
-                        password
+                            username,
+                            password
                     )
                 } returns token.right()
 

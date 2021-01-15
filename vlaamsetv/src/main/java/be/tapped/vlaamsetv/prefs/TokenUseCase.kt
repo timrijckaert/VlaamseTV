@@ -18,23 +18,23 @@ interface TokenUseCase {
 }
 
 class CompositeTokenCollectorUseCase(
-    private val vrtTokenStore: VRTTokenStore,
-    private val vtmTokenStore: VTMTokenStore,
-    private val vierTokenStore: VIERTokenStore,
+        private val vrtTokenStore: VRTTokenStore,
+        private val vtmTokenStore: VTMTokenStore,
+        private val vierTokenStore: VIERTokenStore,
 ) : TokenUseCase {
 
     override suspend fun hasCredentialsForAtLeastOneBrand(): Boolean {
         val (hasVrtCredentials, hasVtmCredentials, hasVierCredentials) = parTupledN(
-            { vrtTokenStore.vrtCredentials() != null },
-            { vtmTokenStore.vtmCredentials() != null },
-            { vierTokenStore.vierCredentials() != null }
+                { vrtTokenStore.vrtCredentials() != null },
+                { vtmTokenStore.vtmCredentials() != null },
+                { vierTokenStore.vierCredentials() != null }
         )
         return hasVrtCredentials || hasVtmCredentials || hasVierCredentials
     }
 
     override suspend fun isTokenExpired(brand: TokenUseCase.Brand): Boolean {
         fun isExpired(expireDateInMillis: Long?): Boolean =
-            expireDateInMillis ?: -1 <= System.currentTimeMillis()
+                expireDateInMillis ?: -1 <= System.currentTimeMillis()
 
         val expiryInMillis = when (brand) {
             TokenUseCase.Brand.VRT -> vrtTokenStore.token()?.expiry?.dateInMillis

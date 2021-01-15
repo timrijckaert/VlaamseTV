@@ -18,7 +18,7 @@
     <activity
         android:id="@+id/authenticationActivity"
         android:name="be.tapped.vlaamsetv.auth.AuthenticationActivity"
-        android:label="AuthenticationActivity" >
+        android:label="AuthenticationActivity">
         <argument
             android:name="config"
             app:argType="be.tapped.vlaamsetv.auth.AuthenticationNavigationConfiguration[]" />

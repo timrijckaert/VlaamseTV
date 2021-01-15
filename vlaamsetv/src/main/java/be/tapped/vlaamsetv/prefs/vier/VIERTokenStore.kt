@@ -22,15 +22,15 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
 
     private val vierTokenDataStore by lazy {
         context.createDataStore(
-            fileName = "vier-token.pb",
-            serializer = TokenSerializer(crypto)
+                fileName = "vier-token.pb",
+                serializer = TokenSerializer(crypto)
         )
     }
 
     private val credentialsDataStore by lazy {
         context.createDataStore(
-            fileName = "vier-credentials.pb",
-            serializer = VIERCredentialsSerializer(crypto)
+                fileName = "vier-credentials.pb",
+                serializer = VIERCredentialsSerializer(crypto)
         )
     }
 
@@ -41,40 +41,40 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
     }
 
     override suspend fun vierCredentials(): Credential? =
-        credentialsDataStore.data.firstOrNull()?.let {
-            if (it.username.isNotBlank() && it.password.isNotBlank()) {
-                Credential(
-                    username = it.username,
-                    password = it.password
-                )
-            } else {
-                null
+            credentialsDataStore.data.firstOrNull()?.let {
+                if (it.username.isNotBlank() && it.password.isNotBlank()) {
+                    Credential(
+                            username = it.username,
+                            password = it.password
+                    )
+                } else {
+                    null
+                }
             }
-        }
 
     override suspend fun token(): ApiResponse.Success.Authentication.Token? =
-        vierTokenDataStore.data.firstOrNull()?.let {
-            if (it.accessToken.isNotBlank() && it.expiresIn != 0L && it.tokenType.isNotBlank() && it.refreshToken.isNotBlank() && it.idToken.isNotBlank()) {
-                ApiResponse.Success.Authentication.Token(
-                    accessToken = AccessToken(it.accessToken),
-                    expiry = Expiry(it.expiresIn),
-                    tokenType = it.tokenType,
-                    refreshToken = RefreshToken(it.refreshToken),
-                    idToken = IdToken(it.idToken),
-                )
-            } else {
-                null
+            vierTokenDataStore.data.firstOrNull()?.let {
+                if (it.accessToken.isNotBlank() && it.expiresIn != 0L && it.tokenType.isNotBlank() && it.refreshToken.isNotBlank() && it.idToken.isNotBlank()) {
+                    ApiResponse.Success.Authentication.Token(
+                            accessToken = AccessToken(it.accessToken),
+                            expiry = Expiry(it.expiresIn),
+                            tokenType = it.tokenType,
+                            refreshToken = RefreshToken(it.refreshToken),
+                            idToken = IdToken(it.idToken),
+                    )
+                } else {
+                    null
+                }
             }
-        }
 
     override suspend fun saveToken(token: ApiResponse.Success.Authentication.Token) {
         vierTokenDataStore.updateData {
             it.copy(
-                accessToken = token.accessToken.token,
-                expiresIn = token.expiry.dateInMillis,
-                tokenType = token.tokenType,
-                refreshToken = token.refreshToken.token,
-                idToken = token.idToken.token,
+                    accessToken = token.accessToken.token,
+                    expiresIn = token.expiry.dateInMillis,
+                    tokenType = token.tokenType,
+                    refreshToken = token.refreshToken.token,
+                    idToken = token.idToken.token,
             )
         }
     }

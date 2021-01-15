@@ -11,33 +11,33 @@ interface RootNavigator {
     sealed class Screen : Parcelable {
         @Parcelize
         data class Authentication(val config: List<AuthenticationNavigationConfiguration>) :
-            Screen()
+                Screen()
     }
 
     suspend fun moveToStartDestination()
 
     companion object {
         internal fun create(
-            navigator: Navigator,
-            tokenUseCase: TokenUseCase
+                navigator: Navigator,
+                tokenUseCase: TokenUseCase
         ): RootNavigator =
-            object : RootNavigator {
-                override suspend fun moveToStartDestination() {
-                    val hasCredentialsForAtLeastOneBrand =
-                        tokenUseCase.hasCredentialsForAtLeastOneBrand()
-                    if (hasCredentialsForAtLeastOneBrand) {
+                object : RootNavigator {
+                    override suspend fun moveToStartDestination() {
+                        val hasCredentialsForAtLeastOneBrand =
+                                tokenUseCase.hasCredentialsForAtLeastOneBrand()
+                        if (hasCredentialsForAtLeastOneBrand) {
 
-                    } else {
-                        navigator.navigateToAuthenticationFlow(
-                            arrayOf(
-                                AuthenticationNavigationConfiguration.VRT,
-                                AuthenticationNavigationConfiguration.VTM,
-                                AuthenticationNavigationConfiguration.VIER,
+                        } else {
+                            navigator.navigateToAuthenticationFlow(
+                                    arrayOf(
+                                            AuthenticationNavigationConfiguration.VRT,
+                                            AuthenticationNavigationConfiguration.VTM,
+                                            AuthenticationNavigationConfiguration.VIER,
+                                    )
                             )
-                        )
+                        }
                     }
                 }
-            }
     }
 }
 
@@ -45,7 +45,7 @@ class Navigator(private val navController: NavController) : AuthenticationNaviga
 
     override fun navigateToAuthenticationFlow(config: Array<AuthenticationNavigationConfiguration>) {
         navController.navigate(
-            MainFragmentDirections.actionMainFragmentToAuthenticationFlowTv(config)
+                MainFragmentDirections.actionMainFragmentToAuthenticationFlowTv(config)
         )
     }
 }

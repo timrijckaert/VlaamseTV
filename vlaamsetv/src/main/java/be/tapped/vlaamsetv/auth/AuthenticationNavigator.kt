@@ -28,99 +28,99 @@ interface AuthenticationNavigator {
 
     companion object {
         internal fun create(
-            activity: ComponentActivity,
-            navController: NavController,
-            authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>
+                activity: ComponentActivity,
+                navController: NavController,
+                authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>
         ): AuthenticationNavigator =
-            object : AuthenticationNavigator {
-                override val currentScreen: Screen get() = _currentScreen.second
-                private var _currentScreen: IndexedScreen by Delegates.observable(
-                    0 to authenticationScreenConfig.first().calculateNextScreen(1)
-                ) { _, _, newValue -> navigateToScreen(newValue) }
+                object : AuthenticationNavigator {
+                    override val currentScreen: Screen get() = _currentScreen.second
+                    private var _currentScreen: IndexedScreen by Delegates.observable(
+                            0 to authenticationScreenConfig.first().calculateNextScreen(1)
+                    ) { _, _, newValue -> navigateToScreen(newValue) }
 
-                init {
-                    check(authenticationScreenConfig.isNotEmpty()) {
-                        "An empty authentication screen configuration was provided!"
-                    }
-                }
-
-                override fun navigateToErrorScreen(errorMessage: ErrorMessage) {
-                    navigate({ it + 1 }, { Screen.ErrorDialog(errorMessage.toString(activity)) })
-                }
-
-                override fun moveToStartDestination() {
-                    navigateToScreen(_currentScreen)
-                }
-
-                override fun navigateNext() {
-                    navigate({ it + 1 }, ::nextScreenFromConfiguration)
-                }
-
-                override fun navigateBack() {
-                    navigate({ it - 1 }, ::nextScreenFromConfiguration)
-                }
-
-                private fun navigate(indexFunc: (Int) -> Int, nextScreenFunc: (Int) -> Screen) {
-                    val (index, page) = _currentScreen
-                    if (page == Screen.End) {
-                        return
-                    }
-
-                    val newIndex = indexFunc(index)
-                    if (newIndex < 0) {
-                        return
-                    }
-
-                    val newAuthenticationPage = nextScreenFunc(newIndex)
-                    _currentScreen = newIndex to newAuthenticationPage
-                }
-
-                private fun nextScreenFromConfiguration(newIndex: Int): Screen =
-                    if (newIndex >= authenticationScreenConfig.size) {
-                        Screen.End
-                    } else {
-                        authenticationScreenConfig[newIndex].calculateNextScreen(newIndex + 1)
-                    }
-
-                private fun AuthenticationNavigationConfiguration.calculateNextScreen(nextIndex: Int): Screen {
-                    val isLastItem = nextIndex >= authenticationScreenConfig.size
-                    return when (this) {
-                        AuthenticationNavigationConfiguration.VRT ->
-                            Screen.VRT(isLastItem)
-                        AuthenticationNavigationConfiguration.VTM ->
-                            Screen.VTM(isLastItem)
-                        AuthenticationNavigationConfiguration.VIER ->
-                            Screen.VIER(isLastItem)
-                    }
-                }
-
-                private fun navigateToScreen(newValue: IndexedScreen) =
-                    when (val screen = newValue.second) {
-                        is Screen.VRT ->
-                            navController.navigate(
-                                R.id.action_to_vrt_login_fragment,
-                                VRTLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
-                            )
-                        is Screen.VTM ->
-                            navController.navigate(
-                                R.id.action_to_vtm_login_fragment,
-                                VTMLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
-                            )
-                        is Screen.VIER ->
-                            navController.navigate(
-                                R.id.action_to_vier_login_fragment,
-                                VIERLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
-                            )
-                        Screen.End -> {
-                            activity.finishAfterTransition()
+                    init {
+                        check(authenticationScreenConfig.isNotEmpty()) {
+                            "An empty authentication screen configuration was provided!"
                         }
-                        is Screen.ErrorDialog ->
-                            navController.navigate(
-                                R.id.action_to_authenticationFailedDialog,
-                                AuthenticationFailedDialogArgs(screen.errorMessage).toBundle()
-                            )
-                    }.exhaustive
-            }
+                    }
+
+                    override fun navigateToErrorScreen(errorMessage: ErrorMessage) {
+                        navigate({ it + 1 }, { Screen.ErrorDialog(errorMessage.toString(activity)) })
+                    }
+
+                    override fun moveToStartDestination() {
+                        navigateToScreen(_currentScreen)
+                    }
+
+                    override fun navigateNext() {
+                        navigate({ it + 1 }, ::nextScreenFromConfiguration)
+                    }
+
+                    override fun navigateBack() {
+                        navigate({ it - 1 }, ::nextScreenFromConfiguration)
+                    }
+
+                    private fun navigate(indexFunc: (Int) -> Int, nextScreenFunc: (Int) -> Screen) {
+                        val (index, page) = _currentScreen
+                        if (page == Screen.End) {
+                            return
+                        }
+
+                        val newIndex = indexFunc(index)
+                        if (newIndex < 0) {
+                            return
+                        }
+
+                        val newAuthenticationPage = nextScreenFunc(newIndex)
+                        _currentScreen = newIndex to newAuthenticationPage
+                    }
+
+                    private fun nextScreenFromConfiguration(newIndex: Int): Screen =
+                            if (newIndex >= authenticationScreenConfig.size) {
+                                Screen.End
+                            } else {
+                                authenticationScreenConfig[newIndex].calculateNextScreen(newIndex + 1)
+                            }
+
+                    private fun AuthenticationNavigationConfiguration.calculateNextScreen(nextIndex: Int): Screen {
+                        val isLastItem = nextIndex >= authenticationScreenConfig.size
+                        return when (this) {
+                            AuthenticationNavigationConfiguration.VRT ->
+                                Screen.VRT(isLastItem)
+                            AuthenticationNavigationConfiguration.VTM ->
+                                Screen.VTM(isLastItem)
+                            AuthenticationNavigationConfiguration.VIER ->
+                                Screen.VIER(isLastItem)
+                        }
+                    }
+
+                    private fun navigateToScreen(newValue: IndexedScreen) =
+                            when (val screen = newValue.second) {
+                                is Screen.VRT ->
+                                    navController.navigate(
+                                            R.id.action_to_vrt_login_fragment,
+                                            VRTLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                                    )
+                                is Screen.VTM ->
+                                    navController.navigate(
+                                            R.id.action_to_vtm_login_fragment,
+                                            VTMLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                                    )
+                                is Screen.VIER ->
+                                    navController.navigate(
+                                            R.id.action_to_vier_login_fragment,
+                                            VIERLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                                    )
+                                Screen.End -> {
+                                    activity.finishAfterTransition()
+                                }
+                                is Screen.ErrorDialog ->
+                                    navController.navigate(
+                                            R.id.action_to_authenticationFailedDialog,
+                                            AuthenticationFailedDialogArgs(screen.errorMessage).toBundle()
+                                    )
+                            }.exhaustive
+                }
     }
 }
 

@@ -14,9 +14,9 @@ interface CipherProvider {
 }
 
 class AesCipherProvider(
-    private val keyName: String,
-    private val keyStore: KeyStore,
-    private val keyStoreName: String
+        private val keyName: String,
+        private val keyStore: KeyStore,
+        private val keyStoreName: String
 ) : CipherProvider {
 
     override val encryptCipher: Cipher
@@ -25,29 +25,29 @@ class AesCipherProvider(
         }
 
     override fun decryptCipher(iv: ByteArray): Cipher =
-        Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.DECRYPT_MODE, getOrCreateKey(), IvParameterSpec(iv))
-        }
+            Cipher.getInstance(TRANSFORMATION).apply {
+                init(Cipher.DECRYPT_MODE, getOrCreateKey(), IvParameterSpec(iv))
+            }
 
     private fun getOrCreateKey(): SecretKey =
-        (keyStore.getEntry(keyName, null) as? KeyStore.SecretKeyEntry)?.secretKey
-            ?: generateKey()
+            (keyStore.getEntry(keyName, null) as? KeyStore.SecretKeyEntry)?.secretKey
+                    ?: generateKey()
 
     private fun generateKey(): SecretKey =
-        KeyGenerator.getInstance(ALGORITHM, keyStoreName)
-            .apply { init(keyGenParams) }
-            .generateKey()
+            KeyGenerator.getInstance(ALGORITHM, keyStoreName)
+                    .apply { init(keyGenParams) }
+                    .generateKey()
 
     private val keyGenParams =
-        KeyGenParameterSpec.Builder(
-            keyName,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        ).apply {
-            setBlockModes(BLOCK_MODE)
-            setEncryptionPaddings(PADDING)
-            setUserAuthenticationRequired(false)
-            setRandomizedEncryptionRequired(true)
-        }.build()
+            KeyGenParameterSpec.Builder(
+                    keyName,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+            ).apply {
+                setBlockModes(BLOCK_MODE)
+                setEncryptionPaddings(PADDING)
+                setUserAuthenticationRequired(false)
+                setRandomizedEncryptionRequired(true)
+            }.build()
 
     private companion object {
         const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES

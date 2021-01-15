@@ -14,11 +14,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:banner="@drawable/tv_banner"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VlaamseTV">
@@ -30,15 +30,15 @@
         </activity>
 
         <activity
-            android:theme="@style/Theme.TV.VlaamseTV"
-            android:name=".auth.AuthenticationActivity"/>
+            android:name=".auth.AuthenticationActivity"
+            android:theme="@style/Theme.TV.VlaamseTV" />
 
         <activity
             android:name=".TvMainActivity"
-            android:theme="@style/Theme.TV.VlaamseTV"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|navigation"
             android:launchMode="singleTask"
-            android:supportsPictureInPicture="true">
+            android:supportsPictureInPicture="true"
+            android:theme="@style/Theme.TV.VlaamseTV">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -21,22 +21,22 @@ interface VRTTokenStore {
 class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     private val vrtnuTokenDataStore by lazy {
         context.createDataStore(
-            fileName = "vrtnu-token.pb",
-            serializer = VRTTokenWrapperSerializer(crypto)
+                fileName = "vrtnu-token.pb",
+                serializer = VRTTokenWrapperSerializer(crypto)
         )
     }
 
     private val credentialsDataStore by lazy {
         context.createDataStore(
-            fileName = "vrtnu-credentials.pb",
-            serializer = VRTNUCredentialsSerializer(crypto)
+                fileName = "vrtnu-credentials.pb",
+                serializer = VRTNUCredentialsSerializer(crypto)
         )
     }
 
     private val xVRTDataStore by lazy {
         context.createDataStore(
-            fileName = "vrtnu-xvrt.pb",
-            serializer = XVRTTokenSerializer(crypto)
+                fileName = "vrtnu-xvrt.pb",
+                serializer = XVRTTokenSerializer(crypto)
         )
     }
 
@@ -47,36 +47,36 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     }
 
     override suspend fun vrtCredentials(): Credential? =
-        credentialsDataStore.data.firstOrNull()?.let {
-            if (it.username.isNotBlank() && it.password.isNotBlank()) {
-                Credential(
-                    username = it.username,
-                    password = it.password
-                )
-            } else {
-                null
+            credentialsDataStore.data.firstOrNull()?.let {
+                if (it.username.isNotBlank() && it.password.isNotBlank()) {
+                    Credential(
+                            username = it.username,
+                            password = it.password
+                    )
+                } else {
+                    null
+                }
             }
-        }
 
     override suspend fun token(): TokenWrapper? =
-        vrtnuTokenDataStore.data.firstOrNull()?.let {
-            if (it.accessToken.isNotBlank() && it.refreshToken.isNotBlank() && it.expiry != 0L) {
-                TokenWrapper(
-                    accessToken = AccessToken(it.accessToken),
-                    refreshToken = RefreshToken(it.refreshToken),
-                    expiry = Expiry(it.expiry),
-                )
-            } else {
-                null
+            vrtnuTokenDataStore.data.firstOrNull()?.let {
+                if (it.accessToken.isNotBlank() && it.refreshToken.isNotBlank() && it.expiry != 0L) {
+                    TokenWrapper(
+                            accessToken = AccessToken(it.accessToken),
+                            refreshToken = RefreshToken(it.refreshToken),
+                            expiry = Expiry(it.expiry),
+                    )
+                } else {
+                    null
+                }
             }
-        }
 
     override suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper) {
         vrtnuTokenDataStore.updateData {
             it.copy(
-                accessToken = tokenWrapper.accessToken.token,
-                refreshToken = tokenWrapper.refreshToken.token,
-                expiry = tokenWrapper.expiry.dateInMillis
+                    accessToken = tokenWrapper.accessToken.token,
+                    refreshToken = tokenWrapper.refreshToken.token,
+                    expiry = tokenWrapper.expiry.dateInMillis
             )
         }
     }
@@ -86,11 +86,11 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     }
 
     override suspend fun xVRTToken(): XVRTToken? =
-        xVRTDataStore.data.firstOrNull()?.let {
-            if (it.token.isNotEmpty()) {
-                XVRTToken(it.token)
-            } else {
-                null
+            xVRTDataStore.data.firstOrNull()?.let {
+                if (it.token.isNotEmpty()) {
+                    XVRTToken(it.token)
+                } else {
+                    null
+                }
             }
-        }
 }

@@ -6,13 +6,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 public data class VideoItem(
-    val url: String,
-    val drm: Drm? = null,
-    val subtitles: List<Subtitle> = emptyList(),
-    val startAutoPlay: Boolean = DEFAULT_START_AUTO_PLAY,
-    val startWindow: Int = DEFAULT_START_WINDOW,
-    val startPosition: Long = DEFAULT_START_POSITION,
-    val showDebug: Boolean = DEFAULT_SHOW_DEBUG
+        val url: String,
+        val drm: Drm? = null,
+        val subtitles: List<Subtitle> = emptyList(),
+        val startAutoPlay: Boolean = DEFAULT_START_AUTO_PLAY,
+        val startWindow: Int = DEFAULT_START_WINDOW,
+        val startPosition: Long = DEFAULT_START_POSITION,
+        val showDebug: Boolean = DEFAULT_SHOW_DEBUG
 ) : Parcelable {
 
     internal companion object {
@@ -24,9 +24,9 @@ public data class VideoItem(
 
     @Parcelize
     public class Subtitle(
-        public val subtitleUrl: String,
-        public val mimeType: String,
-        public val language: String? = null
+            public val subtitleUrl: String,
+            public val mimeType: String,
+            public val language: String? = null
     ) : Parcelable
 
     @Parcelize
