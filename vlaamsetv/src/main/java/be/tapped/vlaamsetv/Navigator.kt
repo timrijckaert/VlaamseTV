@@ -1,18 +1,11 @@
 package be.tapped.vlaamsetv
 
-import android.os.Parcelable
 import androidx.navigation.NavController
 import be.tapped.vlaamsetv.auth.AuthenticationNavigation
 import be.tapped.vlaamsetv.auth.AuthenticationNavigationConfiguration
 import be.tapped.vlaamsetv.auth.prefs.TokenStorage
-import kotlinx.parcelize.Parcelize
 
 interface RootNavigator {
-    sealed class Screen : Parcelable {
-        @Parcelize
-        data class Authentication(val config: List<AuthenticationNavigationConfiguration>) :
-            Screen()
-    }
 
     suspend fun moveToStartDestination()
 
