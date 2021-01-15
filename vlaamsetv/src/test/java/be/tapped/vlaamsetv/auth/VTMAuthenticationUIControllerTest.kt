@@ -3,7 +3,7 @@ package be.tapped.vlaamsetv.auth
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.HttpProfileRepo
 import io.kotest.core.spec.style.BehaviorSpec

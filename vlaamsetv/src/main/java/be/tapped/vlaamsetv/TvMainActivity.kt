@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
-import be.tapped.vlaamsetv.prefs.CompositeTokenStorage
-import be.tapped.vlaamsetv.prefs.vier.VIERTokenStoreImpl
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.CompositeTokenStorage
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 
 class TvMainActivity : FragmentActivity(R.layout.activity_tv_main) {
 

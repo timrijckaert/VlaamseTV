@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.vier.VIERTokenStoreImpl
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
 import kotlinx.parcelize.Parcelize
 import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo

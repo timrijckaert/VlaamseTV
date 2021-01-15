@@ -5,7 +5,7 @@ import arrow.core.right
 import be.tapped.vier.ApiResponse
 import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string

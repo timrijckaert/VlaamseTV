@@ -1,9 +1,9 @@
-package be.tapped.vlaamsetv.prefs
+package be.tapped.vlaamsetv.auth.prefs
 
 import arrow.fx.coroutines.parTupledN
-import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 
 interface TokenStorage {
     enum class Brand {

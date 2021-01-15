@@ -2,8 +2,8 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.vrtRefreshTokenArb
 import be.tapped.vlaamsetv.vrtTokenWrapperArb
 import be.tapped.vlaamsetv.xVRTTokenArb

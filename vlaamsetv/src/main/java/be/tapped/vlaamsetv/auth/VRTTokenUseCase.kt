@@ -5,7 +5,7 @@ import arrow.core.computations.either
 import arrow.core.left
 import arrow.core.right
 import arrow.fx.coroutines.parMapN
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 

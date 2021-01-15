@@ -1,8 +1,8 @@
 package be.tapped.vlaamsetv.prefs
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenWrapper
 import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.prefs.vrt.TokenWrapper
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
@@ -47,14 +47,14 @@ internal class CryptoTest {
     fun objectEncryptionAndDecryption() {
         val outputStream = ByteArrayOutputStream()
         val tokenWrapper =
-            TokenWrapper(accessToken = Arb.string().gen())
+            VRTTokenWrapper(accessToken = Arb.string().gen())
         crypto.encrypt(
-            TokenWrapper.ADAPTER.encode(tokenWrapper),
+            VRTTokenWrapper.ADAPTER.encode(tokenWrapper),
             outputStream
         )
 
         val tokenWrapperProto =
-            TokenWrapper.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
+            VRTTokenWrapper.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
         tokenWrapper shouldBe tokenWrapperProto
     }
 }

@@ -1,4 +1,4 @@
-package be.tapped.vlaamsetv.prefs.vier
+package be.tapped.vlaamsetv.auth.prefs.vier
 
 import android.content.Context
 import androidx.datastore.createDataStore
@@ -7,7 +7,7 @@ import be.tapped.vier.profile.AccessToken
 import be.tapped.vier.profile.Expiry
 import be.tapped.vier.profile.IdToken
 import be.tapped.vier.profile.RefreshToken
-import be.tapped.vlaamsetv.prefs.Credential
+import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import kotlinx.coroutines.flow.firstOrNull
 

@@ -6,7 +6,7 @@ import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 
 class VIERAuthenticationUIController(
     private val profileRepo: HttpProfileRepo,

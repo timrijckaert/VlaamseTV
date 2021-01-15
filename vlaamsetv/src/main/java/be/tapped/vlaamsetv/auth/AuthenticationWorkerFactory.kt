@@ -5,7 +5,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import be.tapped.vlaamsetv.App
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
 
 object AuthenticationWorkerFactory : WorkerFactory() {

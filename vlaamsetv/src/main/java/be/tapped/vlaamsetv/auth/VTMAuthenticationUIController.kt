@@ -4,7 +4,7 @@ import arrow.core.Either
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.HttpProfileRepo
 

@@ -1,4 +1,4 @@
-package be.tapped.vlaamsetv.prefs.vtm
+package be.tapped.vlaamsetv.auth.prefs.vtm
 
 import be.tapped.vlaamsetv.auth.vtm.VTMGOCredentials
 import be.tapped.vlaamsetv.auth.vtm.VTMTokenWrapper
@@ -9,8 +9,8 @@ class TokenWrapperSerializer(crypto: Crypto) :
     EncryptedProtoSerializer<VTMTokenWrapper>(crypto, VTMTokenWrapper(), VTMTokenWrapper.ADAPTER)
 
 class VTMCredentialsSerializer(crypto: Crypto) :
-        EncryptedProtoSerializer<VTMGOCredentials>(
-                crypto,
-                VTMGOCredentials(),
-                VTMGOCredentials.ADAPTER
-        )
+    EncryptedProtoSerializer<VTMGOCredentials>(
+        crypto,
+        VTMGOCredentials(),
+        VTMGOCredentials.ADAPTER
+    )

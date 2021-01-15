@@ -1,11 +1,10 @@
-package be.tapped.vlaamsetv.prefs.vrt
+package be.tapped.vlaamsetv.auth.prefs.vrt
 
 import android.content.Context
 import androidx.datastore.createDataStore
-import be.tapped.vlaamsetv.prefs.Credential
+import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vrtnu.profile.*
-import be.tapped.vrtnu.profile.TokenWrapper
 import be.tapped.vrtnu.profile.XVRTToken
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -82,7 +81,9 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     }
 
     override suspend fun saveXVRTToken(xVRTToken: XVRTToken) {
-        xVRTDataStore.updateData { it.copy(token = xVRTToken.token) }
+        xVRTDataStore.updateData {
+            it.copy(token = xVRTToken.token)
+        }
     }
 
     override suspend fun xVRTToken(): XVRTToken? =

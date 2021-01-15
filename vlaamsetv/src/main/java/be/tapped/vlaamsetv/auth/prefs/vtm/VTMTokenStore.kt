@@ -1,8 +1,8 @@
-package be.tapped.vlaamsetv.prefs.vtm
+package be.tapped.vlaamsetv.auth.prefs.vtm
 
 import android.content.Context
 import androidx.datastore.createDataStore
-import be.tapped.vlaamsetv.prefs.Credential
+import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vtmgo.profile.Expiry
 import be.tapped.vtmgo.profile.JWT

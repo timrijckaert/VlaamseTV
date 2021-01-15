@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "be.tapped.vlaamsetv.auth.vtm";
+option java_package = "be.tapped.vlaamsetv.auth.prefs.vtm";
 option java_multiple_files = true;
 
 // We only use this as a back-up.

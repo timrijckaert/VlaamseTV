@@ -1,19 +1,21 @@
 syntax = "proto3";
 
-option java_package = "be.tapped.vlaamsetv.prefs.vier";
+option java_package = "be.tapped.vlaamsetv.auth.prefs.vrt";
 option java_multiple_files = true;
 
-message Token {
+message VRTTokenWrapper {
   string accessToken = 1;
-  int64 expiresIn = 2;
-  string tokenType = 3;
-  string refreshToken = 4;
-  string idToken = 5;
+  string refreshToken = 2;
+  int64 expiry = 3;
+}
+
+message XVRTToken {
+  string token = 1;
 }
 
 // We only use this as a back-up.
 // It is preferred to use the tokens as much as possible
-message VIERCredentials {
+message VRTNUCredentials {
   string username = 1;
   string password = 2;
 }

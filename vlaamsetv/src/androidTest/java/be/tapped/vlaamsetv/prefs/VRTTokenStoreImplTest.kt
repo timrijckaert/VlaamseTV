@@ -3,8 +3,9 @@ package be.tapped.vlaamsetv.prefs
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.tapped.vlaamsetv.App
+import be.tapped.vlaamsetv.auth.prefs.Credential
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vlaamsetv.vrtTokenWrapperArb
 import be.tapped.vrtnu.profile.AccessToken
 import io.kotest.matchers.shouldBe
