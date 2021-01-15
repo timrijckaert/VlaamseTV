@@ -89,19 +89,67 @@ class VTMErrorMessageConverter : ErrorMessageConverter<VTMApiResponse.Failure> {
 class VIERErrorMessageConverter : ErrorMessageConverter<VIERApiResponse.Failure> {
     override fun mapToHumanReadableError(failure: be.tapped.vier.ApiResponse.Failure): ErrorMessage =
         when (failure) {
-            is be.tapped.vier.ApiResponse.Failure.NetworkFailure -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.JsonParsingException -> TODO()
-            be.tapped.vier.ApiResponse.Failure.HTML.EmptyHTML -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.HTML.MissingAttributeValue -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.HTML.NoSelection -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.HTML.NoChildAtPosition -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.HTML.Parsing -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.Authentication.AWS -> TODO()
-            be.tapped.vier.ApiResponse.Failure.Authentication.Login -> TODO()
-            be.tapped.vier.ApiResponse.Failure.Authentication.Refresh -> TODO()
-            be.tapped.vier.ApiResponse.Failure.Authentication.Profile -> TODO()
-            be.tapped.vier.ApiResponse.Failure.Content.NoEpisodeFound -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.Stream.NoStreamFound -> TODO()
-            is be.tapped.vier.ApiResponse.Failure.Epg.NoEpgDataFor -> TODO()
+            is be.tapped.vier.ApiResponse.Failure.NetworkFailure ->
+                ErrorMessage(
+                    R.string.failure_vier_network,
+                    listOf(failure.responseCode)
+                )
+            is be.tapped.vier.ApiResponse.Failure.JsonParsingException ->
+                ErrorMessage(
+                    R.string.failure_vier_json_parsing,
+                    listOf(failure.throwable.message)
+                )
+            be.tapped.vier.ApiResponse.Failure.HTML.EmptyHTML ->
+                ErrorMessage(R.string.failure_vier_empty_html)
+            is be.tapped.vier.ApiResponse.Failure.HTML.MissingAttributeValue ->
+                ErrorMessage(
+                    R.string.failure_vier_missing_html_attribute,
+                    listOf(failure.attribute)
+                )
+            is be.tapped.vier.ApiResponse.Failure.HTML.NoSelection ->
+                ErrorMessage(
+                    R.string.failure_vier_no_selection,
+                    listOf(failure.cssQuery)
+                )
+            is be.tapped.vier.ApiResponse.Failure.HTML.NoChildAtPosition ->
+                ErrorMessage(
+                    R.string.failure_vier_no_child_at_position,
+                    listOf(failure.position, failure.amountOfChildren)
+                )
+            is be.tapped.vier.ApiResponse.Failure.HTML.Parsing ->
+                ErrorMessage(
+                    R.string.failure_html_parsing,
+                )
+            is be.tapped.vier.ApiResponse.Failure.Authentication.AWS ->
+                ErrorMessage(
+                    R.string.failure_authentication_aws,
+                    listOf(failure.statusCode, failure.statusText)
+                )
+            be.tapped.vier.ApiResponse.Failure.Authentication.Login ->
+                ErrorMessage(
+                    R.string.failure_authentication_login
+                )
+            be.tapped.vier.ApiResponse.Failure.Authentication.Refresh ->
+                ErrorMessage(
+                    R.string.failure_authentication_refresh
+                )
+            be.tapped.vier.ApiResponse.Failure.Authentication.Profile ->
+                ErrorMessage(
+                    R.string.failure_authentication_profile
+                )
+            be.tapped.vier.ApiResponse.Failure.Content.NoEpisodeFound ->
+                ErrorMessage(
+                    R.string.failure_content_no_episode_found,
+                )
+            is be.tapped.vier.ApiResponse.Failure.Stream.NoStreamFound ->
+                ErrorMessage(
+                    R.string.failure_content_no_stream_found,
+                    listOf(failure.videoUuid.id)
+                )
+            is be.tapped.vier.ApiResponse.Failure.Epg.NoEpgDataFor ->
+                ErrorMessage(
+                    R.string.failure_epg,
+                    listOf(failure.calendar)
+                )
         }
 }
