@@ -1,6 +1,6 @@
 package be.tapped.vlaamsetv.auth
 
-interface AuthenticationUseCase {
+interface AuthenticationUIController {
 
     suspend fun login(username: String, password: String)
 

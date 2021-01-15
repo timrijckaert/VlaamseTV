@@ -120,7 +120,7 @@ internal class LoginFragmentTest {
     }
 
     private fun setupAuthenticationFragment(isLastScreen: Boolean = false) {
-        val authenticationUseCase = object : AuthenticationUseCase {
+        val authenticationUseCase = object : AuthenticationUIController {
             override suspend fun login(username: String, password: String) {
 
             }
@@ -149,10 +149,10 @@ internal class LoginFragmentTest {
 }
 
 class StubbedLoginFragment(
-    authenticationUseCase: AuthenticationUseCase,
+    authenticationUIController: AuthenticationUIController,
     private val isLastScreen: Boolean
 ) :
-    LoginFragment(authenticationUseCase) {
+    LoginFragment(authenticationUIController) {
     override val config: Configuration
         get() = Configuration(
             R.string.auth_flow_login_title,

@@ -1,38 +1,32 @@
 package be.tapped.vlaamsetv.auth
 
 import arrow.core.Either
-import be.tapped.vier.ApiResponse
-import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
+import be.tapped.vtmgo.ApiResponse
+import be.tapped.vtmgo.profile.HttpProfileRepo
 
-class VIERAuthenticationUseCase(
+class VTMAuthenticationUIController(
     private val profileRepo: HttpProfileRepo,
-    private val vierTokenStore: VIERTokenStore,
+    private val vtmTokenStore: VTMTokenStore,
     private val authenticationNavigator: AuthenticationNavigator,
     private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
-) : AuthenticationUseCase {
-
+) : AuthenticationUIController {
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
-        when (val token = profileRepo.fetchTokens(username, password)) {
-            is Either.Left -> {
+        when (val jwt = profileRepo.login(username, password)) {
+            is Either.Left ->
                 authenticationNavigator.navigateToErrorScreen(
-                    errorMessageConverter.mapToHumanReadableError(token.a)
+                    errorMessageConverter.mapToHumanReadableError(jwt.a)
                 )
-            }
             is Either.Right -> {
-                vierTokenStore.saveVierCredentials(username, password)
-                vierTokenStore.saveToken(token.b)
+                vtmTokenStore.saveVTMCredentials(username, password)
+                vtmTokenStore.saveToken(jwt.b.token)
                 authenticationNavigator.navigateNext()
             }
         }
-    }
-
-    override suspend fun skip() {
-        authenticationNavigator.navigateNext()
     }
 
     private fun checkPreconditions(
@@ -49,5 +43,9 @@ class VIERAuthenticationUseCase(
             return true
         }
         return false
+    }
+
+    override suspend fun skip() {
+        authenticationNavigator.navigateNext()
     }
 }

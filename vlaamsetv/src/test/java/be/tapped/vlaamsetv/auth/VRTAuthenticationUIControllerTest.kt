@@ -3,24 +3,20 @@ package be.tapped.vlaamsetv.auth
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
 import be.tapped.vrtnu.ApiResponse
-import be.tapped.vrtnu.profile.TokenRepo
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.mockk.*
 
-class VRTAuthenticationUseCaseTest : BehaviorSpec({
+class VRTAuthenticationUIControllerTest : BehaviorSpec({
 
-    given("A ${VRTAuthenticationUseCase::class.simpleName}") {
-        val tokenRepo = mockk<TokenRepo>()
-        val vrtTokenStore = mockk<VRTTokenStore>()
+    given("A ${VRTAuthenticationUIController::class.simpleName}") {
+        val vrtTokenUseCase = mockk<VRTTokenUseCase>()
         val authenticationNavigator = mockk<AuthenticationNavigator>()
         val errorMessageConverter = mockk<VRTErrorMessageConverter>()
-        val sut = VRTAuthenticationUseCase(
-            tokenRepo,
-            vrtTokenStore,
+        val sut = VRTAuthenticationUIController(
+            vrtTokenUseCase,
             authenticationNavigator,
             errorMessageConverter
         )
@@ -33,7 +29,7 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 sut.login("", "")
 
                 then("it should not make a call") {
-                    coVerify(exactly = 0) { tokenRepo.fetchTokenWrapper("", "") }
+                    coVerify(exactly = 0) { vrtTokenUseCase.performLogin("", "") }
                 }
 
                 then("it should navigate to the error screen") {
@@ -45,28 +41,12 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
             val xVRTToken = xVRTTokenArb.gen()
 
             coEvery {
-                tokenRepo.fetchTokenWrapper(username, password)
-            } returns ApiResponse.Success.Authentication.Token(tokenWrapper).right()
-
-            coEvery {
-                tokenRepo.fetchXVRTToken(username, password)
-            } returns ApiResponse.Success.Authentication.VRTToken(xVRTToken).right()
+                vrtTokenUseCase.performLogin(username, password)
+            } returns Unit.right()
 
             sut.login(username, password)
 
             and("it was successful") {
-                then("it should save the VRT NU credentials") {
-                    coVerify { vrtTokenStore.saveVRTCredentials(username, password) }
-                }
-
-                then("it should save the retrieved token wrapper") {
-                    coVerify { vrtTokenStore.saveTokenWrapper(tokenWrapper) }
-                }
-
-                then("it should save the XVRT token") {
-                    coVerify { vrtTokenStore.saveXVRTToken(xVRTToken) }
-                }
-
                 then("it should have navigated to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }
                 }
@@ -76,7 +56,7 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
                 val errorMessage = errorMessageArb.gen()
                 every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson) } returns errorMessage
                 coEvery {
-                    tokenRepo.fetchTokenWrapper(username, password)
+                    vrtTokenUseCase.performLogin(username, password)
                 } returns ApiResponse.Failure.EmptyJson.left()
 
                 sut.login(username, password)

@@ -18,8 +18,10 @@ object AuthenticationWorkerFactory : WorkerFactory() {
             VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(
                 appContext,
                 workerParameters,
-                ProfileRepo(),
-                VRTTokenStoreImpl(appContext, (appContext as App).crypto)
+                VRTTokenUseCase(
+                    ProfileRepo(),
+                    VRTTokenStoreImpl(appContext, (appContext as App).crypto)
+                )
             )
             else -> null
         }

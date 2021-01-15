@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
-import be.tapped.vlaamsetv.prefs.CompositeTokenCollectorUseCase
+import be.tapped.vlaamsetv.prefs.CompositeTokenStorage
 import be.tapped.vlaamsetv.prefs.vier.VIERTokenStoreImpl
 import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStoreImpl
@@ -26,7 +26,7 @@ class TvMainActivity : FragmentActivity(R.layout.activity_tv_main) {
                         MainFragment(
                             RootNavigator.create(
                                 Navigator(navHostFragment.navController),
-                                CompositeTokenCollectorUseCase(
+                                CompositeTokenStorage(
                                     VRTTokenStoreImpl(
                                         this@TvMainActivity,
                                         crypto

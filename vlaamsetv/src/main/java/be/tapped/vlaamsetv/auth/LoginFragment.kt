@@ -18,7 +18,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DefaultLoginConfiguration(val isLastScreen: Boolean) : Parcelable
 
-abstract class LoginFragment(private val authenticationUseCase: AuthenticationUseCase) :
+abstract class LoginFragment(private val authenticationUIController: AuthenticationUIController) :
     GuidedStepSupportFragment() {
 
     abstract val config: Configuration
@@ -98,8 +98,8 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
     override fun onGuidedActionClicked(action: GuidedAction) {
         lifecycleScope.launch {
             when (action.id) {
-                LOGIN_BUTTON -> authenticationUseCase.login(email, password)
-                SECONDARY_BUTTON -> authenticationUseCase.skip()
+                LOGIN_BUTTON -> authenticationUIController.login(email, password)
+                SECONDARY_BUTTON -> authenticationUIController.skip()
                 else -> super.onGuidedActionClicked(action)
             }
         }
@@ -118,7 +118,7 @@ abstract class LoginFragment(private val authenticationUseCase: AuthenticationUs
         }
 }
 
-class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUseCase) :
+class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUIController) :
     LoginFragment(vrtAuthenticationUseCase) {
 
     private val navArg by navArgs<VRTLoginFragmentArgs>()
@@ -132,7 +132,7 @@ class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUseCase) :
         )
 }
 
-class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUseCase) :
+class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUIController) :
     LoginFragment(vtmAuthenticationUseCase) {
     private val navArg by navArgs<VTMLoginFragmentArgs>()
 
@@ -146,7 +146,7 @@ class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUseCase) :
         )
 }
 
-class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUseCase) :
+class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUIController) :
     LoginFragment(vierAuthenticationUseCase) {
     private val navArg by navArgs<VIERLoginFragmentArgs>()
 

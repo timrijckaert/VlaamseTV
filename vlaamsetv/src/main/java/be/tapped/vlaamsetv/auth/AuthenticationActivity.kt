@@ -50,11 +50,13 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         AuthenticationFragment(authenticationNavigator)
                     VRTLoginFragment::class.java.name -> {
                         VRTLoginFragment(
-                            VRTAuthenticationUseCase(
-                                ProfileRepo(),
-                                VRTTokenStoreImpl(
-                                    this@AuthenticationActivity,
-                                    crypto
+                            VRTAuthenticationUIController(
+                                VRTTokenUseCase(
+                                    ProfileRepo(),
+                                    VRTTokenStoreImpl(
+                                        this@AuthenticationActivity,
+                                        crypto
+                                    )
                                 ),
                                 authenticationNavigator,
                                 VRTErrorMessageConverter()
@@ -63,7 +65,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                     }
                     VTMLoginFragment::class.java.name ->
                         VTMLoginFragment(
-                            VTMAuthenticationUseCase(
+                            VTMAuthenticationUIController(
                                 VTMHttpProfileRepo(),
                                 VTMTokenStoreImpl(
                                     this@AuthenticationActivity,
@@ -75,7 +77,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         )
                     VIERLoginFragment::class.java.name ->
                         VIERLoginFragment(
-                            VIERAuthenticationUseCase(
+                            VIERAuthenticationUIController(
                                 VierHttpProfileRepo(),
                                 VIERTokenStoreImpl(
                                     this@AuthenticationActivity,

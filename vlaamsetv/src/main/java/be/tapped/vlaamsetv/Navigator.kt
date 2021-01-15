@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.navigation.NavController
 import be.tapped.vlaamsetv.auth.AuthenticationNavigation
 import be.tapped.vlaamsetv.auth.AuthenticationNavigationConfiguration
-import be.tapped.vlaamsetv.prefs.TokenUseCase
+import be.tapped.vlaamsetv.prefs.TokenStorage
 import kotlinx.parcelize.Parcelize
 
 interface RootNavigator {
@@ -19,12 +19,12 @@ interface RootNavigator {
     companion object {
         internal fun create(
             navigator: Navigator,
-            tokenUseCase: TokenUseCase
+            tokenStorage: TokenStorage
         ): RootNavigator =
             object : RootNavigator {
                 override suspend fun moveToStartDestination() {
                     val hasCredentialsForAtLeastOneBrand =
-                        tokenUseCase.hasCredentialsForAtLeastOneBrand()
+                        tokenStorage.hasCredentialsForAtLeastOneBrand()
                     if (hasCredentialsForAtLeastOneBrand) {
                         //TODO in another story.
                     } else {

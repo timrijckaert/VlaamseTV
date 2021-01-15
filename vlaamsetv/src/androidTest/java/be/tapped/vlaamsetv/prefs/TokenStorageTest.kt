@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import java.security.KeyStore
 
 @RunWith(AndroidJUnit4::class)
-internal class TokenUseCaseTest {
+internal class TokenStorageTest {
 
     companion object {
         private const val ONE_HOUR = 1 * 60 * 60 * 1000
@@ -37,7 +37,7 @@ internal class TokenUseCaseTest {
     private val vierTokenStore = VIERTokenStoreImpl(app, crypto)
 
     private val encryptedDataStore
-        get() = CompositeTokenCollectorUseCase(
+        get() = CompositeTokenStorage(
             vrtnuTokenStore,
             vtmgoTokenStore,
             vierTokenStore,
@@ -68,7 +68,7 @@ internal class TokenUseCaseTest {
                 vrtTokenWrapperArb.gen()
                     .copy(expiry = Expiry(System.currentTimeMillis() + ONE_HOUR))
             )
-            val isVRTTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VRT)
+            val isVRTTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VRT)
             isVRTTokenExpired shouldBe false
         }
     }
@@ -80,7 +80,7 @@ internal class TokenUseCaseTest {
                 vrtTokenWrapperArb.gen()
                     .copy(expiry = Expiry(System.currentTimeMillis() - ONE_HOUR))
             )
-            val isVRTTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VRT)
+            val isVRTTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VRT)
             isVRTTokenExpired shouldBe true
         }
     }
@@ -92,7 +92,7 @@ internal class TokenUseCaseTest {
                 vtmTokenWrapper.gen()
                     .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() + ONE_HOUR))
             )
-            val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VTM)
+            val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VTM)
             isVTMTokenExpired shouldBe false
         }
     }
@@ -104,7 +104,7 @@ internal class TokenUseCaseTest {
                 vtmTokenWrapper.gen()
                     .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() - ONE_HOUR))
             )
-            val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VTM)
+            val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VTM)
             isVTMTokenExpired shouldBe true
         }
     }
@@ -116,7 +116,7 @@ internal class TokenUseCaseTest {
                 vierTokenArb.gen()
                     .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() + ONE_HOUR))
             )
-            val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VIER)
+            val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VIER)
             isVIERTokenExpired shouldBe false
         }
     }
@@ -128,7 +128,7 @@ internal class TokenUseCaseTest {
                 vierTokenArb.gen()
                     .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() - ONE_HOUR))
             )
-            val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenUseCase.Brand.VIER)
+            val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VIER)
             isVIERTokenExpired shouldBe true
         }
     }

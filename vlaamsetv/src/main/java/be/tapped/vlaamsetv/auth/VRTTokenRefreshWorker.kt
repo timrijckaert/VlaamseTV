@@ -3,15 +3,13 @@ package be.tapped.vlaamsetv.auth
 import android.content.Context
 import androidx.work.*
 import arrow.core.Either
-import be.tapped.vlaamsetv.prefs.vrt.VRTTokenStore
-import be.tapped.vrtnu.profile.TokenRepo
+import be.tapped.vrtnu.ApiResponse
 import java.util.concurrent.TimeUnit
 
 class VRTTokenRefreshWorker(
     appContext: Context,
     params: WorkerParameters,
-    private val tokenRepo: TokenRepo,
-    private val vrtDataStore: VRTTokenStore,
+    private val vrtTokenUseCase: TokenUseCase<ApiResponse.Failure>,
 ) : CoroutineWorker(appContext, params) {
 
     companion object {
@@ -33,15 +31,9 @@ class VRTTokenRefreshWorker(
         }
     }
 
-    override suspend fun doWork(): Result {
-        //TODO log this somewhere because we should not schedule a task if we do not have a refresh token anyway
-        val refreshToken = vrtDataStore.token()?.refreshToken ?: return Result.failure()
-        return when (val tokenWrapper = tokenRepo.refreshTokenWrapper(refreshToken)) {
+    override suspend fun doWork(): Result =
+        when (vrtTokenUseCase.refresh()) {
             is Either.Left -> Result.failure()
-            is Either.Right -> {
-                vrtDataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
-                Result.success()
-            }
+            is Either.Right -> Result.success()
         }
-    }
 }

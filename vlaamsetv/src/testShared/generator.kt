@@ -62,6 +62,8 @@ val vtmTokenWrapper: Arb<be.tapped.vtmgo.profile.TokenWrapper> = arbitrary {
 }
 val xVRTTokenArb: Arb<XVRTToken> = arbitrary { XVRTToken(Arb.string().gen()) }
 
+val vrtRefreshTokenArb: Arb<RefreshToken> = arbitrary { RefreshToken(Arb.string().gen()) }
+
 fun <T> Arb<T>.genList(amount: Int = 5, rs: RandomSource = RandomSource.Default): List<T> =
     take(amount, rs).toList()
 

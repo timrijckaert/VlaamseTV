@@ -2,28 +2,26 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.Either
 import be.tapped.vlaamsetv.ErrorMessage
-import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
-import be.tapped.vtmgo.ApiResponse
-import be.tapped.vtmgo.profile.HttpProfileRepo
+import be.tapped.vlaamsetv.VRTErrorMessageConverter
+import be.tapped.vrtnu.ApiResponse
 
-class VTMAuthenticationUseCase(
-    private val profileRepo: HttpProfileRepo,
-    private val vtmTokenStore: VTMTokenStore,
+class VRTAuthenticationUIController(
+    private val vrtTokenUseCase: TokenUseCase<ApiResponse.Failure>,
     private val authenticationNavigator: AuthenticationNavigator,
-    private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
-) : AuthenticationUseCase {
+    private val VRTErrorMessageConverter: VRTErrorMessageConverter
+) : AuthenticationUIController {
+
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
-        when (val jwt = profileRepo.login(username, password)) {
-            is Either.Left ->
-                authenticationNavigator.navigateToErrorScreen(
-                    errorMessageConverter.mapToHumanReadableError(jwt.a)
-                )
+
+        when (val wasSuccessfullyLoggedIn = vrtTokenUseCase.performLogin(username, password)) {
+            is Either.Left -> {
+                val errorMessage =
+                    VRTErrorMessageConverter.mapToHumanReadableError(wasSuccessfullyLoggedIn.a)
+                authenticationNavigator.navigateToErrorScreen(errorMessage)
+            }
             is Either.Right -> {
-                vtmTokenStore.saveVTMCredentials(username, password)
-                vtmTokenStore.saveToken(jwt.b.token)
                 authenticationNavigator.navigateNext()
             }
         }

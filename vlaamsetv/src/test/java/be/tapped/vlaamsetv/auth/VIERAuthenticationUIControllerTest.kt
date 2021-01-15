@@ -2,25 +2,25 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
+import be.tapped.vier.ApiResponse
+import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.prefs.vtm.VTMTokenStore
-import be.tapped.vtmgo.ApiResponse
-import be.tapped.vtmgo.profile.HttpProfileRepo
+import be.tapped.vlaamsetv.prefs.vier.VIERTokenStore
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.mockk.*
 
-class VTMAuthenticationUseCaseTest : BehaviorSpec() {
+class VIERAuthenticationUIControllerTest : BehaviorSpec() {
     init {
-        given("A ${VTMAuthenticationUseCase::class.java.simpleName}") {
+        given("A ${VIERAuthenticationUIController::class.java.simpleName}") {
             val profileRepo = mockk<HttpProfileRepo>()
-            val vtmTokenStore = mockk<VTMTokenStore>()
+            val vierTokenStore = mockk<VIERTokenStore>()
             val authenticationNavigator = mockk<AuthenticationNavigator>()
             val errorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
-            val sut = VTMAuthenticationUseCase(
+            val sut = VIERAuthenticationUIController(
                 profileRepo,
-                vtmTokenStore,
+                vierTokenStore,
                 authenticationNavigator,
                 errorMessageConverter,
             )
@@ -33,17 +33,21 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
                     sut.login("", "")
 
                     then("it should not make a call") {
-                        coVerify(exactly = 0) { profileRepo.login("", "") }
+                        coVerify(exactly = 0) { profileRepo.fetchTokens("", "") }
                     }
 
                     then("it should navigate to the error screen") {
-                        verify { authenticationNavigator.navigateToErrorScreen(ErrorMessage(R.string.failure_generic_no_email)) }
+                        verify {
+                            authenticationNavigator.navigateToErrorScreen(
+                                ErrorMessage(R.string.failure_generic_no_email)
+                            )
+                        }
                     }
                 }
 
-                val token = ApiResponse.Success.Authentication.Token(vtmTokenWrapper.gen())
+                val token = vierTokenArb.gen()
                 coEvery {
-                    profileRepo.login(
+                    profileRepo.fetchTokens(
                         username,
                         password
                     )
@@ -53,11 +57,11 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
 
                 and("it was successful") {
                     then("it should save the credentials") {
-                        coVerify { vtmTokenStore.saveVTMCredentials(username, password) }
+                        coVerify { vierTokenStore.saveVierCredentials(username, password) }
                     }
 
-                    then("it should save the JWT token") {
-                        coVerify { vtmTokenStore.saveToken(token.token) }
+                    then("it should save the token") {
+                        coVerify { vierTokenStore.saveToken(token) }
                     }
 
                     then("it should have navigated to the next screen") {
@@ -67,17 +71,15 @@ class VTMAuthenticationUseCaseTest : BehaviorSpec() {
 
                 and("it was not successful") {
                     val errorMessage = errorMessageArb.gen()
-                    every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson) } returns errorMessage
+                    every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.HTML.EmptyHTML) } returns errorMessage
                     coEvery {
-                        profileRepo.login(username, password)
-                    } returns ApiResponse.Failure.EmptyJson.left()
+                        profileRepo.fetchTokens(username, password)
+                    } returns ApiResponse.Failure.HTML.EmptyHTML.left()
 
                     sut.login(username, password)
 
                     then("it should navigate to the error screen") {
-                        verify {
-                            authenticationNavigator.navigateToErrorScreen(errorMessage)
-                        }
+                        verify { authenticationNavigator.navigateToErrorScreen(errorMessage) }
                     }
                 }
             }
