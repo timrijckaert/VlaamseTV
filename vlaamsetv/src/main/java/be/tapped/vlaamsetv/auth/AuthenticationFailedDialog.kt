@@ -8,23 +8,23 @@ import androidx.navigation.fragment.navArgs
 import be.tapped.vlaamsetv.R
 
 class AuthenticationFailedDialog(private val authenticationNavigator: AuthenticationNavigator) :
-        GuidedStepSupportFragment() {
+    GuidedStepSupportFragment() {
 
     private val navArgs by navArgs<AuthenticationFailedDialogArgs>()
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
-            GuidanceStylist.Guidance(
-                    requireContext().getString(R.string.auth_flow_fail_dialog_title),
-                    navArgs.errorMessage,
-                    requireContext().getString(R.string.auth_flow_login_title),
-                    null
-            )
+        GuidanceStylist.Guidance(
+            requireContext().getString(R.string.auth_flow_fail_dialog_title),
+            navArgs.errorMessage,
+            requireContext().getString(R.string.auth_flow_login_title),
+            null
+        )
 
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         actions.add(
-                GuidedAction.Builder(requireContext())
-                        .clickAction(GuidedAction.ACTION_ID_CONTINUE)
-                        .build(),
+            GuidedAction.Builder(requireContext())
+                .clickAction(GuidedAction.ACTION_ID_CONTINUE)
+                .build(),
         )
     }
 

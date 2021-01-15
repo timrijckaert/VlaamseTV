@@ -36,9 +36,9 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
         private const val VIDEO_ITEM_KEY = "be.tapped.vlaamsetv.VideoPlayerFragment.VIDEO_ITEM"
 
         public fun newInstance(videoItem: VideoItem): VideoPlayerFragment =
-                VideoPlayerFragment().apply {
-                    arguments = bundleOf(VIDEO_ITEM_KEY to videoItem)
-                }
+            VideoPlayerFragment().apply {
+                arguments = bundleOf(VIDEO_ITEM_KEY to videoItem)
+            }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,29 +98,29 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
         }
 
         val mediaItem = MediaItem.Builder()
-                .setUri(videoItem.url)
-                .apply {
-                    videoItem.drm?.let {
-                        setDrmUuid(
-                                when (it.type) {
-                                    VideoItem.Drm.DrmType.WIDEVINE -> C.WIDEVINE_UUID
-                                    VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
-                                }
-                        )
-                        setDrmLicenseUri(it.licenseUrl)
-                    }
-
-                    setSubtitles(
-                            videoItem.subtitles.map {
-                                MediaItem.Subtitle(
-                                        Uri.parse(it.subtitleUrl),
-                                        it.mimeType,
-                                        it.language
-                                )
-                            }
+            .setUri(videoItem.url)
+            .apply {
+                videoItem.drm?.let {
+                    setDrmUuid(
+                        when (it.type) {
+                            VideoItem.Drm.DrmType.WIDEVINE -> C.WIDEVINE_UUID
+                            VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
+                        }
                     )
+                    setDrmLicenseUri(it.licenseUrl)
                 }
-                .build()
+
+                setSubtitles(
+                    videoItem.subtitles.map {
+                        MediaItem.Subtitle(
+                            Uri.parse(it.subtitleUrl),
+                            it.mimeType,
+                            it.language
+                        )
+                    }
+                )
+            }
+            .build()
         player?.setMediaItem(mediaItem, !haveStartPosition)
         player?.prepare()
     }
@@ -136,9 +136,9 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
     private fun updateStartPosition() {
         player?.let {
             videoItem = videoItem.copy(
-                    startAutoPlay = it.playWhenReady,
-                    startWindow = it.currentWindowIndex,
-                    startPosition = max(0, it.contentPosition),
+                startAutoPlay = it.playWhenReady,
+                startWindow = it.currentWindowIndex,
+                startPosition = max(0, it.contentPosition),
             )
         }
     }

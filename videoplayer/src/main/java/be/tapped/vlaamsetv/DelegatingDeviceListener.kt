@@ -5,7 +5,7 @@ import com.google.android.exoplayer2.device.DeviceListener
 import kotlinx.coroutines.channels.SendChannel
 
 internal class DelegatingDeviceListener(private val sendChannel: SendChannel<VideoEvent>) :
-        DeviceListener {
+    DeviceListener {
     override fun onDeviceInfoChanged(deviceInfo: DeviceInfo) {
         sendChannel.safeOffer(VideoEvent.Device.InfoChanged(deviceInfo))
     }

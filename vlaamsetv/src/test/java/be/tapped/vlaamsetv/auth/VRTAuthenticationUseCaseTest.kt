@@ -19,10 +19,10 @@ class VRTAuthenticationUseCaseTest : BehaviorSpec({
         val authenticationNavigator = mockk<AuthenticationNavigator>()
         val errorMessageConverter = mockk<VRTErrorMessageConverter>()
         val sut = VRTAuthenticationUseCase(
-                tokenRepo,
-                vrtTokenStore,
-                authenticationNavigator,
-                errorMessageConverter
+            tokenRepo,
+            vrtTokenStore,
+            authenticationNavigator,
+            errorMessageConverter
         )
 
         val username = Arb.string().gen()

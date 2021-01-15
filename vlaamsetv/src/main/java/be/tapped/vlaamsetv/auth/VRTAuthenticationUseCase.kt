@@ -11,30 +11,30 @@ import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 
 class VRTAuthenticationUseCase(
-        private val tokenRepo: TokenRepo,
-        private val dataStore: VRTTokenStore,
-        private val authenticationNavigator: AuthenticationNavigator,
-        private val VRTErrorMessageConverter: VRTErrorMessageConverter
+    private val tokenRepo: TokenRepo,
+    private val dataStore: VRTTokenStore,
+    private val authenticationNavigator: AuthenticationNavigator,
+    private val VRTErrorMessageConverter: VRTErrorMessageConverter
 ) : AuthenticationUseCase {
 
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
 
         val tokenWrapperWithXVRTToken =
-                either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
-                    parMapN(
-                            { !tokenRepo.fetchTokenWrapper(username, password) },
-                            { !tokenRepo.fetchXVRTToken(username, password) },
-                            ::Pair
-                    )
-                }
+            either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
+                parMapN(
+                    { !tokenRepo.fetchTokenWrapper(username, password) },
+                    { !tokenRepo.fetchXVRTToken(username, password) },
+                    ::Pair
+                )
+            }
 
         when (tokenWrapperWithXVRTToken) {
             is Either.Left -> {
                 authenticationNavigator.navigateToErrorScreen(
-                        VRTErrorMessageConverter.mapToHumanReadableError(
-                                tokenWrapperWithXVRTToken.a
-                        )
+                    VRTErrorMessageConverter.mapToHumanReadableError(
+                        tokenWrapperWithXVRTToken.a
+                    )
                 )
             }
             is Either.Right -> {
@@ -49,8 +49,8 @@ class VRTAuthenticationUseCase(
     }
 
     private fun checkPreconditions(
-            username: String,
-            password: String
+        username: String,
+        password: String
     ): Boolean {
         if (username.isBlank()) {
             authenticationNavigator.navigateToErrorScreen(ErrorMessage(R.string.failure_generic_no_email))

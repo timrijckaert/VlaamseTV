@@ -19,10 +19,10 @@ class VIERAuthenticationUseCaseTest : BehaviorSpec() {
             val authenticationNavigator = mockk<AuthenticationNavigator>()
             val errorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
             val sut = VIERAuthenticationUseCase(
-                    profileRepo,
-                    vierTokenStore,
-                    authenticationNavigator,
-                    errorMessageConverter,
+                profileRepo,
+                vierTokenStore,
+                authenticationNavigator,
+                errorMessageConverter,
             )
 
             val username = Arb.string().gen()
@@ -39,7 +39,7 @@ class VIERAuthenticationUseCaseTest : BehaviorSpec() {
                     then("it should navigate to the error screen") {
                         verify {
                             authenticationNavigator.navigateToErrorScreen(
-                                    ErrorMessage(R.string.failure_generic_no_email)
+                                ErrorMessage(R.string.failure_generic_no_email)
                             )
                         }
                     }
@@ -48,8 +48,8 @@ class VIERAuthenticationUseCaseTest : BehaviorSpec() {
                 val token = vierTokenArb.gen()
                 coEvery {
                     profileRepo.fetchTokens(
-                            username,
-                            password
+                        username,
+                        password
                     )
                 } returns token.right()
 

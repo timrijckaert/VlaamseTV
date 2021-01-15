@@ -6,7 +6,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import kotlinx.coroutines.channels.SendChannel
 
 internal class DelegatingPlayerEventListener(private val sendChannel: SendChannel<VideoEvent>) :
-        Player.EventListener {
+    Player.EventListener {
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
         sendChannel.safeOffer(VideoEvent.Player.TimelineChanged(timeline, reason))
     }
@@ -16,8 +16,8 @@ internal class DelegatingPlayerEventListener(private val sendChannel: SendChanne
     }
 
     override fun onTracksChanged(
-            trackGroups: TrackGroupArray,
-            trackSelections: TrackSelectionArray
+        trackGroups: TrackGroupArray,
+        trackSelections: TrackSelectionArray
     ) {
         sendChannel.safeOffer(VideoEvent.Player.TracksChanged(trackGroups, trackSelections))
     }
@@ -36,9 +36,9 @@ internal class DelegatingPlayerEventListener(private val sendChannel: SendChanne
 
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
         sendChannel.safeOffer(
-                VideoEvent.Player.PlaybackSuppressionReasonChanged(
-                        playbackSuppressionReason
-                )
+            VideoEvent.Player.PlaybackSuppressionReasonChanged(
+                playbackSuppressionReason
+            )
         )
     }
 
@@ -68,9 +68,9 @@ internal class DelegatingPlayerEventListener(private val sendChannel: SendChanne
 
     override fun onExperimentalOffloadSchedulingEnabledChanged(offloadSchedulingEnabled: Boolean) {
         sendChannel.safeOffer(
-                VideoEvent.Player.ExperimentalOffloadSchedulingEnabledChanged(
-                        offloadSchedulingEnabled
-                )
+            VideoEvent.Player.ExperimentalOffloadSchedulingEnabledChanged(
+                offloadSchedulingEnabled
+            )
         )
     }
 }

@@ -33,8 +33,8 @@ class VRTTokenRefreshWorkerTest {
     @Test
     fun noRefreshTokenInStoreShouldFailure() {
         val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
-                .setWorkerFactory(AuthenticationWorkerFactory)
-                .build() as VRTTokenRefreshWorker
+            .setWorkerFactory(AuthenticationWorkerFactory)
+            .build() as VRTTokenRefreshWorker
 
         runBlocking {
             val result = worker.doWork()
@@ -45,12 +45,12 @@ class VRTTokenRefreshWorkerTest {
     @Test
     fun tokenRefreshFailedShouldResultInAFailure() {
         val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
-                .setWorkerFactory(
-                        buildWorkerFactory(
-                                { ApiResponse.Failure.EmptyJson.left() },
-                                { vrtTokenWrapperArb.gen() })
-                )
-                .build() as VRTTokenRefreshWorker
+            .setWorkerFactory(
+                buildWorkerFactory(
+                    { ApiResponse.Failure.EmptyJson.left() },
+                    { vrtTokenWrapperArb.gen() })
+            )
+            .build() as VRTTokenRefreshWorker
 
         runBlocking {
             val result = worker.doWork()
@@ -61,13 +61,13 @@ class VRTTokenRefreshWorkerTest {
     @Test
     fun tokenRefreshWasSuccessFulShouldResultInASuccess() {
         val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
-                .setWorkerFactory(
-                        buildWorkerFactory(
-                                { ApiResponse.Success.Authentication.Token(vrtTokenWrapperArb.gen()).right() },
-                                { vrtTokenWrapperArb.gen() }
-                        )
+            .setWorkerFactory(
+                buildWorkerFactory(
+                    { ApiResponse.Success.Authentication.Token(vrtTokenWrapperArb.gen()).right() },
+                    { vrtTokenWrapperArb.gen() }
                 )
-                .build() as VRTTokenRefreshWorker
+            )
+            .build() as VRTTokenRefreshWorker
 
         runBlocking {
             val result = worker.doWork()
@@ -76,65 +76,65 @@ class VRTTokenRefreshWorkerTest {
     }
 
     private fun buildWorkerFactory(
-            refreshTokenWrapperF: () -> Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token>,
-            tokenFunc: () -> TokenWrapper
+        refreshTokenWrapperF: () -> Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token>,
+        tokenFunc: () -> TokenWrapper
     ): WorkerFactory {
         return object : WorkerFactory() {
             override fun createWorker(
-                    appContext: Context,
-                    workerClassName: String,
-                    workerParameters: WorkerParameters
+                appContext: Context,
+                workerClassName: String,
+                workerParameters: WorkerParameters
             ): ListenableWorker {
                 return VRTTokenRefreshWorker(
-                        appContext, workerParameters,
-                        object : TokenRepo {
-                            override suspend fun fetchTokenWrapper(
-                                    userName: String,
-                                    password: String
-                            ): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token> {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-
-                            override suspend fun refreshTokenWrapper(refreshToken: RefreshToken): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token> =
-                                    refreshTokenWrapperF()
-
-                            override suspend fun fetchXVRTToken(
-                                    userName: String,
-                                    password: String
-                            ): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.VRTToken> {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-
-                            override suspend fun fetchVRTPlayerToken(xVRTToken: XVRTToken): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.PlayerToken> {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-                        },
-                        object : VRTTokenStore {
-                            override suspend fun saveVRTCredentials(
-                                    username: String,
-                                    password: String
-                            ) {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-
-                            override suspend fun vrtCredentials(): Credential? {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-
-                            override suspend fun token(): TokenWrapper = tokenFunc()
-
-                            override suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper) {
-                            }
-
-                            override suspend fun saveXVRTToken(xVRTToken: XVRTToken) {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-
-                            override suspend fun xVRTToken(): XVRTToken? {
-                                throw RuntimeException("Test is not allowed to call this method.")
-                            }
-
+                    appContext, workerParameters,
+                    object : TokenRepo {
+                        override suspend fun fetchTokenWrapper(
+                            userName: String,
+                            password: String
+                        ): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token> {
+                            throw RuntimeException("Test is not allowed to call this method.")
                         }
+
+                        override suspend fun refreshTokenWrapper(refreshToken: RefreshToken): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.Token> =
+                            refreshTokenWrapperF()
+
+                        override suspend fun fetchXVRTToken(
+                            userName: String,
+                            password: String
+                        ): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.VRTToken> {
+                            throw RuntimeException("Test is not allowed to call this method.")
+                        }
+
+                        override suspend fun fetchVRTPlayerToken(xVRTToken: XVRTToken): Either<ApiResponse.Failure, ApiResponse.Success.Authentication.PlayerToken> {
+                            throw RuntimeException("Test is not allowed to call this method.")
+                        }
+                    },
+                    object : VRTTokenStore {
+                        override suspend fun saveVRTCredentials(
+                            username: String,
+                            password: String
+                        ) {
+                            throw RuntimeException("Test is not allowed to call this method.")
+                        }
+
+                        override suspend fun vrtCredentials(): Credential? {
+                            throw RuntimeException("Test is not allowed to call this method.")
+                        }
+
+                        override suspend fun token(): TokenWrapper = tokenFunc()
+
+                        override suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper) {
+                        }
+
+                        override suspend fun saveXVRTToken(xVRTToken: XVRTToken) {
+                            throw RuntimeException("Test is not allowed to call this method.")
+                        }
+
+                        override suspend fun xVRTToken(): XVRTToken? {
+                            throw RuntimeException("Test is not allowed to call this method.")
+                        }
+
+                    }
                 )
             }
         }

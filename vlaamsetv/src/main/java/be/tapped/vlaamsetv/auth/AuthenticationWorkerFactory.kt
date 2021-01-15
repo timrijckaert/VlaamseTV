@@ -10,17 +10,17 @@ import be.tapped.vrtnu.profile.ProfileRepo
 
 object AuthenticationWorkerFactory : WorkerFactory() {
     override fun createWorker(
-            appContext: Context,
-            workerClassName: String,
-            workerParameters: WorkerParameters
+        appContext: Context,
+        workerClassName: String,
+        workerParameters: WorkerParameters
     ): ListenableWorker? =
-            when (workerClassName) {
-                VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(
-                        appContext,
-                        workerParameters,
-                        ProfileRepo(),
-                        VRTTokenStoreImpl(appContext, (appContext as App).crypto)
-                )
-                else -> null
-            }
+        when (workerClassName) {
+            VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(
+                appContext,
+                workerParameters,
+                ProfileRepo(),
+                VRTTokenStoreImpl(appContext, (appContext as App).crypto)
+            )
+            else -> null
+        }
 }

@@ -28,67 +28,67 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
     private val navArgs by navArgs<AuthenticationActivityArgs>()
     private val authenticationNavigator by lazy {
         AuthenticationNavigator.create(
-                this,
-                navHostFragment.navController,
-                navArgs.config
+            this,
+            navHostFragment.navController,
+            navArgs.config
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         onBackPressedDispatcher.addCallback(
-                this,
-                object : OnBackPressedCallback(true) {
-                    override fun handleOnBackPressed() {
-                        authenticationNavigator.navigateBack()
-                    }
-                })
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    authenticationNavigator.navigateBack()
+                }
+            })
 
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
-                    when (className) {
-                        AuthenticationFragment::class.java.name ->
-                            AuthenticationFragment(authenticationNavigator)
-                        VRTLoginFragment::class.java.name -> {
-                            VRTLoginFragment(
-                                    VRTAuthenticationUseCase(
-                                            ProfileRepo(),
-                                            VRTTokenStoreImpl(
-                                                    this@AuthenticationActivity,
-                                                    crypto
-                                            ),
-                                            authenticationNavigator,
-                                            VRTErrorMessageConverter()
-                                    ),
-                            )
-                        }
-                        VTMLoginFragment::class.java.name ->
-                            VTMLoginFragment(
-                                    VTMAuthenticationUseCase(
-                                            VTMHttpProfileRepo(),
-                                            VTMTokenStoreImpl(
-                                                    this@AuthenticationActivity,
-                                                    crypto
-                                            ),
-                                            authenticationNavigator,
-                                            VTMErrorMessageConverter()
-                                    ),
-                            )
-                        VIERLoginFragment::class.java.name ->
-                            VIERLoginFragment(
-                                    VIERAuthenticationUseCase(
-                                            VierHttpProfileRepo(),
-                                            VIERTokenStoreImpl(
-                                                    this@AuthenticationActivity,
-                                                    crypto
-                                            ),
-                                            authenticationNavigator,
-                                            VIERErrorMessageConverter()
-                                    ),
-                            )
-                        AuthenticationFailedDialog::class.java.name ->
-                            AuthenticationFailedDialog(authenticationNavigator)
-                        else -> super.instantiate(cls, className)
+                when (className) {
+                    AuthenticationFragment::class.java.name ->
+                        AuthenticationFragment(authenticationNavigator)
+                    VRTLoginFragment::class.java.name -> {
+                        VRTLoginFragment(
+                            VRTAuthenticationUseCase(
+                                ProfileRepo(),
+                                VRTTokenStoreImpl(
+                                    this@AuthenticationActivity,
+                                    crypto
+                                ),
+                                authenticationNavigator,
+                                VRTErrorMessageConverter()
+                            ),
+                        )
                     }
+                    VTMLoginFragment::class.java.name ->
+                        VTMLoginFragment(
+                            VTMAuthenticationUseCase(
+                                VTMHttpProfileRepo(),
+                                VTMTokenStoreImpl(
+                                    this@AuthenticationActivity,
+                                    crypto
+                                ),
+                                authenticationNavigator,
+                                VTMErrorMessageConverter()
+                            ),
+                        )
+                    VIERLoginFragment::class.java.name ->
+                        VIERLoginFragment(
+                            VIERAuthenticationUseCase(
+                                VierHttpProfileRepo(),
+                                VIERTokenStoreImpl(
+                                    this@AuthenticationActivity,
+                                    crypto
+                                ),
+                                authenticationNavigator,
+                                VIERErrorMessageConverter()
+                            ),
+                        )
+                    AuthenticationFailedDialog::class.java.name ->
+                        AuthenticationFailedDialog(authenticationNavigator)
+                    else -> super.instantiate(cls, className)
+                }
         }
         super.onCreate(savedInstanceState)
     }

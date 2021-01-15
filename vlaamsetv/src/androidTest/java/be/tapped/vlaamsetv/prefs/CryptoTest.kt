@@ -35,8 +35,8 @@ internal class CryptoTest {
     fun longerStringEncryptionAndDecryption() {
         val outputStream = ByteArrayOutputStream()
         crypto.encrypt(
-                "eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW".toByteArray(),
-                outputStream
+            "eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW".toByteArray(),
+            outputStream
         )
         val string = String(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
 
@@ -47,14 +47,14 @@ internal class CryptoTest {
     fun objectEncryptionAndDecryption() {
         val outputStream = ByteArrayOutputStream()
         val tokenWrapper =
-                TokenWrapper(accessToken = Arb.string().gen())
+            TokenWrapper(accessToken = Arb.string().gen())
         crypto.encrypt(
-                TokenWrapper.ADAPTER.encode(tokenWrapper),
-                outputStream
+            TokenWrapper.ADAPTER.encode(tokenWrapper),
+            outputStream
         )
 
         val tokenWrapperProto =
-                TokenWrapper.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
+            TokenWrapper.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
         tokenWrapper shouldBe tokenWrapperProto
     }
 }

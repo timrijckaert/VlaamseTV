@@ -4,20 +4,20 @@ import com.google.android.exoplayer2.video.VideoListener
 import kotlinx.coroutines.channels.SendChannel
 
 internal class DelegatingVideoListener(private val sendChannel: SendChannel<VideoEvent>) :
-        VideoListener {
+    VideoListener {
     override fun onVideoSizeChanged(
-            width: Int,
-            height: Int,
-            unappliedRotationDegrees: Int,
-            pixelWidthHeightRatio: Float
+        width: Int,
+        height: Int,
+        unappliedRotationDegrees: Int,
+        pixelWidthHeightRatio: Float
     ) {
         sendChannel.safeOffer(
-                VideoEvent.Video.SizeChanged(
-                        width,
-                        height,
-                        unappliedRotationDegrees,
-                        pixelWidthHeightRatio
-                )
+            VideoEvent.Video.SizeChanged(
+                width,
+                height,
+                unappliedRotationDegrees,
+                pixelWidthHeightRatio
+            )
         )
     }
 

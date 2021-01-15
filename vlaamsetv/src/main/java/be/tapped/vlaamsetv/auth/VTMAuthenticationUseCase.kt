@@ -9,17 +9,17 @@ import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.HttpProfileRepo
 
 class VTMAuthenticationUseCase(
-        private val profileRepo: HttpProfileRepo,
-        private val vtmTokenStore: VTMTokenStore,
-        private val authenticationNavigator: AuthenticationNavigator,
-        private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
+    private val profileRepo: HttpProfileRepo,
+    private val vtmTokenStore: VTMTokenStore,
+    private val authenticationNavigator: AuthenticationNavigator,
+    private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
 ) : AuthenticationUseCase {
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
         when (val jwt = profileRepo.login(username, password)) {
             is Either.Left ->
                 authenticationNavigator.navigateToErrorScreen(
-                        errorMessageConverter.mapToHumanReadableError(jwt.a)
+                    errorMessageConverter.mapToHumanReadableError(jwt.a)
                 )
             is Either.Right -> {
                 vtmTokenStore.saveVTMCredentials(username, password)
@@ -30,8 +30,8 @@ class VTMAuthenticationUseCase(
     }
 
     private fun checkPreconditions(
-            username: String,
-            password: String
+        username: String,
+        password: String
     ): Boolean {
         if (username.isBlank()) {
             authenticationNavigator.navigateToErrorScreen(ErrorMessage(R.string.failure_generic_no_email))

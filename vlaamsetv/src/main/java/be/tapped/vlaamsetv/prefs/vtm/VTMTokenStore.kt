@@ -20,35 +20,35 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
 
     private val jwtTokenDataStore by lazy {
         context.createDataStore(
-                fileName = "vtmgo-jwt.pb",
-                serializer = TokenWrapperSerializer(crypto)
+            fileName = "vtmgo-jwt.pb",
+            serializer = TokenWrapperSerializer(crypto)
         )
     }
 
     private val credentialsDataStore by lazy {
         context.createDataStore(
-                fileName = "vtmgo-credentials.pb",
-                serializer = VTMCredentialsSerializer(crypto)
+            fileName = "vtmgo-credentials.pb",
+            serializer = VTMCredentialsSerializer(crypto)
         )
     }
 
     override suspend fun token(): TokenWrapper? =
-            jwtTokenDataStore.data.firstOrNull()?.let {
-                if (it.token.isNotBlank() && it.expiry != 0L) {
-                    TokenWrapper(
-                            JWT(it.token),
-                            Expiry(it.expiry)
-                    )
-                } else {
-                    null
-                }
+        jwtTokenDataStore.data.firstOrNull()?.let {
+            if (it.token.isNotBlank() && it.expiry != 0L) {
+                TokenWrapper(
+                    JWT(it.token),
+                    Expiry(it.expiry)
+                )
+            } else {
+                null
             }
+        }
 
     override suspend fun saveToken(token: TokenWrapper) {
         jwtTokenDataStore.updateData {
             it.copy(
-                    token = token.jwt.token,
-                    expiry = token.expiry.dateInMillis
+                token = token.jwt.token,
+                expiry = token.expiry.dateInMillis
             )
         }
     }
@@ -60,14 +60,14 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
     }
 
     override suspend fun vtmCredentials(): Credential? =
-            credentialsDataStore.data.firstOrNull()?.let {
-                if (it.username.isNotBlank() && it.password.isNotBlank()) {
-                    Credential(
-                            username = it.username,
-                            password = it.password
-                    )
-                } else {
-                    null
-                }
+        credentialsDataStore.data.firstOrNull()?.let {
+            if (it.username.isNotBlank() && it.password.isNotBlank()) {
+                Credential(
+                    username = it.username,
+                    password = it.password
+                )
+            } else {
+                null
             }
+        }
 }
