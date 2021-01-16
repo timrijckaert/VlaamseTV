@@ -21,13 +21,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class VRTTokenRefreshWorkerTest {
+class TokenRefreshWorkerTest {
 
     private val context get() = ApplicationProvider.getApplicationContext<App>()
 
     @Test
     fun tokenRefreshFailedShouldResultInAFailure() {
-        val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
+        val worker = TestListenableWorkerBuilder<StubbedTokenRefreshWorker>(context)
             .setWorkerFactory(
                 buildWorkerFactory { errorMessageArb.gen().left() }
             )
@@ -41,7 +41,7 @@ class VRTTokenRefreshWorkerTest {
 
     @Test
     fun tokenRefreshWasSuccessFulShouldResultInASuccess() {
-        val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorker>(context)
+        val worker = TestListenableWorkerBuilder<StubbedTokenRefreshWorker>(context)
             .setWorkerFactory(
                 buildWorkerFactory { true.right() }
             )
@@ -60,7 +60,7 @@ class VRTTokenRefreshWorkerTest {
                 workerClassName: String,
                 workerParameters: WorkerParameters
             ): ListenableWorker {
-                return VRTTokenRefreshWorker(
+                return StubbedTokenRefreshWorker(
                     appContext, workerParameters,
                     object : TokenUseCase {
                         override suspend fun performLogin(
@@ -78,3 +78,9 @@ class VRTTokenRefreshWorkerTest {
         }
     }
 }
+
+private class StubbedTokenRefreshWorker(
+    appContext: Context,
+    params: WorkerParameters,
+    vtmTokenUseCase: TokenUseCase,
+) : TokenRefreshWorker(appContext, params, vtmTokenUseCase)
