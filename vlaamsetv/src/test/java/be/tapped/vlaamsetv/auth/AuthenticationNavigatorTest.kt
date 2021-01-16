@@ -11,7 +11,7 @@ import io.mockk.mockk
 class AuthenticationNavigatorTest : FreeSpec() {
 
     init {
-        "An ${AuthenticationNavigatorTest::class.java.simpleName}" - {
+        "An ${AuthenticationNavigator::class.java.simpleName}" - {
             val navController: NavController = mockk()
 
             val activity = mockk<ComponentActivity>()
@@ -22,10 +22,12 @@ class AuthenticationNavigatorTest : FreeSpec() {
                         AuthenticationNavigationConfiguration.VRT
                     )
 
+                val authenticationState = mockk<AuthenticationState>()
                 val sut = AuthenticationNavigator.create(
                     activity,
                     navController,
-                    authenticationScreenConfig
+                    authenticationScreenConfig,
+                    authenticationState
                 )
 
                 "when connecting to the state" - {
@@ -74,29 +76,23 @@ class AuthenticationNavigatorTest : FreeSpec() {
                         AuthenticationNavigationConfiguration.VTM,
                     )
 
+                val authenticationState = mockk<AuthenticationState>()
                 val sut = AuthenticationNavigator.create(
                     activity,
                     navController,
-                    authenticationScreenConfig
+                    authenticationScreenConfig,
+                    authenticationState
                 )
 
-                "when connecting to the state" - {
-                    "then it should emit the first screen" - {
-                        sut.currentScreen shouldBe AuthenticationNavigator.Screen.VRT(false)
-                    }
-                }
-
-                "when navigating forward" - {
+                "when navigating to the next screen after a successful login" - {
                     sut.navigateNext()
-                    "then it should navigate to the next screen" - {
-                        sut.currentScreen shouldBe AuthenticationNavigator.Screen.VTM(true)
-                    }
-                }
+                    every { authenticationState.stateForBrand(AuthenticationState.Brand.VRT) } returns AuthenticationState.Type.LOGGED_IN
+                    "when we try to navigate back" - {
+                        sut.navigateBack()
 
-                "when navigating back" - {
-                    sut.navigateBack()
-                    "then it should stay on the initial screen" - {
-                        sut.currentScreen shouldBe AuthenticationNavigator.Screen.VRT(false)
+                        "no back navigation should have happened" - {
+                            sut.currentScreen shouldBe AuthenticationNavigator.Screen.VTM(true)
+                        }
                     }
                 }
             }

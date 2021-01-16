@@ -17,9 +17,11 @@ class VTMAuthenticationUIControllerTest : BehaviorSpec() {
         given("A ${VTMAuthenticationUIController::class.java.simpleName}") {
             val vtmTokenUseCase = mockk<VTMTokenUseCase>()
             val authenticationNavigator = mockk<AuthenticationNavigator>()
+            val authenticationState = mockk<AuthenticationState>()
             val sut = VTMAuthenticationUIController(
                 vtmTokenUseCase,
                 authenticationNavigator,
+                authenticationState,
             )
 
             val stringGen = Arb.string(1)
@@ -39,6 +41,15 @@ class VTMAuthenticationUIControllerTest : BehaviorSpec() {
 
                     then("it should have navigated to the next screen") {
                         coVerify { authenticationNavigator.navigateNext() }
+                    }
+
+                    then("it should have updated the authentication state") {
+                        verify {
+                            authenticationState.updateAuthenticationState(
+                                AuthenticationState.Brand.VTM,
+                                AuthenticationState.Type.LOGGED_IN
+                            )
+                        }
                     }
                 }
 
@@ -66,6 +77,15 @@ class VTMAuthenticationUIControllerTest : BehaviorSpec() {
 
                 then("it should navigate to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }
+                }
+
+                then("it should have set the authentication state") {
+                    verify {
+                        authenticationState.updateAuthenticationState(
+                            AuthenticationState.Brand.VTM,
+                            AuthenticationState.Type.SKIPPED
+                        )
+                    }
                 }
             }
         }

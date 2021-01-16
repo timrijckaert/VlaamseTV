@@ -29,8 +29,9 @@ class VTMTokenUseCaseTest : BehaviorSpec({
             tokenRefreshWorkerScheduler
         )
 
-        val username = Arb.string().gen()
-        val password = Arb.string().gen()
+        val stringGen = Arb.string(minSize = 1)
+        val username = stringGen.gen()
+        val password = stringGen.gen()
         `when`("logging in") {
             and("provided empty credentials") {
                 val result = sut.performLogin("", "")

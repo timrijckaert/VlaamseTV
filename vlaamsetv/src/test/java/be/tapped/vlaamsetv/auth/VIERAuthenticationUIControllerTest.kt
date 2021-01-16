@@ -17,9 +17,11 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
         given("A ${VIERAuthenticationUIController::class.java.simpleName}") {
             val vierTokenUseCase = mockk<VIERTokenUseCase>()
             val authenticationNavigator = mockk<AuthenticationNavigator>()
+            val authenticationState = mockk<AuthenticationState>()
             val sut = VIERAuthenticationUIController(
                 vierTokenUseCase,
                 authenticationNavigator,
+                authenticationState,
             )
 
             val username = Arb.string().gen()
@@ -37,6 +39,15 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
                 and("it was successful") {
                     then("it should have navigated to the next screen") {
                         coVerify { authenticationNavigator.navigateNext() }
+                    }
+
+                    then("it should have updated the authentication state") {
+                        verify {
+                            authenticationState.updateAuthenticationState(
+                                AuthenticationState.Brand.VIER,
+                                AuthenticationState.Type.LOGGED_IN
+                            )
+                        }
                     }
                 }
 
@@ -59,6 +70,15 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
 
                 then("it should navigate to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }
+                }
+
+                then("it should have set the authentication state") {
+                    verify {
+                        authenticationState.updateAuthenticationState(
+                            AuthenticationState.Brand.VIER,
+                            AuthenticationState.Type.SKIPPED
+                        )
+                    }
                 }
             }
         }

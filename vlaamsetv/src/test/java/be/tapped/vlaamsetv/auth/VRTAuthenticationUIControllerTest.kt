@@ -2,7 +2,6 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
-import be.tapped.vlaamsetv.VRTErrorMessageConverter
 import be.tapped.vlaamsetv.errorMessageArb
 import be.tapped.vlaamsetv.gen
 import io.kotest.core.spec.style.BehaviorSpec
@@ -18,10 +17,11 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
     given("A ${VRTAuthenticationUIController::class.simpleName}") {
         val vrtTokenUseCase = mockk<VRTTokenUseCase>()
         val authenticationNavigator = mockk<AuthenticationNavigator>()
-        val errorMessageConverter = mockk<VRTErrorMessageConverter>()
+        val authenticationState = mockk<AuthenticationState>()
         val sut = VRTAuthenticationUIController(
             vrtTokenUseCase,
-            authenticationNavigator
+            authenticationNavigator,
+            authenticationState
         )
 
         val stringGen = Arb.string(1)
@@ -37,6 +37,15 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
 
                 then("it should have navigated to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }
+                }
+
+                then("it should have updated the authentication state") {
+                    verify {
+                        authenticationState.updateAuthenticationState(
+                            AuthenticationState.Brand.VRT,
+                            AuthenticationState.Type.LOGGED_IN
+                        )
+                    }
                 }
             }
 
@@ -61,6 +70,15 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
 
             then("it should navigate to the next screen") {
                 coVerify { authenticationNavigator.navigateNext() }
+            }
+
+            then("it should have set the authentication state") {
+                verify {
+                    authenticationState.updateAuthenticationState(
+                        AuthenticationState.Brand.VRT,
+                        AuthenticationState.Type.SKIPPED
+                    )
+                }
             }
         }
     }

@@ -29,7 +29,7 @@ class VIERTokenUseCaseTest : BehaviorSpec({
             tokenRefreshWorkScheduler
         )
 
-        val stringGen = Arb.string()
+        val stringGen = Arb.string(minSize = 1)
         val username = stringGen.gen()
         val password = stringGen.gen()
 

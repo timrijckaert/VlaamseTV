@@ -23,11 +23,13 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
     private val navArgs by navArgs<AuthenticationActivityArgs>()
+    private val authenticationState = AuthenticationState()
     private val authenticationNavigator by lazy {
         AuthenticationNavigator.create(
             this,
             navHostFragment.navController,
-            navArgs.config
+            navArgs.config,
+            authenticationState
         )
     }
 
@@ -57,6 +59,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                     tokenRefreshWorkScheduler,
                                 ),
                                 authenticationNavigator,
+                                authenticationState,
                             ),
                         )
                     }
@@ -70,6 +73,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                     tokenRefreshWorkScheduler,
                                 ),
                                 authenticationNavigator,
+                                authenticationState,
                             ),
                         )
                     VIERLoginFragment::class.java.name ->
@@ -81,7 +85,8 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                     VIERErrorMessageConverter(),
                                     tokenRefreshWorkScheduler,
                                 ),
-                                authenticationNavigator
+                                authenticationNavigator,
+                                authenticationState
                             ),
                         )
                     AuthenticationFailedDialog::class.java.name ->

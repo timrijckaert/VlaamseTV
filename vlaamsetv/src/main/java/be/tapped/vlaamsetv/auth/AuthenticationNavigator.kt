@@ -30,7 +30,8 @@ interface AuthenticationNavigator {
         internal fun create(
             activity: ComponentActivity,
             navController: NavController,
-            authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>
+            authenticationScreenConfig: Array<AuthenticationNavigationConfiguration>,
+            authenticationState: AuthenticationState,
         ): AuthenticationNavigator =
             object : AuthenticationNavigator {
                 override val currentScreen: Screen get() = _currentScreen.second
@@ -57,24 +58,38 @@ interface AuthenticationNavigator {
                 }
 
                 override fun navigateBack() {
-                    if (_currentScreen.second is Screen.ErrorDialog) {
-                        navigate({ it - 1 }, ::nextScreenFromConfiguration)
+                    navigate({ it - 1 }) {
+                        val screen = nextScreenFromConfiguration(it)
+                        val isAllowedToNavigateBack = when (screen) {
+                            is Screen.VRT -> authenticationState.stateForBrand(AuthenticationState.Brand.VRT) != AuthenticationState.Type.LOGGED_IN
+                            is Screen.VTM -> authenticationState.stateForBrand(AuthenticationState.Brand.VTM) != AuthenticationState.Type.LOGGED_IN
+                            is Screen.VIER -> authenticationState.stateForBrand(AuthenticationState.Brand.VIER) != AuthenticationState.Type.LOGGED_IN
+                            is Screen.ErrorDialog -> true
+                            Screen.End -> false
+                        }
+
+                        if (isAllowedToNavigateBack) screen else null
                     }
                 }
 
-                private fun navigate(indexFunc: (Int) -> Int, nextScreenFunc: (Int) -> Screen) {
+                private fun navigate(
+                    nextIndexFunc: (Int) -> Int,
+                    nextScreenFunc: (Int) -> Screen?
+                ) {
                     val (index, page) = _currentScreen
                     if (page == Screen.End) {
                         return
                     }
 
-                    val newIndex = indexFunc(index)
+                    val newIndex = nextIndexFunc(index)
                     if (newIndex < 0) {
                         return
                     }
 
                     val newAuthenticationPage = nextScreenFunc(newIndex)
-                    _currentScreen = newIndex to newAuthenticationPage
+                    if (newAuthenticationPage != null) {
+                        _currentScreen = newIndex to newAuthenticationPage
+                    }
                 }
 
                 private fun nextScreenFromConfiguration(newIndex: Int): Screen =

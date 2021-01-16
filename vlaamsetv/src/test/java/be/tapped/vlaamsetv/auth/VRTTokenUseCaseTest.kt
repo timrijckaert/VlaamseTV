@@ -25,7 +25,7 @@ class VRTTokenUseCaseTest : BehaviorSpec({
             tokenRefreshWorkScheduler
         )
 
-        val stringArb = Arb.string(1)
+        val stringArb = Arb.string(minSize = 1)
         val username = stringArb.gen()
         val password = stringArb.gen()
 
