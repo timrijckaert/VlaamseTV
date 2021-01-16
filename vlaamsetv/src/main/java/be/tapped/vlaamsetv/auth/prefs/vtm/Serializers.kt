@@ -1,7 +1,5 @@
 package be.tapped.vlaamsetv.auth.prefs.vtm
 
-import be.tapped.vlaamsetv.auth.vtm.VTMGOCredentials
-import be.tapped.vlaamsetv.auth.vtm.VTMTokenWrapper
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.EncryptedProtoSerializer
 

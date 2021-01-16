@@ -13,9 +13,9 @@ import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
+import be.tapped.vtmgo.profile.HttpAuthenticationRepo
 import kotlinx.parcelize.Parcelize
 import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
-import be.tapped.vtmgo.profile.HttpProfileRepo as VTMHttpProfileRepo
 
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
 
@@ -56,10 +56,10 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                     VRTTokenStoreImpl(
                                         this@AuthenticationActivity,
                                         crypto
-                                    )
+                                    ),
+                                    VRTErrorMessageConverter(),
                                 ),
                                 authenticationNavigator,
-                                VRTErrorMessageConverter()
                             ),
                         )
                     }
@@ -67,14 +67,14 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         VTMLoginFragment(
                             VTMAuthenticationUIController(
                                 VTMTokenUseCase(
-                                    VTMHttpProfileRepo(),
+                                    HttpAuthenticationRepo(),
                                     VTMTokenStoreImpl(
                                         this@AuthenticationActivity,
                                         crypto
                                     ),
+                                    VTMErrorMessageConverter(),
                                 ),
                                 authenticationNavigator,
-                                VTMErrorMessageConverter(),
                             ),
                         )
                     VIERLoginFragment::class.java.name ->
@@ -86,9 +86,9 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                         this@AuthenticationActivity,
                                         crypto
                                     ),
+                                    VIERErrorMessageConverter()
                                 ),
-                                authenticationNavigator,
-                                VIERErrorMessageConverter()
+                                authenticationNavigator
                             ),
                         )
                     AuthenticationFailedDialog::class.java.name ->

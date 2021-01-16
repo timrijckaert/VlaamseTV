@@ -12,13 +12,12 @@ import io.mockk.*
 class VTMAuthenticationUIControllerTest : BehaviorSpec() {
     init {
         given("A ${VTMAuthenticationUIController::class.java.simpleName}") {
-            val vtmTokenUseCase = mockk<TokenUseCase<ApiResponse.Failure>>()
+            val vtmTokenUseCase = mockk<VTMTokenUseCase>()
             val authenticationNavigator = mockk<AuthenticationNavigator>()
             val errorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
             val sut = VTMAuthenticationUIController(
                 vtmTokenUseCase,
                 authenticationNavigator,
-                errorMessageConverter,
             )
 
             val username = Arb.string().gen()
@@ -57,7 +56,7 @@ class VTMAuthenticationUIControllerTest : BehaviorSpec() {
                     every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson) } returns errorMessage
                     coEvery {
                         vtmTokenUseCase.performLogin(username, password)
-                    } returns ApiResponse.Failure.EmptyJson.left()
+                    } returns errorMessageArb.gen().left()
 
                     sut.login(username, password)
 
@@ -70,7 +69,7 @@ class VTMAuthenticationUIControllerTest : BehaviorSpec() {
             }
 
             `when`("skipping") {
-                sut.skip()
+                sut.next()
 
                 then("it should navigate to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }

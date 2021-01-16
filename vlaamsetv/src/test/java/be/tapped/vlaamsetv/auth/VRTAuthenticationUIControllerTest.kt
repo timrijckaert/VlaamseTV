@@ -17,8 +17,7 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
         val errorMessageConverter = mockk<VRTErrorMessageConverter>()
         val sut = VRTAuthenticationUIController(
             vrtTokenUseCase,
-            authenticationNavigator,
-            errorMessageConverter
+            authenticationNavigator
         )
 
         val username = Arb.string().gen()
@@ -37,9 +36,6 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
                 }
             }
 
-            val tokenWrapper = vrtTokenWrapperArb.gen()
-            val xVRTToken = xVRTTokenArb.gen()
-
             coEvery {
                 vrtTokenUseCase.performLogin(username, password)
             } returns Unit.right()
@@ -57,7 +53,7 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
                 every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson) } returns errorMessage
                 coEvery {
                     vrtTokenUseCase.performLogin(username, password)
-                } returns ApiResponse.Failure.EmptyJson.left()
+                } returns errorMessageArb.gen().left()
 
                 sut.login(username, password)
 
@@ -70,7 +66,7 @@ class VRTAuthenticationUIControllerTest : BehaviorSpec({
         }
 
         `when`("skipping") {
-            sut.skip()
+            sut.next()
 
             then("it should navigate to the next screen") {
                 coVerify { authenticationNavigator.navigateNext() }

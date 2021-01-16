@@ -2,12 +2,13 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
+import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 import be.tapped.vlaamsetv.credentialsArb
 import be.tapped.vlaamsetv.gen
 import be.tapped.vlaamsetv.vtmTokenWrapperArb
 import be.tapped.vtmgo.ApiResponse
-import be.tapped.vtmgo.profile.HttpProfileRepo
+import be.tapped.vtmgo.profile.AuthenticationRepo
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -18,10 +19,11 @@ import io.mockk.mockk
 
 class VTMTokenUseCaseTest : BehaviorSpec({
     given("A ${VTMTokenUseCase::class.java.simpleName}") {
-        val profileRepo = mockk<HttpProfileRepo>()
+        val profileRepo = mockk<AuthenticationRepo>()
         val vtmTokenStore = mockk<VTMTokenStore>()
+        val vrtErrorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
 
-        val sut = VTMTokenUseCase(profileRepo, vtmTokenStore)
+        val sut = VTMTokenUseCase(profileRepo, vtmTokenStore, vrtErrorMessageConverter)
 
         val username = Arb.string().gen()
         val password = Arb.string().gen()

@@ -125,7 +125,7 @@ internal class LoginFragmentTest {
 
             }
 
-            override suspend fun skip() {
+            override suspend fun next() {
 
             }
         }

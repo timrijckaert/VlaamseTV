@@ -4,6 +4,7 @@ import arrow.core.left
 import arrow.core.right
 import be.tapped.vier.ApiResponse
 import be.tapped.vier.profile.ProfileRepo
+import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 import be.tapped.vlaamsetv.gen
 import be.tapped.vlaamsetv.vierTokenArb
@@ -19,8 +20,9 @@ class VIERTokenUseCaseTest : BehaviorSpec({
     given("A ${VIERTokenUseCase::class.simpleName}") {
         val profileRepo = mockk<ProfileRepo>()
         val vierTokenStore = mockk<VIERTokenStore>()
+        val vierErrorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
 
-        val sut = VIERTokenUseCase(profileRepo, vierTokenStore)
+        val sut = VIERTokenUseCase(profileRepo, vierTokenStore, vierErrorMessageConverter)
 
         val stringGen = Arb.string()
         val username = stringGen.gen()

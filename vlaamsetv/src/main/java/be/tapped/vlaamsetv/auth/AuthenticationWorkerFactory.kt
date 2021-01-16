@@ -5,6 +5,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import be.tapped.vlaamsetv.App
+import be.tapped.vlaamsetv.VRTErrorMessageConverter
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
 
@@ -15,12 +16,13 @@ object AuthenticationWorkerFactory : WorkerFactory() {
         workerParameters: WorkerParameters
     ): ListenableWorker? =
         when (workerClassName) {
-            VRTTokenRefreshWorkBuilder::class.java.name -> VRTTokenRefreshWorkBuilder(
+            VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(
                 appContext,
                 workerParameters,
                 VRTTokenUseCase(
                     ProfileRepo(),
-                    VRTTokenStoreImpl(appContext, (appContext as App).crypto)
+                    VRTTokenStoreImpl(appContext, (appContext as App).crypto),
+                    VRTErrorMessageConverter()
                 )
             )
             else -> null

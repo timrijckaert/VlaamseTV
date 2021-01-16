@@ -2,11 +2,8 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
+import be.tapped.vlaamsetv.*
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
-import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.vrtRefreshTokenArb
-import be.tapped.vlaamsetv.vrtTokenWrapperArb
-import be.tapped.vlaamsetv.xVRTTokenArb
 import be.tapped.vrtnu.ApiResponse
 import be.tapped.vrtnu.profile.TokenRepo
 import io.kotest.core.spec.style.BehaviorSpec
@@ -21,7 +18,8 @@ class VRTTokenUseCaseTest : BehaviorSpec({
     given("A ${VRTTokenUseCase::class.java.simpleName}") {
         val tokenRepo = mockk<TokenRepo>()
         val dataStore = mockk<VRTTokenStore>()
-        val sut = VRTTokenUseCase(tokenRepo, dataStore)
+        val vrtErrorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
+        val sut = VRTTokenUseCase(tokenRepo, dataStore, vrtErrorMessageConverter)
 
         val stringArb = Arb.string()
         val username = stringArb.gen()

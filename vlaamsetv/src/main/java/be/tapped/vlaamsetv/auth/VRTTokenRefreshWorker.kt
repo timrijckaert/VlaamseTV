@@ -5,19 +5,18 @@ import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import arrow.core.Either
-import be.tapped.vrtnu.ApiResponse
 import java.util.concurrent.TimeUnit
 
-class VRTTokenRefreshWorkBuilder(
+class VRTTokenRefreshWorker(
     appContext: Context,
     params: WorkerParameters,
-    private val vrtTokenUseCase: TokenUseCase<ApiResponse.Failure>,
+    private val vrtTokenUseCase: TokenUseCase,
 ) : CoroutineWorker(appContext, params), TokenRefreshWorkBuilder {
 
     companion object : TokenRefreshWorkBuilder {
         private const val VRT_NU = "VRT_NU"
         fun create(context: Context) {
-            PeriodicWorkRequestBuilder<VRTTokenRefreshWorkBuilder>(1, TimeUnit.DAYS)
+            PeriodicWorkRequestBuilder<VRTTokenRefreshWorker>(1, TimeUnit.DAYS)
                 .tokenRefreshParameters()
                 .addTag(VRT_NU)
                 .build()

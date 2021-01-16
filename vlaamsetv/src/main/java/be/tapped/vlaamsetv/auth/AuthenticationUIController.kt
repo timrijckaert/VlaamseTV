@@ -4,6 +4,6 @@ interface AuthenticationUIController {
 
     suspend fun login(username: String, password: String)
 
-    suspend fun skip()
+    suspend fun next()
 
 }
