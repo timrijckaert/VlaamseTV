@@ -61,24 +61,6 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
                     coVerify { authenticationNavigator.navigateNext() }
                 }
             }
-
-            `when`("the UI was shown to the user") {
-                and("we already have credentials") {
-                    coEvery { vierTokenUseCase.hasCredentials() } returns true
-                    sut.onUIShown()
-                    then("it should navigate to the next screen") {
-                        verify { authenticationNavigator.navigateNext() }
-                    }
-                }
-
-                and("we don't have credentials") {
-                    coEvery { vierTokenUseCase.hasCredentials() } returns false
-                    sut.onUIShown()
-                    then("it should not navigate to the next screen") {
-                        verify(exactly = 0) { authenticationNavigator.navigateNext() }
-                    }
-                }
-            }
         }
     }
 }
