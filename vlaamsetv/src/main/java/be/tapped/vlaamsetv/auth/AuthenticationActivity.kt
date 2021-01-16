@@ -10,9 +10,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import androidx.work.WorkManager
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
-import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
-import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
 import be.tapped.vtmgo.profile.HttpAuthenticationRepo
 import kotlinx.parcelize.Parcelize
@@ -21,7 +18,6 @@ import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
 
     private val app get() = application as App
-    private val crypto get() = app.crypto
 
     private val navHostFragment
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -56,10 +52,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                             VRTAuthenticationUIController(
                                 VRTTokenUseCase(
                                     ProfileRepo(),
-                                    VRTTokenStoreImpl(
-                                        this@AuthenticationActivity,
-                                        crypto
-                                    ),
+                                    app.vrtTokenStore,
                                     VRTErrorMessageConverter(),
                                     tokenRefreshWorkScheduler,
                                 ),
@@ -72,10 +65,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                             VTMAuthenticationUIController(
                                 VTMTokenUseCase(
                                     HttpAuthenticationRepo(),
-                                    VTMTokenStoreImpl(
-                                        this@AuthenticationActivity,
-                                        crypto
-                                    ),
+                                    app.vtmTokenStore,
                                     VTMErrorMessageConverter(),
                                     tokenRefreshWorkScheduler,
                                 ),
@@ -87,10 +77,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                             VIERAuthenticationUIController(
                                 VIERTokenUseCase(
                                     VierHttpProfileRepo(),
-                                    VIERTokenStoreImpl(
-                                        this@AuthenticationActivity,
-                                        crypto
-                                    ),
+                                    app.vierTokenStore,
                                     VIERErrorMessageConverter(),
                                     tokenRefreshWorkScheduler,
                                 ),

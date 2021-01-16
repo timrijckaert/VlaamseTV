@@ -4,6 +4,12 @@ import android.app.Application
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import be.tapped.vlaamsetv.auth.AuthenticationWorkerFactory
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
+import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 import be.tapped.vlaamsetv.prefs.AesCipherProvider
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.CryptoImpl
@@ -19,13 +25,34 @@ class App : Application(), Configuration.Provider {
         KeyStore.getInstance(KEYSTORE_NAME).apply { load(null) }
     }
 
-    val crypto: Crypto by lazy {
+    private val crypto: Crypto by lazy {
         CryptoImpl(
             AesCipherProvider(
                 "VlaamseTvKey",
                 keyStore,
                 KEYSTORE_NAME
             )
+        )
+    }
+
+    val vrtTokenStore: VRTTokenStore by lazy {
+        VRTTokenStoreImpl(
+            this@App,
+            crypto
+        )
+    }
+
+    val vtmTokenStore: VTMTokenStore by lazy {
+        VTMTokenStoreImpl(
+            this@App,
+            crypto
+        )
+    }
+
+    val vierTokenStore: VIERTokenStore by lazy {
+        VIERTokenStoreImpl(
+            this@App,
+            crypto
         )
     }
 

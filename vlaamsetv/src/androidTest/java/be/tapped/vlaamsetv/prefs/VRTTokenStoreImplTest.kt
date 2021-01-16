@@ -29,7 +29,7 @@ class VRTTokenStoreImplTest {
         )
 
     private val app get() = ApplicationProvider.getApplicationContext<App>()
-    private val vrtnuTokenStore get() = VRTTokenStoreImpl(app, crypto)
+    private val vrtnuTokenStore = VRTTokenStoreImpl(app, crypto)
 
     @Test
     fun nothingInsideTheDataStoreShouldReturnANullVRTToken() {
@@ -63,7 +63,7 @@ class VRTTokenStoreImplTest {
     fun savingCredentialsShouldReturnTheSameObject() {
         runBlocking {
             vrtnuTokenStore.vrtCredentials() shouldBe null
-            val stringGen = Arb.string()
+            val stringGen = Arb.string(1)
             val username = stringGen.gen()
             val password = stringGen.gen()
             vrtnuTokenStore.saveVRTCredentials(username, password)

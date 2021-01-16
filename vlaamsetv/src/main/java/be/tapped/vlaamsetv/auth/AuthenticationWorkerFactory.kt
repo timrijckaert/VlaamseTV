@@ -10,9 +10,6 @@ import be.tapped.vlaamsetv.App
 import be.tapped.vlaamsetv.VIERErrorMessageConverter
 import be.tapped.vlaamsetv.VRTErrorMessageConverter
 import be.tapped.vlaamsetv.VTMErrorMessageConverter
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
-import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
-import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 import be.tapped.vrtnu.profile.ProfileRepo
 import be.tapped.vtmgo.profile.HttpAuthenticationRepo
 
@@ -30,7 +27,7 @@ object AuthenticationWorkerFactory : WorkerFactory() {
                 workerParameters,
                 VRTTokenUseCase(
                     ProfileRepo(),
-                    VRTTokenStoreImpl(appContext, (appContext as App).crypto),
+                    (appContext as App).vrtTokenStore,
                     VRTErrorMessageConverter(),
                     tokenRefreshWorkScheduler
                 )
@@ -40,7 +37,7 @@ object AuthenticationWorkerFactory : WorkerFactory() {
                 workerParameters,
                 VTMTokenUseCase(
                     HttpAuthenticationRepo(),
-                    VTMTokenStoreImpl(appContext, (appContext as App).crypto),
+                    (appContext as App).vtmTokenStore,
                     VTMErrorMessageConverter(),
                     tokenRefreshWorkScheduler
                 )
@@ -50,7 +47,7 @@ object AuthenticationWorkerFactory : WorkerFactory() {
                 workerParameters,
                 VIERTokenUseCase(
                     HttpProfileRepo(),
-                    VIERTokenStoreImpl(appContext, (appContext as App).crypto),
+                    (appContext as App).vierTokenStore,
                     VIERErrorMessageConverter(),
                     tokenRefreshWorkScheduler
                 )

@@ -6,14 +6,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
 import be.tapped.vlaamsetv.auth.prefs.CompositeTokenStorage
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
-import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
-import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStoreImpl
 
 class TvMainActivity : FragmentActivity(R.layout.activity_tv_main) {
 
     private val app get() = application as App
-    private val crypto get() = app.crypto
 
     private val navHostFragment
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -27,18 +23,9 @@ class TvMainActivity : FragmentActivity(R.layout.activity_tv_main) {
                             RootNavigator.create(
                                 Navigator(navHostFragment.navController),
                                 CompositeTokenStorage(
-                                    VRTTokenStoreImpl(
-                                        this@TvMainActivity,
-                                        crypto
-                                    ),
-                                    VTMTokenStoreImpl(
-                                        this@TvMainActivity,
-                                        crypto
-                                    ),
-                                    VIERTokenStoreImpl(
-                                        this@TvMainActivity,
-                                        crypto
-                                    )
+                                    app.vrtTokenStore,
+                                    app.vtmTokenStore,
+                                    app.vierTokenStore
                                 )
                             )
                         )
