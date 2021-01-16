@@ -17,8 +17,6 @@ class VIERTokenUseCase(
     private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
-    override suspend fun hasCredentials(): Boolean = vierTokenStore.vierCredentials() != null
-
     override suspend fun performLogin(
         username: String,
         password: String

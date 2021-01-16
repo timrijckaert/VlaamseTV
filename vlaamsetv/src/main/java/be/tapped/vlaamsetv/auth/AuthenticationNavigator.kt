@@ -57,7 +57,9 @@ interface AuthenticationNavigator {
                 }
 
                 override fun navigateBack() {
-                    navigate({ it - 1 }, ::nextScreenFromConfiguration)
+                    if (_currentScreen.second is Screen.ErrorDialog) {
+                        navigate({ it - 1 }, ::nextScreenFromConfiguration)
+                    }
                 }
 
                 private fun navigate(indexFunc: (Int) -> Int, nextScreenFunc: (Int) -> Screen) {

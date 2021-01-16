@@ -17,10 +17,4 @@ class VRTAuthenticationUIController(
     override suspend fun next() {
         authenticationNavigator.navigateNext()
     }
-
-    override suspend fun onUIShown() {
-        if (vrtTokenUseCase.hasCredentials()) {
-            authenticationNavigator.navigateNext()
-        }
-    }
 }

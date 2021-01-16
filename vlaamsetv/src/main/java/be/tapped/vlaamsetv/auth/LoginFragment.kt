@@ -3,7 +3,6 @@ package be.tapped.vlaamsetv.auth
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputType
-import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -45,13 +44,6 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
     private val password get() = findActionById(PASSWORD_FIELD).description?.toString() ?: ""
     private val hasPassword get() = password.isNotBlank()
     private val hasCredentials get() = hasEmail && hasPassword
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            authenticationUIController.onUIShown()
-        }
-    }
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
         GuidanceStylist.Guidance(

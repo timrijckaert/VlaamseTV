@@ -18,9 +18,4 @@ class VIERAuthenticationUIController(
         authenticationNavigator.navigateNext()
     }
 
-    override suspend fun onUIShown() {
-        if (vierTokenUseCase.hasCredentials()) {
-            authenticationNavigator.navigateNext()
-        }
-    }
 }
