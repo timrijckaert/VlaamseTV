@@ -66,13 +66,15 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                     VTMLoginFragment::class.java.name ->
                         VTMLoginFragment(
                             VTMAuthenticationUIController(
-                                VTMHttpProfileRepo(),
-                                VTMTokenStoreImpl(
-                                    this@AuthenticationActivity,
-                                    crypto
+                                VTMTokenUseCase(
+                                    VTMHttpProfileRepo(),
+                                    VTMTokenStoreImpl(
+                                        this@AuthenticationActivity,
+                                        crypto
+                                    ),
                                 ),
                                 authenticationNavigator,
-                                VTMErrorMessageConverter()
+                                VTMErrorMessageConverter(),
                             ),
                         )
                     VIERLoginFragment::class.java.name ->

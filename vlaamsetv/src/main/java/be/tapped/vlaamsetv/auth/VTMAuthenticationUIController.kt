@@ -4,26 +4,21 @@ import arrow.core.Either
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 import be.tapped.vtmgo.ApiResponse
-import be.tapped.vtmgo.profile.HttpProfileRepo
 
 class VTMAuthenticationUIController(
-    private val profileRepo: HttpProfileRepo,
-    private val vtmTokenStore: VTMTokenStore,
+    private val vtmTokenUseCase: TokenUseCase<ApiResponse.Failure>,
     private val authenticationNavigator: AuthenticationNavigator,
     private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
 ) : AuthenticationUIController {
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
-        when (val jwt = profileRepo.login(username, password)) {
+        when (val jwt = vtmTokenUseCase.performLogin(username, password)) {
             is Either.Left ->
                 authenticationNavigator.navigateToErrorScreen(
                     errorMessageConverter.mapToHumanReadableError(jwt.a)
                 )
             is Either.Right -> {
-                vtmTokenStore.saveVTMCredentials(username, password)
-                vtmTokenStore.saveToken(jwt.b.token)
                 authenticationNavigator.navigateNext()
             }
         }
