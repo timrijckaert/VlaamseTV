@@ -24,5 +24,9 @@ class VTMTokenUseCase(
             }
         }
 
-    override suspend fun refresh(): Either<ApiResponse.Failure, Boolean> = false.right()
+    override suspend fun refresh(): Either<ApiResponse.Failure, Boolean> {
+        val (username, password) = vtmTokenStore.vtmCredentials() ?: return false.right()
+        //TODO VTM GO refresh token possibility?
+        return performLogin(username, password).map { true }
+    }
 }

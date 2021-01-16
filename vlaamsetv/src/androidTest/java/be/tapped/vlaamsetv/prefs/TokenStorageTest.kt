@@ -91,7 +91,7 @@ internal class TokenStorageTest {
     fun shouldReturnFalseIfTokenIsNotExpiredForVTM() {
         runBlocking {
             vtmgoTokenStore.saveToken(
-                vtmTokenWrapper.gen()
+                vtmTokenWrapperArb.gen()
                     .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() + ONE_HOUR))
             )
             val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VTM)
@@ -103,7 +103,7 @@ internal class TokenStorageTest {
     fun shouldReturnTrueIfTokenIsExpiredForVTM() {
         runBlocking {
             vtmgoTokenStore.saveToken(
-                vtmTokenWrapper.gen()
+                vtmTokenWrapperArb.gen()
                     .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() - ONE_HOUR))
             )
             val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VTM)

@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv
 
 import be.tapped.vier.ApiResponse
 import be.tapped.vier.profile.IdToken
+import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vrtnu.profile.*
 import be.tapped.vtmgo.profile.JWT
 import io.kotest.property.Arb
@@ -29,17 +30,17 @@ val errorMessageArb: Arb<ErrorMessage> = arbitrary {
     )
 }
 
-val vierAccessToken: Arb<be.tapped.vier.profile.AccessToken> =
+val vierAccessTokenArb: Arb<be.tapped.vier.profile.AccessToken> =
     arbitrary { be.tapped.vier.profile.AccessToken(Arb.string().gen()) }
-val vierRefreshToken: Arb<be.tapped.vier.profile.RefreshToken> =
+val vierRefreshTokenArb: Arb<be.tapped.vier.profile.RefreshToken> =
     arbitrary { be.tapped.vier.profile.RefreshToken(Arb.string().gen()) }
-val vierIdToken: Arb<IdToken> = arbitrary { IdToken(Arb.string().gen()) }
+val vierIdTokenARb: Arb<IdToken> = arbitrary { IdToken(Arb.string().gen()) }
 val vierTokenArb: Arb<ApiResponse.Success.Authentication.Token> = arbitrary {
-    val accessToken = vierAccessToken.gen()
-    val expiresIn = vierExpiry.gen()
+    val accessToken = vierAccessTokenArb.gen()
+    val expiresIn = vierExpiryArb.gen()
     val tokenType = Arb.string().gen()
-    val refreshToken = vierRefreshToken.gen()
-    val idToken = vierIdToken.gen()
+    val refreshToken = vierRefreshTokenArb.gen()
+    val idToken = vierIdTokenARb.gen()
     ApiResponse.Success.Authentication.Token(
         accessToken,
         expiresIn,
@@ -49,12 +50,12 @@ val vierTokenArb: Arb<ApiResponse.Success.Authentication.Token> = arbitrary {
     )
 }
 
-val vierExpiry: Arb<be.tapped.vier.profile.Expiry> =
+val vierExpiryArb: Arb<be.tapped.vier.profile.Expiry> =
     arbitrary { be.tapped.vier.profile.Expiry(Arb.long().gen()) }
 val vtmJWTArb: Arb<JWT> = arbitrary { JWT(Arb.string().gen()) }
 val expiryArb: Arb<be.tapped.vtmgo.profile.Expiry> =
     arbitrary { be.tapped.vtmgo.profile.Expiry(Arb.long().gen()) }
-val vtmTokenWrapper: Arb<be.tapped.vtmgo.profile.TokenWrapper> = arbitrary {
+val vtmTokenWrapperArb: Arb<be.tapped.vtmgo.profile.TokenWrapper> = arbitrary {
     be.tapped.vtmgo.profile.TokenWrapper(
         vtmJWTArb.gen(),
         expiryArb.gen()
@@ -63,6 +64,9 @@ val vtmTokenWrapper: Arb<be.tapped.vtmgo.profile.TokenWrapper> = arbitrary {
 val xVRTTokenArb: Arb<XVRTToken> = arbitrary { XVRTToken(Arb.string().gen()) }
 
 val vrtRefreshTokenArb: Arb<RefreshToken> = arbitrary { RefreshToken(Arb.string().gen()) }
+
+val credentialsArb: Arb<Credential> =
+    arbitrary { Credential(Arb.string().gen(), Arb.string().gen()) }
 
 fun <T> Arb<T>.genList(amount: Int = 5, rs: RandomSource = RandomSource.Default): List<T> =
     take(amount, rs).toList()

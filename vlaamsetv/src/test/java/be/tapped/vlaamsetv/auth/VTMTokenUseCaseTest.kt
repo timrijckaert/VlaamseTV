@@ -3,8 +3,9 @@ package be.tapped.vlaamsetv.auth
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
+import be.tapped.vlaamsetv.credentialsArb
 import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.vtmTokenWrapper
+import be.tapped.vlaamsetv.vtmTokenWrapperArb
 import be.tapped.vtmgo.ApiResponse
 import be.tapped.vtmgo.profile.HttpProfileRepo
 import io.kotest.core.spec.style.BehaviorSpec
@@ -26,7 +27,7 @@ class VTMTokenUseCaseTest : BehaviorSpec({
         val password = Arb.string().gen()
         `when`("logging in") {
             and("it was successful") {
-                val token = vtmTokenWrapper.gen()
+                val token = vtmTokenWrapperArb.gen()
                 coEvery {
                     profileRepo.login(
                         username,
@@ -57,6 +58,35 @@ class VTMTokenUseCaseTest : BehaviorSpec({
 
                 then("it should return the failure") {
                     result shouldBe ApiResponse.Failure.EmptyJson.left()
+                }
+            }
+        }
+
+        `when`("refreshing") {
+            and("it does not have any credentials stored") {
+                coEvery { vtmTokenStore.vtmCredentials() } returns null
+
+                val result = sut.refresh()
+
+                then("it should return false") {
+                    result shouldBe false.right()
+                }
+            }
+
+            and("it has credentials stored") {
+                val credential = credentialsArb.gen()
+                coEvery { vtmTokenStore.vtmCredentials() } returns credential
+                coEvery {
+                    profileRepo.login(
+                        credential.username,
+                        credential.password
+                    )
+                } returns ApiResponse.Success.Authentication.Token(vtmTokenWrapperArb.gen()).right()
+
+                val result = sut.refresh()
+
+                then("it should return true") {
+                    result shouldBe true.right()
                 }
             }
         }
