@@ -12,23 +12,21 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vlaamsetv.App
-import be.tapped.vrtnu.ApiResponse
+import be.tapped.vtmgo.ApiResponse
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class VRTTokenRefreshWorkerTest {
+class VTMTokenRefreshWorkerTest {
 
     private val context get() = ApplicationProvider.getApplicationContext<App>()
 
     @Test
     fun tokenRefreshFailedShouldResultInAFailure() {
-        val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorkBuilder>(context)
-            .setWorkerFactory(
-                buildWorkerFactory { ApiResponse.Failure.EmptyJson.left() }
-            )
+        val worker = TestListenableWorkerBuilder<VTMTokenRefreshWorkBuilder>(context)
+            .setWorkerFactory(buildWorkerFactory { ApiResponse.Failure.EmptyJson.left() })
             .build() as CoroutineWorker
 
         runBlocking {
@@ -39,10 +37,8 @@ class VRTTokenRefreshWorkerTest {
 
     @Test
     fun tokenRefreshWasSuccessFulShouldResultInASuccess() {
-        val worker = TestListenableWorkerBuilder<VRTTokenRefreshWorkBuilder>(context)
-            .setWorkerFactory(
-                buildWorkerFactory { true.right() }
-            )
+        val worker = TestListenableWorkerBuilder<VTMTokenRefreshWorkBuilder>(context)
+            .setWorkerFactory(buildWorkerFactory { true.right() })
             .build() as CoroutineWorker
 
         runBlocking {
@@ -58,7 +54,7 @@ class VRTTokenRefreshWorkerTest {
                 workerClassName: String,
                 workerParameters: WorkerParameters
             ): ListenableWorker {
-                return VRTTokenRefreshWorkBuilder(
+                return VTMTokenRefreshWorkBuilder(
                     appContext, workerParameters,
                     object : TokenUseCase<ApiResponse.Failure> {
                         override suspend fun performLogin(

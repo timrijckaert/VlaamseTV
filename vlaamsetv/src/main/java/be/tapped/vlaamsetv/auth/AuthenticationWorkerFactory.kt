@@ -15,7 +15,7 @@ object AuthenticationWorkerFactory : WorkerFactory() {
         workerParameters: WorkerParameters
     ): ListenableWorker? =
         when (workerClassName) {
-            VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(
+            VRTTokenRefreshWorkBuilder::class.java.name -> VRTTokenRefreshWorkBuilder(
                 appContext,
                 workerParameters,
                 VRTTokenUseCase(
