@@ -128,6 +128,10 @@ internal class LoginFragmentTest {
             override suspend fun next() {
 
             }
+
+            override suspend fun onUIShown() {
+
+            }
         }
 
         launchFragmentInContainer(

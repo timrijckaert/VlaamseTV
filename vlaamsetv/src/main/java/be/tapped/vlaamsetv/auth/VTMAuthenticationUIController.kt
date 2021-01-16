@@ -16,4 +16,10 @@ class VTMAuthenticationUIController(
     override suspend fun next() {
         authenticationNavigator.navigateNext()
     }
+
+    override suspend fun onUIShown() {
+        if (vtmTokenUseCase.hasCredentials()) {
+            authenticationNavigator.navigateNext()
+        }
+    }
 }

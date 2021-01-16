@@ -6,4 +6,6 @@ interface AuthenticationUIController {
 
     suspend fun next()
 
+    suspend fun onUIShown()
+
 }

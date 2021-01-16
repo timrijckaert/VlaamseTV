@@ -2,8 +2,6 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
-import be.tapped.vier.ApiResponse
-import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.errorMessageArb
 import be.tapped.vlaamsetv.gen
 import io.kotest.core.spec.style.BehaviorSpec
@@ -19,7 +17,6 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
         given("A ${VIERAuthenticationUIController::class.java.simpleName}") {
             val vierTokenUseCase = mockk<VIERTokenUseCase>()
             val authenticationNavigator = mockk<AuthenticationNavigator>()
-            val errorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
             val sut = VIERAuthenticationUIController(
                 vierTokenUseCase,
                 authenticationNavigator,
@@ -62,6 +59,24 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
 
                 then("it should navigate to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }
+                }
+            }
+
+            `when`("the UI was shown to the user") {
+                and("we already have credentials") {
+                    coEvery { vierTokenUseCase.hasCredentials() } returns true
+                    sut.onUIShown()
+                    then("it should navigate to the next screen") {
+                        verify { authenticationNavigator.navigateNext() }
+                    }
+                }
+
+                and("we don't have credentials") {
+                    coEvery { vierTokenUseCase.hasCredentials() } returns false
+                    sut.onUIShown()
+                    then("it should not navigate to the next screen") {
+                        verify(exactly = 0) { authenticationNavigator.navigateNext() }
+                    }
                 }
             }
         }

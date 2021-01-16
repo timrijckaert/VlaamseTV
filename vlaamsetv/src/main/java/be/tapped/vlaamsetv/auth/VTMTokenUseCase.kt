@@ -16,6 +16,9 @@ class VTMTokenUseCase(
     private val vtmErrorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
     private val tokenRefreshWorkerScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
+
+    override suspend fun hasCredentials(): Boolean = vtmTokenStore.vtmCredentials() != null
+
     override suspend fun performLogin(
         username: String,
         password: String

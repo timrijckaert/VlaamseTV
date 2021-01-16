@@ -18,6 +18,8 @@ class VRTTokenUseCase(
     private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
+    override suspend fun hasCredentials(): Boolean = dataStore.vrtCredentials() != null
+
     override suspend fun performLogin(
         username: String,
         password: String

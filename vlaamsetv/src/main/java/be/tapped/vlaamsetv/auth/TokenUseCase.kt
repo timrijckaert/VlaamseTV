@@ -23,6 +23,8 @@ interface TokenUseCase {
         return Unit.right()
     }
 
+    suspend fun hasCredentials(): Boolean
+
     suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit>
 
     suspend fun refresh(): Either<ErrorMessage, Boolean>
