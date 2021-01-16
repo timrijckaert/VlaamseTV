@@ -1,12 +1,28 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.squareup.wire'
+    id 'kotlin-parcelize'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 apply from: "${rootDir}/common.gradle"
 
 android {
     defaultConfig {
         applicationId Versions.packageName
+    }
+    sourceSets {
+        main {
+            java.srcDirs += "$buildDir/generated/source/wire"
+        }
+
+        test {
+            java.srcDirs += "$projectDir/src/testShared"
+        }
+
+        androidTest {
+            java.srcDirs += "$projectDir/src/testShared"
+        }
     }
 }
 
@@ -16,7 +32,47 @@ dependencies {
     implementation Dependencies.appCompat
     implementation Dependencies.material
     implementation Dependencies.constraintLayout
-
+    implementation Dependencies.navigationFragment
+    implementation Dependencies.navigationUiKtx
     implementation Dependencies.leanbackApp
     implementation Dependencies.leanbackPrefs
+    implementation Dependencies.okHttp3
+    implementation Dependencies.coroutinesCore
+    implementation Dependencies.arrowCore
+    implementation Dependencies.arrowFxCoroutines
+    implementation Dependencies.androidXDataStore
+    implementation Dependencies.wireRuntime
+    implementation Dependencies.workRuntime
+
+    implementation "be.tapped.vlaamsetv:vier"
+    implementation "be.tapped.vlaamsetv:vrtnu"
+    implementation "be.tapped.vlaamsetv:vtmgo"
+
+    testImplementation Testing.kotestRunner
+    testImplementation Testing.kotestAssertionsCore
+    testImplementation Testing.kotestAssertionsArrow
+    testImplementation Testing.kotestProperty
+    testImplementation Testing.mockk
+
+    androidTestImplementation Testing.junit
+    androidTestImplementation Testing.espressoCore
+    androidTestImplementation Testing.uiTestRules
+    androidTestImplementation Testing.espressoContribution
+    androidTestImplementation Testing.junit
+    androidTestImplementation Testing.kakao
+    androidTestImplementation Testing.testNavigation
+    androidTestImplementation Testing.kotestAssertionsCore
+    androidTestImplementation Testing.kotestProperty
+    // adb shell am broadcast -a "androidx.work.diagnostics.REQUEST_DIAGNOSTICS" -p "be.tapped.vlaamsetv"
+    // adb shell dumpsys jobscheduler
+    androidTestImplementation Testing.workManagerTest
+    androidTestUtil Testing.testOrchestrator
+    debugImplementation Testing.fragmentTest
+    debugImplementation Testing.leakCanary
+}
+
+wire {
+    kotlin {
+        android = true
+    }
 }

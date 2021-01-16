@@ -12,6 +12,15 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+
+    // Run one test
+    // ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.class=be.tapped.vlaamsetv.prefs.EncryptedDataStoreTest
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+        unitTests.returnDefaultValues = true
+        animationsDisabled true
     }
 
     buildTypes {
@@ -30,7 +39,6 @@ android {
         jvmTarget = '1.8'
         freeCompilerArgs += [
                 "-Xinline-classes",
-                "-Xexplicit-api=strict",
                 "-Xopt-in=kotlin.RequiresOptIn",
                 "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         ]

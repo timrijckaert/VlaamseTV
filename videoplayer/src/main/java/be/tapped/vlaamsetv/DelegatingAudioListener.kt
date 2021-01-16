@@ -4,7 +4,8 @@ import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.AudioListener
 import kotlinx.coroutines.channels.SendChannel
 
-internal class DelegatingAudioListener(private val sendChannel: SendChannel<VideoEvent>) : AudioListener {
+internal class DelegatingAudioListener(private val sendChannel: SendChannel<VideoEvent>) :
+    AudioListener {
     override fun onAudioSessionId(audioSessionId: Int) {
         sendChannel.safeOffer(VideoEvent.Audio.SessionId(audioSessionId))
     }

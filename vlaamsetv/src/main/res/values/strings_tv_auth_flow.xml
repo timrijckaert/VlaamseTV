@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_flow_login_title">Aanmelden</string>
+
+    <string name="auth_flow_vrtnu_description">De inlogegevens worden enkel lokaal opgeslagen.</string>
+    <string name="auth_flow_vtmgo_description">Met je account heb je gratis toegang tot alles van VTM GO: de beste Vlaamse programma\'s en exclusieve internationale series. Veel kijkplezier!</string>
+    <string name="auth_flow_vier_description">De inlogegevens worden enkel lokaal opgeslagen.</string>
+
+    <string name="auth_flow_vrtnu_step_breadcrumb">VRT NU</string>
+    <string name="auth_flow_vtmgo_step_breadcrumb">VTM GO</string>
+    <string name="auth_flow_vier_step_breadcrumb">VIER</string>
+
+    <string name="auth_flow_next">Volgende</string>
+    <string name="auth_flow_finish">Klaar</string>
+    <string name="auth_flow_login">Aanmelden</string>
+
+    <string name="auth_flow_email">Email</string>
+    <string name="auth_flow_password">Wachtwoord</string>
+
+    <string name="auth_flow_fail_dialog_title">Het aanmelden is niet gelukt</string>
+</resources>

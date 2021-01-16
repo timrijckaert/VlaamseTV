@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "be.tapped.vlaamsetv.auth.prefs.vtm";
+option java_multiple_files = true;
+
+// We only use this as a back-up.
+// It is preferred to use the tokens as much as possible
+message VTMGOCredentials {
+  string username = 1;
+  string password = 2;
+}
+
+message VTMTokenWrapper {
+  string token = 1;
+  int64 expiry = 2;
+}

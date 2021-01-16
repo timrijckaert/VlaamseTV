@@ -22,8 +22,4 @@ dependencies {
     implementation Dependencies.exoplayerHLS
     implementation Dependencies.exoplayerCore
     implementation Dependencies.exoplayerDash
-
-    implementation "be.tapped.vlaamsetv:vier"
-    implementation "be.tapped.vlaamsetv:vrtnu"
-    implementation "be.tapped.vlaamsetv:vtmgo"
 }

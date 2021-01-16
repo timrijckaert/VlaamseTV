@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="failure_generic_no_email">Je hebt geen email adres ingevoerd</string>
+    <string name="failure_generic_no_password">Je hebt geen wachtwoord ingevoerd</string>
+</resources>
