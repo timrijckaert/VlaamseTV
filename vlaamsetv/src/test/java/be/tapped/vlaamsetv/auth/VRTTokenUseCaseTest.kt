@@ -10,18 +10,22 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
+import io.mockk.*
 
 class VRTTokenUseCaseTest : BehaviorSpec({
     given("A ${VRTTokenUseCase::class.java.simpleName}") {
         val tokenRepo = mockk<TokenRepo>()
         val dataStore = mockk<VRTTokenStore>()
         val vrtErrorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
-        val sut = VRTTokenUseCase(tokenRepo, dataStore, vrtErrorMessageConverter)
+        val tokenRefreshWorkScheduler = mockk<TokenRefreshWorkScheduler>()
+        val sut = VRTTokenUseCase(
+            tokenRepo,
+            dataStore,
+            vrtErrorMessageConverter,
+            tokenRefreshWorkScheduler
+        )
 
-        val stringArb = Arb.string()
+        val stringArb = Arb.string(1)
         val username = stringArb.gen()
         val password = stringArb.gen()
 
@@ -56,6 +60,10 @@ class VRTTokenUseCaseTest : BehaviorSpec({
                 then("it should save X-VRT-Token") {
                     coVerify { dataStore.saveXVRTToken(xVRTToken) }
                 }
+
+                then("it should have scheduled a VRT token refresh work request") {
+                    verify { tokenRefreshWorkScheduler.scheduleTokenRefreshVRT() }
+                }
             }
         }
 
@@ -75,11 +83,16 @@ class VRTTokenUseCaseTest : BehaviorSpec({
                 )
             } returns ApiResponse.Success.Authentication.VRTToken(xVRTToken).right()
 
+            val errorMessage = errorMessageArb.gen()
+            every {
+                vrtErrorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson)
+            } returns errorMessage
+
             `when`("performing a login") {
                 val result = sut.performLogin(username, password)
 
                 then("it should return the first error") {
-                    result shouldBe ApiResponse.Failure.EmptyJson.left()
+                    result shouldBe errorMessage.left()
                 }
             }
         }
@@ -89,11 +102,15 @@ class VRTTokenUseCaseTest : BehaviorSpec({
             coEvery { dataStore.token() } returns vrtTokenWrapperArb.gen()
                 .copy(refreshToken = refreshToken)
             coEvery { tokenRepo.refreshTokenWrapper(refreshToken) } returns ApiResponse.Failure.EmptyJson.left()
+            val errorMessage = errorMessageArb.gen()
+            every {
+                vrtErrorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.EmptyJson)
+            } returns errorMessage
 
             `when`("refreshing the token") {
 
                 then("it should return the failure") {
-                    sut.refresh() shouldBe ApiResponse.Failure.EmptyJson.left()
+                    sut.refresh() shouldBe errorMessage.left()
                 }
             }
         }

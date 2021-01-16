@@ -15,6 +15,7 @@ class VRTTokenUseCase(
     private val tokenRepo: TokenRepo,
     private val dataStore: VRTTokenStore,
     private val vrtErrorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
+    private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
     override suspend fun performLogin(
@@ -31,7 +32,7 @@ class VRTTokenUseCase(
                         ::Pair
                     )
                 }
-            when (tokenWrapperWithXVRTToken) {
+            !when (tokenWrapperWithXVRTToken) {
                 is Either.Left -> vrtErrorMessageConverter.mapToHumanReadableError(
                     tokenWrapperWithXVRTToken.a
                 ).left()
@@ -41,6 +42,7 @@ class VRTTokenUseCase(
                         saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
                         saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
                     }
+                    tokenRefreshWorkScheduler.scheduleTokenRefreshVRT()
                     Unit.right()
                 }
             }

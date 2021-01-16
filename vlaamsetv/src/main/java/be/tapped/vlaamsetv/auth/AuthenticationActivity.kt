@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
+import androidx.work.WorkManager
 import be.tapped.vlaamsetv.*
 import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
@@ -44,8 +45,10 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
             })
 
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
-            override fun instantiate(cls: ClassLoader, className: String): Fragment =
-                when (className) {
+            override fun instantiate(cls: ClassLoader, className: String): Fragment {
+                val tokenRefreshWorkScheduler =
+                    TokenRefreshWorkScheduler(WorkManager.getInstance(this@AuthenticationActivity))
+                return when (className) {
                     AuthenticationFragment::class.java.name ->
                         AuthenticationFragment(authenticationNavigator)
                     VRTLoginFragment::class.java.name -> {
@@ -58,6 +61,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                         crypto
                                     ),
                                     VRTErrorMessageConverter(),
+                                    tokenRefreshWorkScheduler,
                                 ),
                                 authenticationNavigator,
                             ),
@@ -95,6 +99,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         AuthenticationFailedDialog(authenticationNavigator)
                     else -> super.instantiate(cls, className)
                 }
+            }
         }
         super.onCreate(savedInstanceState)
     }

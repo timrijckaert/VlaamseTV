@@ -5,16 +5,28 @@ import androidx.work.*
 import arrow.core.Either
 import java.util.concurrent.TimeUnit
 
-object TokenRefreshWorkBuilder {
+class TokenRefreshWorkScheduler(private val workManager: WorkManager) {
 
-    fun createTokenRefreshVRT(): WorkRequest =
-        create<VRTTokenRefreshWorker>(VRTTokenRefreshWorker.brandTag)
+    fun scheduleTokenRefreshVRT() {
+        workManager.enqueue(tokenRefreshVRT)
+    }
 
-    fun createTokenRefreshVTM(): WorkRequest =
-        create<VTMTokenRefreshWorker>(VTMTokenRefreshWorker.brandTag)
+    fun scheduleTokenRefreshVTM() {
+        workManager.enqueue(tokenRefreshVTM)
+    }
 
-    fun createTokenRefreshVIER(): WorkRequest =
-        create<VIERTokenRefreshWorker>(VIERTokenRefreshWorker.brandTag)
+    fun scheduleTokenRefreshVIER() {
+        workManager.enqueue(tokenRefreshVIER)
+    }
+
+    private val tokenRefreshVRT: WorkRequest
+        get() = create<VRTTokenRefreshWorker>(VRTTokenRefreshWorker.brandTag)
+
+    private val tokenRefreshVTM: WorkRequest
+        get() = create<VTMTokenRefreshWorker>(VTMTokenRefreshWorker.brandTag)
+
+    private val tokenRefreshVIER: WorkRequest
+        get() = create<VIERTokenRefreshWorker>(VIERTokenRefreshWorker.brandTag)
 
     private inline fun <reified T : TokenRefreshWorker> create(brandTag: String): WorkRequest {
         return PeriodicWorkRequest.Builder(T::class.java, 1, TimeUnit.DAYS)

@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.auth
 
 import android.content.Context
 import androidx.work.ListenableWorker
+import androidx.work.WorkManager
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import be.tapped.vier.profile.HttpProfileRepo
@@ -20,15 +21,18 @@ object AuthenticationWorkerFactory : WorkerFactory() {
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker? =
-        when (workerClassName) {
+    ): ListenableWorker? {
+        val tokenRefreshWorkScheduler =
+            TokenRefreshWorkScheduler(WorkManager.getInstance(appContext))
+        return when (workerClassName) {
             VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(
                 appContext,
                 workerParameters,
                 VRTTokenUseCase(
                     ProfileRepo(),
                     VRTTokenStoreImpl(appContext, (appContext as App).crypto),
-                    VRTErrorMessageConverter()
+                    VRTErrorMessageConverter(),
+                    tokenRefreshWorkScheduler
                 )
             )
             VTMTokenRefreshWorker::class.java.name -> VTMTokenRefreshWorker(
@@ -51,4 +55,5 @@ object AuthenticationWorkerFactory : WorkerFactory() {
             )
             else -> null
         }
+    }
 }
