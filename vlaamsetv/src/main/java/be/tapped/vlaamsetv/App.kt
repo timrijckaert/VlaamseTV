@@ -2,7 +2,6 @@ package be.tapped.vlaamsetv
 
 import android.app.Application
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import be.tapped.vlaamsetv.auth.AuthenticationWorkerFactory
 import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
@@ -54,12 +53,6 @@ class App : Application(), Configuration.Provider {
             this@App,
             crypto
         )
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        // TODO schedule the token refresh tasks
-        WorkManager.getInstance(this)
     }
 
     override fun getWorkManagerConfiguration(): Configuration =

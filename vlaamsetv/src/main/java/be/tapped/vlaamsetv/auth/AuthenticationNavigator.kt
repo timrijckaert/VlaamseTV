@@ -64,7 +64,7 @@ interface AuthenticationNavigator {
                             is Screen.VRT -> authenticationState.stateForBrand(AuthenticationState.Brand.VRT) != AuthenticationState.Type.LOGGED_IN
                             is Screen.VTM -> authenticationState.stateForBrand(AuthenticationState.Brand.VTM) != AuthenticationState.Type.LOGGED_IN
                             is Screen.VIER -> authenticationState.stateForBrand(AuthenticationState.Brand.VIER) != AuthenticationState.Type.LOGGED_IN
-                            is Screen.ErrorDialog -> true
+                            is Screen.ErrorDialog -> false
                             Screen.End -> false
                         }
 
