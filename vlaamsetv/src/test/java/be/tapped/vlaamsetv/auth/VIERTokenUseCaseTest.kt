@@ -13,14 +13,21 @@ import io.kotest.property.arbitrary.string
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 
 class VIERTokenUseCaseTest : BehaviorSpec({
     given("A ${VIERTokenUseCase::class.simpleName}") {
         val profileRepo = mockk<ProfileRepo>()
         val vierTokenStore = mockk<VIERTokenStore>()
         val vierErrorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
+        val tokenRefreshWorkScheduler = mockk<TokenRefreshWorkScheduler>()
 
-        val sut = VIERTokenUseCase(profileRepo, vierTokenStore, vierErrorMessageConverter)
+        val sut = VIERTokenUseCase(
+            profileRepo,
+            vierTokenStore,
+            vierErrorMessageConverter,
+            tokenRefreshWorkScheduler
+        )
 
         val stringGen = Arb.string()
         val username = stringGen.gen()
@@ -70,12 +77,16 @@ class VIERTokenUseCaseTest : BehaviorSpec({
 
                 sut.performLogin(username, password)
 
-                then("it should have saved the vrt credentials") {
+                then("it should have saved the vier credentials") {
                     coVerify { vierTokenStore.saveVierCredentials(username, password) }
                 }
 
                 then("it should save the token") {
                     coVerify { vierTokenStore.saveToken(token) }
+                }
+
+                then("it should schedule the background token refresh job") {
+                    verify { tokenRefreshWorkScheduler.scheduleTokenRefreshVIER() }
                 }
             }
         }

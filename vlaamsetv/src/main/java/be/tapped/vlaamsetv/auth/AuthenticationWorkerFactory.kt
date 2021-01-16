@@ -51,7 +51,8 @@ object AuthenticationWorkerFactory : WorkerFactory() {
                 VIERTokenUseCase(
                     HttpProfileRepo(),
                     VIERTokenStoreImpl(appContext, (appContext as App).crypto),
-                    VIERErrorMessageConverter()
+                    VIERErrorMessageConverter(),
+                    tokenRefreshWorkScheduler
                 )
             )
             else -> null

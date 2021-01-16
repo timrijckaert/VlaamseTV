@@ -91,7 +91,8 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                         this@AuthenticationActivity,
                                         crypto
                                     ),
-                                    VIERErrorMessageConverter()
+                                    VIERErrorMessageConverter(),
+                                    tokenRefreshWorkScheduler,
                                 ),
                                 authenticationNavigator
                             ),

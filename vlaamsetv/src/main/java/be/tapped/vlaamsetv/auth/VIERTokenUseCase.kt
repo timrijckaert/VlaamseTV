@@ -14,6 +14,7 @@ class VIERTokenUseCase(
     private val profileRepo: ProfileRepo,
     private val vierTokenStore: VIERTokenStore,
     private val vierErrorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
+    private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
     override suspend fun performLogin(
         username: String,
@@ -24,8 +25,11 @@ class VIERTokenUseCase(
             !when (val token = profileRepo.fetchTokens(username, password)) {
                 is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(token.a).left()
                 is Either.Right -> {
-                    vierTokenStore.saveVierCredentials(username, password)
-                    vierTokenStore.saveToken(token.b.token)
+                    with(vierTokenStore) {
+                        saveVierCredentials(username, password)
+                        saveToken(token.b.token)
+                    }
+                    tokenRefreshWorkScheduler.scheduleTokenRefreshVIER()
                     Unit.right()
                 }
             }
