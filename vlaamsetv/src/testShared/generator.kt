@@ -1,6 +1,5 @@
 package be.tapped.vlaamsetv
 
-import be.tapped.vier.ApiResponse
 import be.tapped.vier.profile.IdToken
 import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vrtnu.profile.*
@@ -35,13 +34,13 @@ val vierAccessTokenArb: Arb<be.tapped.vier.profile.AccessToken> =
 val vierRefreshTokenArb: Arb<be.tapped.vier.profile.RefreshToken> =
     arbitrary { be.tapped.vier.profile.RefreshToken(Arb.string().gen()) }
 val vierIdTokenARb: Arb<IdToken> = arbitrary { IdToken(Arb.string().gen()) }
-val vierTokenArb: Arb<ApiResponse.Success.Authentication.Token> = arbitrary {
+val vierTokenArb: Arb<be.tapped.vier.profile.TokenWrapper> = arbitrary {
     val accessToken = vierAccessTokenArb.gen()
     val expiresIn = vierExpiryArb.gen()
     val tokenType = Arb.string().gen()
     val refreshToken = vierRefreshTokenArb.gen()
     val idToken = vierIdTokenARb.gen()
-    ApiResponse.Success.Authentication.Token(
+    be.tapped.vier.profile.TokenWrapper(
         accessToken,
         expiresIn,
         tokenType,

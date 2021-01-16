@@ -2,11 +2,7 @@ package be.tapped.vlaamsetv.auth.prefs.vier
 
 import android.content.Context
 import androidx.datastore.createDataStore
-import be.tapped.vier.ApiResponse
-import be.tapped.vier.profile.AccessToken
-import be.tapped.vier.profile.Expiry
-import be.tapped.vier.profile.IdToken
-import be.tapped.vier.profile.RefreshToken
+import be.tapped.vier.profile.*
 import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
 import kotlinx.coroutines.flow.firstOrNull
@@ -14,8 +10,8 @@ import kotlinx.coroutines.flow.firstOrNull
 interface VIERTokenStore {
     suspend fun saveVierCredentials(username: String, password: String)
     suspend fun vierCredentials(): Credential?
-    suspend fun token(): ApiResponse.Success.Authentication.Token?
-    suspend fun saveToken(token: ApiResponse.Success.Authentication.Token)
+    suspend fun token(): TokenWrapper?
+    suspend fun saveToken(token: TokenWrapper)
 }
 
 class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
@@ -52,10 +48,10 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
             }
         }
 
-    override suspend fun token(): ApiResponse.Success.Authentication.Token? =
+    override suspend fun token(): TokenWrapper? =
         vierTokenDataStore.data.firstOrNull()?.let {
             if (it.accessToken.isNotBlank() && it.expiresIn != 0L && it.tokenType.isNotBlank() && it.refreshToken.isNotBlank() && it.idToken.isNotBlank()) {
-                ApiResponse.Success.Authentication.Token(
+                TokenWrapper(
                     accessToken = AccessToken(it.accessToken),
                     expiry = Expiry(it.expiresIn),
                     tokenType = it.tokenType,
@@ -67,7 +63,7 @@ class VIERTokenStoreImpl(context: Context, crypto: Crypto) : VIERTokenStore {
             }
         }
 
-    override suspend fun saveToken(token: ApiResponse.Success.Authentication.Token) {
+    override suspend fun saveToken(token: TokenWrapper) {
         vierTokenDataStore.updateData {
             it.copy(
                 accessToken = token.accessToken.token,

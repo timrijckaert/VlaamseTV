@@ -45,8 +45,12 @@ class VIERTokenUseCaseTest : BehaviorSpec({
 
             and("it is successful") {
                 val token = vierTokenArb.gen()
-                coEvery { profileRepo.fetchTokens(username, password) } returns token
-                    .right()
+                coEvery {
+                    profileRepo.fetchTokens(
+                        username,
+                        password
+                    )
+                } returns ApiResponse.Success.Authentication.Token(token).right()
 
                 sut.performLogin(username, password)
 
@@ -75,7 +79,8 @@ class VIERTokenUseCaseTest : BehaviorSpec({
                 val oldToken = vierTokenArb.gen()
                 val newToken = vierTokenArb.gen()
                 coEvery { vierTokenStore.token() } returns oldToken
-                coEvery { profileRepo.refreshTokens(oldToken.refreshToken) } returns newToken.right()
+                coEvery { profileRepo.refreshTokens(oldToken.refreshToken) } returns
+                        ApiResponse.Success.Authentication.Token(newToken).right()
 
                 val result = sut.refresh()
 

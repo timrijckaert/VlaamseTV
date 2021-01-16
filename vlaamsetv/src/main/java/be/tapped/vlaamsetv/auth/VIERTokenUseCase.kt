@@ -19,7 +19,7 @@ class VIERTokenUseCase(
             is Either.Left -> token.a.left()
             is Either.Right -> {
                 vierTokenStore.saveVierCredentials(username, password)
-                vierTokenStore.saveToken(token.b)
+                vierTokenStore.saveToken(token.b.token)
                 Unit.right()
             }
         }
@@ -29,7 +29,7 @@ class VIERTokenUseCase(
         return when (val newTokens = profileRepo.refreshTokens(refreshToken)) {
             is Either.Left -> newTokens.a.left()
             is Either.Right -> {
-                vierTokenStore.saveToken(newTokens.b)
+                vierTokenStore.saveToken(newTokens.b.token)
                 true.right()
             }
         }
