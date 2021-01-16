@@ -21,7 +21,7 @@ class VIERTokenUseCase(
     ): Either<ErrorMessage, Unit> =
         either {
             !checkPreconditions(username, password)
-            when (val token = profileRepo.fetchTokens(username, password)) {
+            !when (val token = profileRepo.fetchTokens(username, password)) {
                 is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(token.a).left()
                 is Either.Right -> {
                     vierTokenStore.saveVierCredentials(username, password)

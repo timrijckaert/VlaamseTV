@@ -77,6 +77,7 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                         crypto
                                     ),
                                     VTMErrorMessageConverter(),
+                                    tokenRefreshWorkScheduler,
                                 ),
                                 authenticationNavigator,
                             ),

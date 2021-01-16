@@ -14,6 +14,7 @@ class VTMTokenUseCase(
     private val authenticationRepo: AuthenticationRepo,
     private val vtmTokenStore: VTMTokenStore,
     private val vtmErrorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
+    private val tokenRefreshWorkerScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
     override suspend fun performLogin(
         username: String,
@@ -21,11 +22,12 @@ class VTMTokenUseCase(
     ): Either<ErrorMessage, Unit> =
         either {
             !checkPreconditions(username, password)
-            when (val jwt = authenticationRepo.login(username, password)) {
+            !when (val jwt = authenticationRepo.login(username, password)) {
                 is Either.Left -> vtmErrorMessageConverter.mapToHumanReadableError(jwt.a).left()
                 is Either.Right -> {
                     vtmTokenStore.saveVTMCredentials(username, password)
                     vtmTokenStore.saveToken(jwt.b.token)
+                    tokenRefreshWorkerScheduler.scheduleTokenRefreshVTM()
                     Unit.right()
                 }
             }

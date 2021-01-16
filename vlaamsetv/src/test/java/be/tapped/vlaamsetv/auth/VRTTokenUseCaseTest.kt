@@ -46,6 +46,22 @@ class VRTTokenUseCaseTest : BehaviorSpec({
                 )
             } returns ApiResponse.Success.Authentication.VRTToken(xVRTToken).right()
 
+            `when`("providing empty credentials") {
+                val result = sut.performLogin("", "")
+
+                then("it should return with an error message") {
+                    result shouldBe ErrorMessage(R.string.failure_generic_no_email).left()
+                }
+
+                then("it should not have tried and fetch the tokens") {
+                    coVerify(exactly = 0) { tokenRepo.fetchTokenWrapper("", "") }
+                }
+
+                then("it should not have tried and fetch the X-VRT-Token") {
+                    coVerify(exactly = 0) { tokenRepo.fetchXVRTToken("", "") }
+                }
+            }
+
             `when`("performing a login") {
                 sut.performLogin(username, password)
 

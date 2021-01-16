@@ -41,7 +41,8 @@ object AuthenticationWorkerFactory : WorkerFactory() {
                 VTMTokenUseCase(
                     HttpAuthenticationRepo(),
                     VTMTokenStoreImpl(appContext, (appContext as App).crypto),
-                    VTMErrorMessageConverter()
+                    VTMErrorMessageConverter(),
+                    tokenRefreshWorkScheduler
                 )
             )
             VIERTokenRefreshWorker::class.java.name -> VIERTokenRefreshWorker(

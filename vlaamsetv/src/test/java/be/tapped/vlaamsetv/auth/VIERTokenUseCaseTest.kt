@@ -4,10 +4,8 @@ import arrow.core.left
 import arrow.core.right
 import be.tapped.vier.ApiResponse
 import be.tapped.vier.profile.ProfileRepo
-import be.tapped.vlaamsetv.ErrorMessageConverter
+import be.tapped.vlaamsetv.*
 import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
-import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.vierTokenArb
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -29,6 +27,17 @@ class VIERTokenUseCaseTest : BehaviorSpec({
         val password = stringGen.gen()
 
         `when`("logging in") {
+            and("you provide empty credentials") {
+                val result = sut.performLogin("", "")
+
+                then("it should return with an error message") {
+                    result shouldBe ErrorMessage(R.string.failure_generic_no_email).left()
+                }
+
+                then("it should not make a call") {
+                    coVerify(exactly = 0) { profileRepo.fetchTokens("", "") }
+                }
+            }
 
             and("it fails") {
                 coEvery {
@@ -38,10 +47,15 @@ class VIERTokenUseCaseTest : BehaviorSpec({
                     )
                 } returns ApiResponse.Failure.Authentication.Login.left()
 
+                val errorMessage = errorMessageArb.gen()
+                coEvery {
+                    vierErrorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.Authentication.Login)
+                } returns errorMessage
+
                 val result = sut.performLogin(username, password)
 
                 then("it should return the error") {
-                    result shouldBe ApiResponse.Failure.Authentication.Login.left()
+                    result shouldBe errorMessage.left()
                 }
             }
 

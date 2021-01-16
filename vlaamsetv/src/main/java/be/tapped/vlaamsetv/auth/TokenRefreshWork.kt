@@ -74,7 +74,6 @@ internal class VTMTokenRefreshWorker(
     params: WorkerParameters,
     vtmTokenUseCase: TokenUseCase,
 ) : TokenRefreshWorker(appContext, params, vtmTokenUseCase) {
-
     internal companion object {
         const val brandTag: String = "VTM_GO"
     }
