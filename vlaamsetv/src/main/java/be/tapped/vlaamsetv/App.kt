@@ -17,6 +17,7 @@ import java.security.KeyStore
 class App : Application(), Configuration.Provider {
 
     companion object {
+
         private const val KEYSTORE_NAME: String = "AndroidKeyStore"
     }
 
@@ -25,39 +26,24 @@ class App : Application(), Configuration.Provider {
     }
 
     private val crypto: Crypto by lazy {
-        CryptoImpl(
-            AesCipherProvider(
-                "VlaamseTvKey",
-                keyStore,
-                KEYSTORE_NAME
-            )
-        )
+        CryptoImpl(AesCipherProvider("VlaamseTvKey", keyStore, KEYSTORE_NAME))
     }
 
     val vrtTokenStore: VRTTokenStore by lazy {
-        VRTTokenStoreImpl(
-            this@App,
-            crypto
-        )
+        VRTTokenStoreImpl(this@App, crypto)
     }
 
     val vtmTokenStore: VTMTokenStore by lazy {
-        VTMTokenStoreImpl(
-            this@App,
-            crypto
-        )
+        VTMTokenStoreImpl(this@App, crypto)
     }
 
     val vierTokenStore: VIERTokenStore by lazy {
-        VIERTokenStoreImpl(
-            this@App,
-            crypto
-        )
+        VIERTokenStoreImpl(this@App, crypto)
     }
 
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.DEBUG)
-            .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
-            .build()
+    override fun getWorkManagerConfiguration(): Configuration = Configuration
+        .Builder()
+        .setMinimumLoggingLevel(android.util.Log.DEBUG)
+        .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
+        .build()
 }

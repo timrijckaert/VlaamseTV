@@ -12,82 +12,70 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
 
-class VTMAuthenticationUIControllerTest : BehaviorSpec() {
-    init {
-        given("A ${VTMAuthenticationUIController::class.java.simpleName}") {
-            val vtmTokenUseCase = mockk<VTMTokenUseCase>()
-            val authenticationNavigator = mockk<AuthenticationNavigator>()
-            val authenticationState = mockk<AuthenticationState>()
-            val sut = VTMAuthenticationUIController(
-                vtmTokenUseCase,
-                authenticationNavigator,
-                authenticationState,
-            )
+class VTMAuthenticationUIControllerTest : BehaviorSpec() { init {
+    given("A ${VTMAuthenticationUIController::class.java.simpleName}") {
+        val vtmTokenUseCase = mockk<VTMTokenUseCase>()
+        val authenticationNavigator = mockk<AuthenticationNavigator>()
+        val authenticationState = mockk<AuthenticationState>()
+        val sut = VTMAuthenticationUIController(
+            vtmTokenUseCase,
+            authenticationNavigator,
+            authenticationState,
+        )
 
-            val stringGen = Arb.string(1)
-            val username = stringGen.gen()
-            val password = stringGen.gen()
-            `when`("logging in") {
+        val stringGen = Arb.string(1)
+        val username = stringGen.gen()
+        val password = stringGen.gen()
+        `when`("logging in") {
 
-                and("it was successful") {
-                    coEvery {
-                        vtmTokenUseCase.performLogin(
-                            username,
-                            password
-                        )
-                    } returns Unit.right()
+            and("it was successful") {
+                coEvery {
+                    vtmTokenUseCase.performLogin(username, password)
+                } returns Unit.right()
 
-                    sut.login(username, password)
+                sut.login(username, password)
 
-                    then("it should have navigated to the next screen") {
-                        coVerify { authenticationNavigator.navigateNext() }
-                    }
-
-                    then("it should have updated the authentication state") {
-                        verify {
-                            authenticationState.updateAuthenticationState(
-                                AuthenticationState.Brand.VTM,
-                                AuthenticationState.Type.LOGGED_IN
-                            )
-                        }
-                    }
+                then("it should have navigated to the next screen") {
+                    coVerify { authenticationNavigator.navigateNext() }
                 }
 
-                and("it was not successful") {
-                    val errorMessage = errorMessageArb.gen()
-                    coEvery {
-                        vtmTokenUseCase.performLogin(
-                            username,
-                            password
-                        )
-                    } returns errorMessage.left()
-
-                    sut.login(username, password)
-
-                    then("it should navigate to the error screen") {
-                        verify {
-                            authenticationNavigator.navigateToErrorScreen(errorMessage)
-                        }
+                then("it should have updated the authentication state") {
+                    verify {
+                        authenticationState.updateAuthenticationState(AuthenticationState.Brand.VTM,
+                                                                      AuthenticationState.Type.LOGGED_IN)
                     }
                 }
             }
 
-            `when`("skipping") {
-                sut.next()
+            and("it was not successful") {
+                val errorMessage = errorMessageArb.gen()
+                coEvery {
+                    vtmTokenUseCase.performLogin(username, password)
+                } returns errorMessage.left()
 
-                then("it should navigate to the next screen") {
-                    coVerify { authenticationNavigator.navigateNext() }
-                }
+                sut.login(username, password)
 
-                then("it should have set the authentication state") {
+                then("it should navigate to the error screen") {
                     verify {
-                        authenticationState.updateAuthenticationState(
-                            AuthenticationState.Brand.VTM,
-                            AuthenticationState.Type.SKIPPED
-                        )
+                        authenticationNavigator.navigateToErrorScreen(errorMessage)
                     }
                 }
             }
         }
+
+        `when`("skipping") {
+            sut.next()
+
+            then("it should navigate to the next screen") {
+                coVerify { authenticationNavigator.navigateNext() }
+            }
+
+            then("it should have set the authentication state") {
+                verify {
+                    authenticationState.updateAuthenticationState(AuthenticationState.Brand.VTM, AuthenticationState.Type.SKIPPED)
+                }
+            }
+        }
     }
+}
 }

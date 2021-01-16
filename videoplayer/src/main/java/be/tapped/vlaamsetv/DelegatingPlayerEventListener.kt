@@ -1,12 +1,16 @@
 package be.tapped.vlaamsetv
 
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import kotlinx.coroutines.channels.SendChannel
 
-internal class DelegatingPlayerEventListener(private val sendChannel: SendChannel<VideoEvent>) :
-    Player.EventListener {
+internal class DelegatingPlayerEventListener(private val sendChannel: SendChannel<VideoEvent>) : Player.EventListener {
+
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
         sendChannel.safeOffer(VideoEvent.Player.TimelineChanged(timeline, reason))
     }
@@ -15,10 +19,7 @@ internal class DelegatingPlayerEventListener(private val sendChannel: SendChanne
         sendChannel.safeOffer(VideoEvent.Player.MediaItemTransition(mediaItem, reason))
     }
 
-    override fun onTracksChanged(
-        trackGroups: TrackGroupArray,
-        trackSelections: TrackSelectionArray
-    ) {
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
         sendChannel.safeOffer(VideoEvent.Player.TracksChanged(trackGroups, trackSelections))
     }
 
@@ -35,11 +36,7 @@ internal class DelegatingPlayerEventListener(private val sendChannel: SendChanne
     }
 
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
-        sendChannel.safeOffer(
-            VideoEvent.Player.PlaybackSuppressionReasonChanged(
-                playbackSuppressionReason
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Player.PlaybackSuppressionReasonChanged(playbackSuppressionReason))
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -67,10 +64,6 @@ internal class DelegatingPlayerEventListener(private val sendChannel: SendChanne
     }
 
     override fun onExperimentalOffloadSchedulingEnabledChanged(offloadSchedulingEnabled: Boolean) {
-        sendChannel.safeOffer(
-            VideoEvent.Player.ExperimentalOffloadSchedulingEnabledChanged(
-                offloadSchedulingEnabled
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Player.ExperimentalOffloadSchedulingEnabledChanged(offloadSchedulingEnabled))
     }
 }

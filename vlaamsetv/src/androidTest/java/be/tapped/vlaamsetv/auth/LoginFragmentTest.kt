@@ -25,17 +25,15 @@ import org.junit.runner.RunWith
 internal class LoginFragmentTest {
 
     private class LoginFragmentScreen : Screen<LoginFragmentScreen>() {
+
         val guidedActionList =
-            KRecyclerView(
-                builder = { withId(R.id.guidedactions_list) },
-                itemTypeBuilder = { itemType(::GuidedActionItem) })
+            KRecyclerView(builder = { withId(R.id.guidedactions_list) }, itemTypeBuilder = { itemType(::GuidedActionItem) })
 
         val buttonActionsList =
-            KRecyclerView(
-                builder = { withId(R.id.guidedactions_list2) },
-                itemTypeBuilder = { itemType(::GuidedActionItem) })
+            KRecyclerView(builder = { withId(R.id.guidedactions_list2) }, itemTypeBuilder = { itemType(::GuidedActionItem) })
 
         class GuidedActionItem(parent: Matcher<View>) : KRecyclerItem<GuidedActionItem>(parent) {
+
             val checkMark = KCheckBox(parent) { withId(R.id.guidedactions_item_checkmark) }
             val icon = KImageView(parent) { withId(R.id.guidedactions_item_icon) }
             val title = KEditText(parent) { withId(R.id.guidedactions_item_title) }
@@ -44,13 +42,12 @@ internal class LoginFragmentTest {
         }
     }
 
-    private val testNavHostController =
-        TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
-            Handler(Looper.getMainLooper()).post {
-                setGraph(R.navigation.authentication_flow_tv)
-                setCurrentDestination(R.id.VRTLoginFragment)
-            }
+    private val testNavHostController = TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
+        Handler(Looper.getMainLooper()).post {
+            setGraph(R.navigation.authentication_flow_tv)
+            setCurrentDestination(R.id.VRTLoginFragment)
         }
+    }
 
     @Test
     fun noCredentialsArePassed() {
@@ -133,26 +130,20 @@ internal class LoginFragmentTest {
         launchFragmentInContainer(
             themeResId = R.style.Theme_TV_VlaamseTV,
         ) {
-            StubbedLoginFragment(authenticationUseCase, isLastScreen)
-                .also { frag ->
-                    frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
-                        if (viewLifecycleOwner != null) {
-                            Navigation.setViewNavController(
-                                frag.requireView(),
-                                testNavHostController
-                            )
-                        }
+            StubbedLoginFragment(authenticationUseCase, isLastScreen).also { frag ->
+                frag.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                    if (viewLifecycleOwner != null) {
+                        Navigation.setViewNavController(frag.requireView(), testNavHostController)
                     }
                 }
+            }
         }
     }
 }
 
-class StubbedLoginFragment(
-    authenticationUIController: AuthenticationUIController,
-    private val isLastScreen: Boolean
-) :
+class StubbedLoginFragment(authenticationUIController: AuthenticationUIController, private val isLastScreen: Boolean) :
     LoginFragment(authenticationUIController) {
+
     override val config: Configuration
         get() = Configuration(
             R.string.auth_flow_login_title,

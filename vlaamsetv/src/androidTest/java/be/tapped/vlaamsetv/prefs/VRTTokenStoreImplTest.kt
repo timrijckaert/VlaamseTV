@@ -20,13 +20,9 @@ import java.security.KeyStore
 class VRTTokenStoreImplTest {
 
     private val crypto
-        get() = CryptoImpl(
-            AesCipherProvider(
-                "keyName",
-                KeyStore.getInstance("AndroidKeyStore").apply { load(null) },
-                "AndroidKeyStore"
-            )
-        )
+        get() = CryptoImpl(AesCipherProvider("keyName",
+                                             KeyStore.getInstance("AndroidKeyStore").apply { load(null) },
+                                             "AndroidKeyStore"))
 
     private val app get() = ApplicationProvider.getApplicationContext<App>()
     private val vrtnuTokenStore = VRTTokenStoreImpl(app, crypto)
@@ -51,7 +47,8 @@ class VRTTokenStoreImplTest {
     @Test
     fun savingALongToken() {
         runBlocking {
-            val tokenWrapper = vrtTokenWrapperArb.gen()
+            val tokenWrapper = vrtTokenWrapperArb
+                .gen()
                 .copy(accessToken = AccessToken("eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3Blct"))
 
             vrtnuTokenStore.saveTokenWrapper(tokenWrapper)

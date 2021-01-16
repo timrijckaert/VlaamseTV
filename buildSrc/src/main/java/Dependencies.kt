@@ -1,4 +1,5 @@
 object Versions {
+
     const val packageName = "be.tapped.vlaamsetv"
     const val compileSdkVersion = 30
     const val minSdkVersion = 26
@@ -10,6 +11,7 @@ private const val navVersion = "2.3.2"
 private const val workVersion = "2.4.0"
 
 object Dependencies {
+
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlinVersion}"
 
     const val androidXDataStore = "androidx.datastore:datastore:1.0.0-alpha05"
@@ -23,20 +25,15 @@ object Dependencies {
     // Optional
     const val exoplayerDash = "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVersion}"
     const val exoplayerHLS = "com.google.android.exoplayer:exoplayer-hls:${exoPlayerVersion}"
-    const val exoplayerSmoothStreaming =
-        "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
+    const val exoplayerSmoothStreaming = "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
     const val exoplayerUi = "com.google.android.exoplayer:exoplayer-ui:${exoPlayerVersion}"
 
     // Extensions
     const val exoplayerExtCast = "com.google.android.exoplayer:extension-cast:${exoPlayerVersion}"
-    const val exoplayerExtLeanback =
-        "com.google.android.exoplayer:extension-leanback:${exoPlayerVersion}"
-    const val exoplayerExtMedia2 =
-        "com.google.android.exoplayer:extension-media2:${exoPlayerVersion}"
-    const val exoplayerExtMediaSession =
-        "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
-    const val exoplayerExtWorkManager =
-        "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
+    const val exoplayerExtLeanback = "com.google.android.exoplayer:extension-leanback:${exoPlayerVersion}"
+    const val exoplayerExtMedia2 = "com.google.android.exoplayer:extension-media2:${exoPlayerVersion}"
+    const val exoplayerExtMediaSession = "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
+    const val exoplayerExtWorkManager = "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
 
     // Android TV
     const val leanbackApp = "androidx.leanback:leanback:1.1.0-beta01"
@@ -69,14 +66,15 @@ object Dependencies {
 }
 
 object Plugins {
+
     const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinVersion}"
     const val androidGradle = "com.android.tools.build:gradle:4.1.1"
     const val wire = "com.squareup.wire:wire-gradle-plugin:3.3.0"
-    const val navigationSafeArgs =
-        "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
+    const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
 }
 
 object Testing {
+
     private const val kotestVersion = "4.3.1"
 
     const val kotestRunner = "io.kotest:kotest-runner-junit5:${kotestVersion}"

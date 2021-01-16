@@ -18,10 +18,7 @@ import be.tapped.vtmgo.profile.AuthenticationRepo
 
 interface TokenUseCase {
 
-    fun checkPreconditions(
-        username: String,
-        password: String
-    ): Either<ErrorMessage, Unit> {
+    fun checkPreconditions(username: String, password: String): Either<ErrorMessage, Unit> {
         if (username.isBlank()) {
             return ErrorMessage(R.string.failure_generic_no_email).left()
         }
@@ -46,41 +43,32 @@ class VRTTokenUseCase(
     private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
-    override suspend fun performLogin(
-        username: String,
-        password: String
-    ): Either<ErrorMessage, Unit> =
-        either {
-            !checkPreconditions(username, password)
-            val tokenWrapperWithXVRTToken =
-                either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
-                    parMapN(
-                        { !tokenRepo.fetchTokenWrapper(username, password) },
+    override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
+        !checkPreconditions(username, password)
+        val tokenWrapperWithXVRTToken =
+            either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
+                parMapN({ !tokenRepo.fetchTokenWrapper(username, password) },
                         { !tokenRepo.fetchXVRTToken(username, password) },
-                        ::Pair
-                    )
+                        ::Pair)
+            }
+        !when (tokenWrapperWithXVRTToken) {
+            is Either.Left -> vrtErrorMessageConverter.mapToHumanReadableError(tokenWrapperWithXVRTToken.a).left()
+            is Either.Right -> {
+                with(dataStore) {
+                    saveVRTCredentials(username, password)
+                    saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
+                    saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
                 }
-            !when (tokenWrapperWithXVRTToken) {
-                is Either.Left -> vrtErrorMessageConverter.mapToHumanReadableError(
-                    tokenWrapperWithXVRTToken.a
-                ).left()
-                is Either.Right -> {
-                    with(dataStore) {
-                        saveVRTCredentials(username, password)
-                        saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
-                        saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
-                    }
-                    tokenRefreshWorkScheduler.scheduleTokenRefreshVRT()
-                    Unit.right()
-                }
+                tokenRefreshWorkScheduler.scheduleTokenRefreshVRT()
+                Unit.right()
             }
         }
+    }
 
     override suspend fun refresh(): Either<ErrorMessage, Boolean> {
         val refreshToken = dataStore.token()?.refreshToken ?: return false.right()
         return when (val tokenWrapper = tokenRepo.refreshTokenWrapper(refreshToken)) {
-            is Either.Left -> vrtErrorMessageConverter.mapToHumanReadableError(tokenWrapper.a)
-                .left()
+            is Either.Left -> vrtErrorMessageConverter.mapToHumanReadableError(tokenWrapper.a).left()
             is Either.Right -> {
                 dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
                 true.right()
@@ -96,22 +84,18 @@ class VTMTokenUseCase(
     private val tokenRefreshWorkerScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
-    override suspend fun performLogin(
-        username: String,
-        password: String
-    ): Either<ErrorMessage, Unit> =
-        either {
-            !checkPreconditions(username, password)
-            !when (val jwt = authenticationRepo.login(username, password)) {
-                is Either.Left -> vtmErrorMessageConverter.mapToHumanReadableError(jwt.a).left()
-                is Either.Right -> {
-                    vtmTokenStore.saveVTMCredentials(username, password)
-                    vtmTokenStore.saveToken(jwt.b.token)
-                    tokenRefreshWorkerScheduler.scheduleTokenRefreshVTM()
-                    Unit.right()
-                }
+    override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
+        !checkPreconditions(username, password)
+        !when (val jwt = authenticationRepo.login(username, password)) {
+            is Either.Left -> vtmErrorMessageConverter.mapToHumanReadableError(jwt.a).left()
+            is Either.Right -> {
+                vtmTokenStore.saveVTMCredentials(username, password)
+                vtmTokenStore.saveToken(jwt.b.token)
+                tokenRefreshWorkerScheduler.scheduleTokenRefreshVTM()
+                Unit.right()
             }
         }
+    }
 
     override suspend fun refresh(): Either<ErrorMessage, Boolean> {
         val (username, password) = vtmTokenStore.vtmCredentials() ?: return false.right()
@@ -127,24 +111,20 @@ class VIERTokenUseCase(
     private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
-    override suspend fun performLogin(
-        username: String,
-        password: String
-    ): Either<ErrorMessage, Unit> =
-        either {
-            !checkPreconditions(username, password)
-            !when (val token = profileRepo.fetchTokens(username, password)) {
-                is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(token.a).left()
-                is Either.Right -> {
-                    with(vierTokenStore) {
-                        saveVierCredentials(username, password)
-                        saveToken(token.b.token)
-                    }
-                    tokenRefreshWorkScheduler.scheduleTokenRefreshVIER()
-                    Unit.right()
+    override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
+        !checkPreconditions(username, password)
+        !when (val token = profileRepo.fetchTokens(username, password)) {
+            is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(token.a).left()
+            is Either.Right -> {
+                with(vierTokenStore) {
+                    saveVierCredentials(username, password)
+                    saveToken(token.b.token)
                 }
+                tokenRefreshWorkScheduler.scheduleTokenRefreshVIER()
+                Unit.right()
             }
         }
+    }
 
     override suspend fun refresh(): Either<ErrorMessage, Boolean> {
         val refreshToken = vierTokenStore.token()?.refreshToken ?: return false.right()

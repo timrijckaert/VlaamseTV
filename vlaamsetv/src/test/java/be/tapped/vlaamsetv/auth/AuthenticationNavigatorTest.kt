@@ -18,17 +18,10 @@ class AuthenticationNavigatorTest : FreeSpec() {
 
             "and it has only 1 destination" - {
                 val authenticationScreenConfig =
-                    arrayOf<AuthenticationNavigationConfiguration>(
-                        AuthenticationNavigationConfiguration.VRT
-                    )
+                    arrayOf<AuthenticationNavigationConfiguration>(AuthenticationNavigationConfiguration.VRT)
 
                 val authenticationState = mockk<AuthenticationState>()
-                val sut = AuthenticationNavigator.create(
-                    activity,
-                    navController,
-                    authenticationScreenConfig,
-                    authenticationState
-                )
+                val sut = AuthenticationNavigator.create(activity, navController, authenticationScreenConfig, authenticationState)
 
                 "when connecting to the state" - {
                     "then it should emit the first screen" - {
@@ -70,19 +63,13 @@ class AuthenticationNavigatorTest : FreeSpec() {
             }
 
             "and it has multiple destinations" - {
-                val authenticationScreenConfig =
-                    arrayOf(
-                        AuthenticationNavigationConfiguration.VRT,
-                        AuthenticationNavigationConfiguration.VTM,
-                    )
+                val authenticationScreenConfig = arrayOf(
+                    AuthenticationNavigationConfiguration.VRT,
+                    AuthenticationNavigationConfiguration.VTM,
+                )
 
                 val authenticationState = mockk<AuthenticationState>()
-                val sut = AuthenticationNavigator.create(
-                    activity,
-                    navController,
-                    authenticationScreenConfig,
-                    authenticationState
-                )
+                val sut = AuthenticationNavigator.create(activity, navController, authenticationScreenConfig, authenticationState)
 
                 "when navigating to the next screen after a successful login" - {
                     sut.navigateNext()

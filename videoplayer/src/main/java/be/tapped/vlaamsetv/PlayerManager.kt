@@ -12,6 +12,5 @@ public object PlayerManager {
     public val videoEvents: Flow<VideoEvent> get() = _videoEvents
 
     @Suppress("ConvertLambdaToReference")
-    internal fun exoPlayer(context: Context): SimpleExoPlayer =
-        SimpleExoPlayer.Builder(context).build()
+    internal fun exoPlayer(context: Context): SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
 }

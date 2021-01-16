@@ -18,8 +18,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DefaultLoginConfiguration(val isLastScreen: Boolean) : Parcelable
 
-abstract class LoginFragment(private val authenticationUIController: AuthenticationUIController) :
-    GuidedStepSupportFragment() {
+abstract class LoginFragment(private val authenticationUIController: AuthenticationUIController) : GuidedStepSupportFragment() {
 
     abstract val config: Configuration
 
@@ -33,6 +32,7 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
     ) : Parcelable
 
     companion object {
+
         private const val EMAIL_FIELD = 1L
         private const val PASSWORD_FIELD = 2L
         private const val LOGIN_BUTTON = 3L
@@ -46,53 +46,40 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
     private val hasCredentials get() = hasEmail && hasPassword
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
-        GuidanceStylist.Guidance(
-            getString(config.title),
-            getString(config.description),
-            getString(config.brand),
-            ContextCompat.getDrawable(requireContext(), config.icon)
-        )
+        GuidanceStylist.Guidance(getString(config.title),
+                                 getString(config.description),
+                                 getString(config.brand),
+                                 ContextCompat.getDrawable(requireContext(), config.icon))
 
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
-        actions.addAll(
-            listOf(
-                GuidedAction.Builder(requireContext())
-                    .id(EMAIL_FIELD)
-                    .editable(true)
-                    .title(R.string.auth_flow_email)
-                    .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or InputType.TYPE_CLASS_TEXT)
-                    .descriptionEditable(true)
-                    .build(),
-                GuidedAction.Builder(requireContext())
-                    .id(PASSWORD_FIELD)
-                    .editable(true)
-                    .title(R.string.auth_flow_password)
-                    .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT or InputType.TYPE_MASK_VARIATION)
-                    .descriptionEditable(true)
-                    .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                    .build()
-            )
-        )
+        actions.addAll(listOf(GuidedAction
+                                  .Builder(requireContext())
+                                  .id(EMAIL_FIELD)
+                                  .editable(true)
+                                  .title(R.string.auth_flow_email)
+                                  .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or InputType.TYPE_CLASS_TEXT)
+                                  .descriptionEditable(true)
+                                  .build(),
+                              GuidedAction
+                                  .Builder(requireContext())
+                                  .id(PASSWORD_FIELD)
+                                  .editable(true)
+                                  .title(R.string.auth_flow_password)
+                                  .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT or InputType.TYPE_MASK_VARIATION)
+                                  .descriptionEditable(true)
+                                  .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                                  .build()))
     }
 
-    override fun onCreateButtonActions(
-        actions: MutableList<GuidedAction>,
-        savedInstanceState: Bundle?
-    ) {
-        actions.addAll(
-            listOf(
-                GuidedAction
-                    .Builder(context)
-                    .id(LOGIN_BUTTON)
-                    .title(R.string.auth_flow_login)
-                    .build(),
-                GuidedAction
-                    .Builder(context)
-                    .id(SECONDARY_BUTTON)
-                    .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_next)
-                    .build(),
-            )
-        )
+    override fun onCreateButtonActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
+        actions.addAll(listOf(
+            GuidedAction.Builder(context).id(LOGIN_BUTTON).title(R.string.auth_flow_login).build(),
+            GuidedAction
+                .Builder(context)
+                .id(SECONDARY_BUTTON)
+                .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_next)
+                .build(),
+        ))
     }
 
     override fun onGuidedActionClicked(action: GuidedAction) {
@@ -100,26 +87,23 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
             when (action.id) {
                 LOGIN_BUTTON -> authenticationUIController.login(email, password)
                 SECONDARY_BUTTON -> authenticationUIController.next()
-                else -> super.onGuidedActionClicked(action)
+                else             -> super.onGuidedActionClicked(action)
             }
         }
     }
 
-    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long =
-        when (action.id) {
-            EMAIL_FIELD -> PASSWORD_FIELD
-            PASSWORD_FIELD ->
-                if (hasCredentials) {
-                    LOGIN_BUTTON
-                } else {
-                    SECONDARY_BUTTON
-                }
-            else -> super.onGuidedActionEditedAndProceed(action)
+    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long = when (action.id) {
+        EMAIL_FIELD -> PASSWORD_FIELD
+        PASSWORD_FIELD -> if (hasCredentials) {
+            LOGIN_BUTTON
+        } else {
+            SECONDARY_BUTTON
         }
+        else           -> super.onGuidedActionEditedAndProceed(action)
+    }
 }
 
-class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUIController) :
-    LoginFragment(vrtAuthenticationUseCase) {
+class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUIController) : LoginFragment(vrtAuthenticationUseCase) {
 
     private val navArg by navArgs<VRTLoginFragmentArgs>()
     override val config: Configuration
@@ -132,8 +116,8 @@ class VRTLoginFragment(vrtAuthenticationUseCase: VRTAuthenticationUIController) 
         )
 }
 
-class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUIController) :
-    LoginFragment(vtmAuthenticationUseCase) {
+class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUIController) : LoginFragment(vtmAuthenticationUseCase) {
+
     private val navArg by navArgs<VTMLoginFragmentArgs>()
 
     override val config: Configuration
@@ -146,8 +130,8 @@ class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUIController) 
         )
 }
 
-class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUIController) :
-    LoginFragment(vierAuthenticationUseCase) {
+class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUIController) : LoginFragment(vierAuthenticationUseCase) {
+
     private val navArg by navArgs<VIERLoginFragmentArgs>()
 
     override val config: Configuration

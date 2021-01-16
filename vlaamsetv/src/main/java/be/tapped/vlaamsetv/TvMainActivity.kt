@@ -16,21 +16,13 @@ class TvMainActivity : FragmentActivity(R.layout.activity_tv_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
-            override fun instantiate(classLoader: ClassLoader, className: String): Fragment =
-                when (className) {
-                    MainFragment::class.java.name ->
-                        MainFragment(
-                            RootNavigator.create(
-                                Navigator(navHostFragment.navController),
-                                CompositeTokenStorage(
-                                    app.vrtTokenStore,
-                                    app.vtmTokenStore,
-                                    app.vierTokenStore
-                                )
-                            )
-                        )
-                    else -> super.instantiate(classLoader, className)
-                }
+            override fun instantiate(classLoader: ClassLoader, className: String): Fragment = when (className) {
+                MainFragment::class.java.name -> MainFragment(RootNavigator.create(Navigator(navHostFragment.navController),
+                                                                                   CompositeTokenStorage(app.vrtTokenStore,
+                                                                                                         app.vtmTokenStore,
+                                                                                                         app.vierTokenStore)))
+                else                          -> super.instantiate(classLoader, className)
+            }
         }
         super.onCreate(savedInstanceState)
     }

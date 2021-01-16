@@ -5,12 +5,10 @@ import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 
-interface TokenStorage {
-    enum class Brand {
-        VRT,
-        VTM,
-        VIER,
-    }
+interface TokenStorage { enum class Brand { VRT,
+    VTM,
+    VIER,
+}
 
     suspend fun hasCredentialsForAtLeastOneBrand(): Boolean
 
@@ -24,17 +22,14 @@ class CompositeTokenStorage(
 ) : TokenStorage {
 
     override suspend fun hasCredentialsForAtLeastOneBrand(): Boolean {
-        val (hasVrtCredentials, hasVtmCredentials, hasVierCredentials) = parTupledN(
-            { vrtTokenStore.vrtCredentials() != null },
-            { vtmTokenStore.vtmCredentials() != null },
-            { vierTokenStore.vierCredentials() != null }
-        )
+        val (hasVrtCredentials, hasVtmCredentials, hasVierCredentials) = parTupledN({ vrtTokenStore.vrtCredentials() != null },
+                                                                                    { vtmTokenStore.vtmCredentials() != null },
+                                                                                    { vierTokenStore.vierCredentials() != null })
         return hasVrtCredentials || hasVtmCredentials || hasVierCredentials
     }
 
     override suspend fun isTokenExpired(brand: TokenStorage.Brand): Boolean {
-        fun isExpired(expireDateInMillis: Long?): Boolean =
-            expireDateInMillis ?: -1 <= System.currentTimeMillis()
+        fun isExpired(expireDateInMillis: Long?): Boolean = expireDateInMillis ?: -1 <= System.currentTimeMillis()
 
         val expiryInMillis = when (brand) {
             TokenStorage.Brand.VRT -> vrtTokenStore.token()?.expiry?.dateInMillis

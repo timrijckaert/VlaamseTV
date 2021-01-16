@@ -34,10 +34,8 @@ internal class CryptoTest {
     @Test
     fun longerStringEncryptionAndDecryption() {
         val outputStream = ByteArrayOutputStream()
-        crypto.encrypt(
-            "eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW".toByteArray(),
-            outputStream
-        )
+        crypto.encrypt("eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW".toByteArray(),
+                       outputStream)
         val string = String(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
 
         string shouldBe "eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQeyJhdWQiOiJ2cnRudS1zaXRlIiwic3ViIjoiNmRlNjg1MjctNGVjMi00MmUwLTg0YmEtNGU5ZjE3ZTQ4MmY2IiwiaXNzIjoiaHR0cHM6XC9cL2xvZ2luLnZydC5iZSIsInNjb3BlcyI6ImFkZHJlc3Msb3BlbmlkLHByb2ZpbGUsbGVnYWN5aWQsbWlkLGVtYW"
@@ -46,15 +44,10 @@ internal class CryptoTest {
     @Test
     fun objectEncryptionAndDecryption() {
         val outputStream = ByteArrayOutputStream()
-        val tokenWrapper =
-            VRTTokenWrapper(accessToken = Arb.string().gen())
-        crypto.encrypt(
-            VRTTokenWrapper.ADAPTER.encode(tokenWrapper),
-            outputStream
-        )
+        val tokenWrapper = VRTTokenWrapper(accessToken = Arb.string().gen())
+        crypto.encrypt(VRTTokenWrapper.ADAPTER.encode(tokenWrapper), outputStream)
 
-        val tokenWrapperProto =
-            VRTTokenWrapper.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
+        val tokenWrapperProto = VRTTokenWrapper.ADAPTER.decode(crypto.decrypt(ByteArrayInputStream(outputStream.toByteArray())))
         tokenWrapper shouldBe tokenWrapperProto
     }
 }

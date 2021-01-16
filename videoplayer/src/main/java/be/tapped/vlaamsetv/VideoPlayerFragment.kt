@@ -33,12 +33,12 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
     private lateinit var videoItem: VideoItem
 
     public companion object {
+
         private const val VIDEO_ITEM_KEY = "be.tapped.vlaamsetv.VideoPlayerFragment.VIDEO_ITEM"
 
-        public fun newInstance(videoItem: VideoItem): VideoPlayerFragment =
-            VideoPlayerFragment().apply {
-                arguments = bundleOf(VIDEO_ITEM_KEY to videoItem)
-            }
+        public fun newInstance(videoItem: VideoItem): VideoPlayerFragment = VideoPlayerFragment().apply {
+            arguments = bundleOf(VIDEO_ITEM_KEY to videoItem)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +75,7 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
     private fun initializePlayer() {
         if (player == null) {
             PlayerManager.exoPlayer(requireContext()).let { p ->
-                @Suppress("ConvertReferenceToLambda")
-                lifecycleScope.launch {
+                @Suppress("ConvertReferenceToLambda") lifecycleScope.launch {
                     p.eventFlow.flowOn(Dispatchers.Default).collect(_videoEvents::emit)
                 }
                 p.playWhenReady = videoItem.startAutoPlay
@@ -97,30 +96,19 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
             player?.seekTo(videoItem.startWindow, videoItem.startPosition)
         }
 
-        val mediaItem = MediaItem.Builder()
-            .setUri(videoItem.url)
-            .apply {
-                videoItem.drm?.let {
-                    setDrmUuid(
-                        when (it.type) {
-                            VideoItem.Drm.DrmType.WIDEVINE -> C.WIDEVINE_UUID
-                            VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
-                        }
-                    )
-                    setDrmLicenseUri(it.licenseUrl)
-                }
-
-                setSubtitles(
-                    videoItem.subtitles.map {
-                        MediaItem.Subtitle(
-                            Uri.parse(it.subtitleUrl),
-                            it.mimeType,
-                            it.language
-                        )
-                    }
-                )
+        val mediaItem = MediaItem.Builder().setUri(videoItem.url).apply {
+            videoItem.drm?.let {
+                setDrmUuid(when (it.type) {
+                               VideoItem.Drm.DrmType.WIDEVINE  -> C.WIDEVINE_UUID
+                               VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
+                           })
+                setDrmLicenseUri(it.licenseUrl)
             }
-            .build()
+
+            setSubtitles(videoItem.subtitles.map {
+                MediaItem.Subtitle(Uri.parse(it.subtitleUrl), it.mimeType, it.language)
+            })
+        }.build()
         player?.setMediaItem(mediaItem, !haveStartPosition)
         player?.prepare()
     }

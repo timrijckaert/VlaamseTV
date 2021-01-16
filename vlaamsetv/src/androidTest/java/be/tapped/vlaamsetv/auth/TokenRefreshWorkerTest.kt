@@ -27,11 +27,9 @@ class TokenRefreshWorkerTest {
 
     @Test
     fun tokenRefreshFailedShouldResultInAFailure() {
-        val worker = TestListenableWorkerBuilder<StubbedTokenRefreshWorker>(context)
-            .setWorkerFactory(
-                buildWorkerFactory { errorMessageArb.gen().left() }
-            )
-            .build() as CoroutineWorker
+        val worker = TestListenableWorkerBuilder<StubbedTokenRefreshWorker>(context).setWorkerFactory(buildWorkerFactory {
+            errorMessageArb.gen().left()
+        }).build() as CoroutineWorker
 
         runBlocking {
             val result = worker.doWork()
@@ -42,9 +40,7 @@ class TokenRefreshWorkerTest {
     @Test
     fun tokenRefreshWasSuccessFulShouldResultInASuccess() {
         val worker = TestListenableWorkerBuilder<StubbedTokenRefreshWorker>(context)
-            .setWorkerFactory(
-                buildWorkerFactory { true.right() }
-            )
+            .setWorkerFactory(buildWorkerFactory { true.right() })
             .build() as CoroutineWorker
 
         runBlocking {
@@ -58,22 +54,15 @@ class TokenRefreshWorkerTest {
             override fun createWorker(
                 appContext: Context,
                 workerClassName: String,
-                workerParameters: WorkerParameters
+                workerParameters: WorkerParameters,
             ): ListenableWorker {
-                return StubbedTokenRefreshWorker(
-                    appContext, workerParameters,
-                    object : TokenUseCase {
-                        override suspend fun performLogin(
-                            username: String,
-                            password: String
-                        ): Either<ErrorMessage, Unit> {
-                            throw RuntimeException("Test is not allowed to call this method.")
-                        }
-
-                        override suspend fun refresh(): Either<ErrorMessage, Boolean> =
-                            refreshFunc()
+                return StubbedTokenRefreshWorker(appContext, workerParameters, object : TokenUseCase {
+                    override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> {
+                        throw RuntimeException("Test is not allowed to call this method.")
                     }
-                )
+
+                    override suspend fun refresh(): Either<ErrorMessage, Boolean> = refreshFunc()
+                })
             }
         }
     }

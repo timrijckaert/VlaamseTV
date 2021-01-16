@@ -16,37 +16,18 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import kotlinx.coroutines.channels.SendChannel
 import java.io.IOException
 
-internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<VideoEvent>) :
-    AnalyticsListener {
+internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<VideoEvent>) : AnalyticsListener {
 
     override fun onPlaybackStateChanged(eventTime: AnalyticsListener.EventTime, state: Int) {
         sendChannel.safeOffer(VideoEvent.Analytics.PlaybackStateChanged(eventTime, state))
     }
 
-    override fun onPlayWhenReadyChanged(
-        eventTime: AnalyticsListener.EventTime,
-        playWhenReady: Boolean,
-        reason: Int
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.PlayWhenReadyChanged(
-                eventTime,
-                playWhenReady,
-                reason
-            )
-        )
+    override fun onPlayWhenReadyChanged(eventTime: AnalyticsListener.EventTime, playWhenReady: Boolean, reason: Int) {
+        sendChannel.safeOffer(VideoEvent.Analytics.PlayWhenReadyChanged(eventTime, playWhenReady, reason))
     }
 
-    override fun onPlaybackSuppressionReasonChanged(
-        eventTime: AnalyticsListener.EventTime,
-        playbackSuppressionReason: Int
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.PlaybackSuppressionReasonChanged(
-                eventTime,
-                playbackSuppressionReason
-            )
-        )
+    override fun onPlaybackSuppressionReasonChanged(eventTime: AnalyticsListener.EventTime, playbackSuppressionReason: Int) {
+        sendChannel.safeOffer(VideoEvent.Analytics.PlaybackSuppressionReasonChanged(eventTime, playbackSuppressionReason))
     }
 
     override fun onIsPlayingChanged(eventTime: AnalyticsListener.EventTime, isPlaying: Boolean) {
@@ -57,18 +38,8 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         sendChannel.safeOffer(VideoEvent.Analytics.TimelineChanged(eventTime, reason))
     }
 
-    override fun onMediaItemTransition(
-        eventTime: AnalyticsListener.EventTime,
-        mediaItem: MediaItem?,
-        reason: Int
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.MediaItemTransition(
-                eventTime,
-                mediaItem,
-                reason
-            )
-        )
+    override fun onMediaItemTransition(eventTime: AnalyticsListener.EventTime, mediaItem: MediaItem?, reason: Int) {
+        sendChannel.safeOffer(VideoEvent.Analytics.MediaItemTransition(eventTime, mediaItem, reason))
     }
 
     override fun onPositionDiscontinuity(eventTime: AnalyticsListener.EventTime, reason: Int) {
@@ -79,99 +50,56 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         sendChannel.safeOffer(VideoEvent.Analytics.SeekStarted(eventTime))
     }
 
-    override fun onPlaybackParametersChanged(
-        eventTime: AnalyticsListener.EventTime,
-        playbackParameters: PlaybackParameters
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.PlaybackParametersChanged(
-                eventTime,
-                playbackParameters
-            )
-        )
+    override fun onPlaybackParametersChanged(eventTime: AnalyticsListener.EventTime, playbackParameters: PlaybackParameters) {
+        sendChannel.safeOffer(VideoEvent.Analytics.PlaybackParametersChanged(eventTime, playbackParameters))
     }
 
     override fun onRepeatModeChanged(eventTime: AnalyticsListener.EventTime, repeatMode: Int) {
         sendChannel.safeOffer(VideoEvent.Analytics.RepeatModeChanged(eventTime, repeatMode))
     }
 
-    override fun onShuffleModeChanged(
-        eventTime: AnalyticsListener.EventTime,
-        shuffleModeEnabled: Boolean
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.ShuffleModeChanged(
-                eventTime,
-                shuffleModeEnabled
-            )
-        )
+    override fun onShuffleModeChanged(eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) {
+        sendChannel.safeOffer(VideoEvent.Analytics.ShuffleModeChanged(eventTime, shuffleModeEnabled))
     }
 
     override fun onIsLoadingChanged(eventTime: AnalyticsListener.EventTime, isLoading: Boolean) {
         sendChannel.safeOffer(VideoEvent.Analytics.IsLoadingChanged(eventTime, isLoading))
     }
 
-    override fun onPlayerError(
-        eventTime: AnalyticsListener.EventTime,
-        error: ExoPlaybackException
-    ) {
+    override fun onPlayerError(eventTime: AnalyticsListener.EventTime, error: ExoPlaybackException) {
         sendChannel.safeOffer(VideoEvent.Analytics.PlayerError(eventTime, error))
     }
 
     override fun onTracksChanged(
         eventTime: AnalyticsListener.EventTime,
         trackGroups: TrackGroupArray,
-        trackSelections: TrackSelectionArray
+        trackSelections: TrackSelectionArray,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.TracksChanged(
-                eventTime,
-                trackGroups,
-                trackSelections
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.TracksChanged(eventTime, trackGroups, trackSelections))
     }
 
     override fun onLoadStarted(
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
-        mediaLoadData: MediaLoadData
+        mediaLoadData: MediaLoadData,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.LoadStarted(
-                eventTime,
-                loadEventInfo,
-                mediaLoadData
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.LoadStarted(eventTime, loadEventInfo, mediaLoadData))
     }
 
     override fun onLoadCompleted(
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
-        mediaLoadData: MediaLoadData
+        mediaLoadData: MediaLoadData,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.LoadCompleted(
-                eventTime,
-                loadEventInfo,
-                mediaLoadData
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.LoadCompleted(eventTime, loadEventInfo, mediaLoadData))
     }
 
     override fun onLoadCanceled(
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
-        mediaLoadData: MediaLoadData
+        mediaLoadData: MediaLoadData,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.LoadCanceled(
-                eventTime,
-                loadEventInfo,
-                mediaLoadData
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.LoadCanceled(eventTime, loadEventInfo, mediaLoadData))
     }
 
     override fun onLoadError(
@@ -179,35 +107,16 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         loadEventInfo: LoadEventInfo,
         mediaLoadData: MediaLoadData,
         error: IOException,
-        wasCanceled: Boolean
+        wasCanceled: Boolean,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.LoadError(
-                eventTime,
-                loadEventInfo,
-                mediaLoadData,
-                error,
-                wasCanceled
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.LoadError(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled))
     }
 
-    override fun onDownstreamFormatChanged(
-        eventTime: AnalyticsListener.EventTime,
-        mediaLoadData: MediaLoadData
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.DownstreamFormatChanged(
-                eventTime,
-                mediaLoadData
-            )
-        )
+    override fun onDownstreamFormatChanged(eventTime: AnalyticsListener.EventTime, mediaLoadData: MediaLoadData) {
+        sendChannel.safeOffer(VideoEvent.Analytics.DownstreamFormatChanged(eventTime, mediaLoadData))
     }
 
-    override fun onUpstreamDiscarded(
-        eventTime: AnalyticsListener.EventTime,
-        mediaLoadData: MediaLoadData
-    ) {
+    override fun onUpstreamDiscarded(eventTime: AnalyticsListener.EventTime, mediaLoadData: MediaLoadData) {
         sendChannel.safeOffer(VideoEvent.Analytics.UpstreamDiscarded(eventTime, mediaLoadData))
     }
 
@@ -215,16 +124,12 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         eventTime: AnalyticsListener.EventTime,
         totalLoadTimeMs: Int,
         totalBytesLoaded: Long,
-        bitrateEstimate: Long
+        bitrateEstimate: Long,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.BandwidthEstimate(
-                eventTime,
-                totalLoadTimeMs,
-                totalBytesLoaded,
-                bitrateEstimate
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.BandwidthEstimate(eventTime,
+                                                                     totalLoadTimeMs,
+                                                                     totalBytesLoaded,
+                                                                     bitrateEstimate))
     }
 
     override fun onMetadata(eventTime: AnalyticsListener.EventTime, metadata: Metadata) {
@@ -238,53 +143,29 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
     override fun onAudioDecoderInitialized(
         eventTime: AnalyticsListener.EventTime,
         decoderName: String,
-        initializationDurationMs: Long
+        initializationDurationMs: Long,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.AudioDecoderInitialized(
-                eventTime,
-                decoderName,
-                initializationDurationMs
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.AudioDecoderInitialized(eventTime, decoderName, initializationDurationMs))
     }
 
     override fun onAudioInputFormatChanged(eventTime: AnalyticsListener.EventTime, format: Format) {
         sendChannel.safeOffer(VideoEvent.Analytics.AudioInputFormatChanged(eventTime, format))
     }
 
-    override fun onAudioPositionAdvancing(
-        eventTime: AnalyticsListener.EventTime,
-        playoutStartSystemTimeMs: Long
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.AudioPositionAdvancing(
-                eventTime,
-                playoutStartSystemTimeMs
-            )
-        )
+    override fun onAudioPositionAdvancing(eventTime: AnalyticsListener.EventTime, playoutStartSystemTimeMs: Long) {
+        sendChannel.safeOffer(VideoEvent.Analytics.AudioPositionAdvancing(eventTime, playoutStartSystemTimeMs))
     }
 
     override fun onAudioUnderrun(
         eventTime: AnalyticsListener.EventTime,
         bufferSize: Int,
         bufferSizeMs: Long,
-        elapsedSinceLastFeedMs: Long
+        elapsedSinceLastFeedMs: Long,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.AudioUnderrun(
-                eventTime,
-                bufferSize,
-                bufferSizeMs,
-                elapsedSinceLastFeedMs
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.AudioUnderrun(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs))
     }
 
-    override fun onAudioDisabled(
-        eventTime: AnalyticsListener.EventTime,
-        counters: DecoderCounters
-    ) {
+    override fun onAudioDisabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
         sendChannel.safeOffer(VideoEvent.Analytics.AudioDisabled(eventTime, counters))
     }
 
@@ -292,28 +173,12 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         sendChannel.safeOffer(VideoEvent.Analytics.AudioSessionId(eventTime, audioSessionId))
     }
 
-    override fun onAudioAttributesChanged(
-        eventTime: AnalyticsListener.EventTime,
-        audioAttributes: AudioAttributes
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.AudioAttributesChanged(
-                eventTime,
-                audioAttributes
-            )
-        )
+    override fun onAudioAttributesChanged(eventTime: AnalyticsListener.EventTime, audioAttributes: AudioAttributes) {
+        sendChannel.safeOffer(VideoEvent.Analytics.AudioAttributesChanged(eventTime, audioAttributes))
     }
 
-    override fun onSkipSilenceEnabledChanged(
-        eventTime: AnalyticsListener.EventTime,
-        skipSilenceEnabled: Boolean
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.SkipSilenceEnabledChanged(
-                eventTime,
-                skipSilenceEnabled
-            )
-        )
+    override fun onSkipSilenceEnabledChanged(eventTime: AnalyticsListener.EventTime, skipSilenceEnabled: Boolean) {
+        sendChannel.safeOffer(VideoEvent.Analytics.SkipSilenceEnabledChanged(eventTime, skipSilenceEnabled))
     }
 
     override fun onVolumeChanged(eventTime: AnalyticsListener.EventTime, volume: Float) {
@@ -327,54 +192,29 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
     override fun onVideoDecoderInitialized(
         eventTime: AnalyticsListener.EventTime,
         decoderName: String,
-        initializationDurationMs: Long
+        initializationDurationMs: Long,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.VideoDecoderInitialized(
-                eventTime,
-                decoderName,
-                initializationDurationMs
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.VideoDecoderInitialized(eventTime, decoderName, initializationDurationMs))
     }
 
     override fun onVideoInputFormatChanged(eventTime: AnalyticsListener.EventTime, format: Format) {
         sendChannel.safeOffer(VideoEvent.Analytics.VideoInputFormatChanged(eventTime, format))
     }
 
-    override fun onDroppedVideoFrames(
-        eventTime: AnalyticsListener.EventTime,
-        droppedFrames: Int,
-        elapsedMs: Long
-    ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.DroppedVideoFrames(
-                eventTime,
-                droppedFrames,
-                elapsedMs
-            )
-        )
+    override fun onDroppedVideoFrames(eventTime: AnalyticsListener.EventTime, droppedFrames: Int, elapsedMs: Long) {
+        sendChannel.safeOffer(VideoEvent.Analytics.DroppedVideoFrames(eventTime, droppedFrames, elapsedMs))
     }
 
-    override fun onVideoDisabled(
-        eventTime: AnalyticsListener.EventTime,
-        counters: DecoderCounters
-    ) {
+    override fun onVideoDisabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
         sendChannel.safeOffer(VideoEvent.Analytics.VideoDisabled(eventTime, counters))
     }
 
     override fun onVideoFrameProcessingOffset(
         eventTime: AnalyticsListener.EventTime,
         totalProcessingOffsetUs: Long,
-        frameCount: Int
+        frameCount: Int,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.VideoFrameProcessingOffset(
-                eventTime,
-                totalProcessingOffsetUs,
-                frameCount
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.VideoFrameProcessingOffset(eventTime, totalProcessingOffsetUs, frameCount))
     }
 
     override fun onRenderedFirstFrame(eventTime: AnalyticsListener.EventTime, surface: Surface?) {
@@ -386,24 +226,16 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         width: Int,
         height: Int,
         unappliedRotationDegrees: Int,
-        pixelWidthHeightRatio: Float
+        pixelWidthHeightRatio: Float,
     ) {
-        sendChannel.safeOffer(
-            VideoEvent.Analytics.VideoSizeChanged(
-                eventTime,
-                width,
-                height,
-                unappliedRotationDegrees,
-                pixelWidthHeightRatio
-            )
-        )
+        sendChannel.safeOffer(VideoEvent.Analytics.VideoSizeChanged(eventTime,
+                                                                    width,
+                                                                    height,
+                                                                    unappliedRotationDegrees,
+                                                                    pixelWidthHeightRatio))
     }
 
-    override fun onSurfaceSizeChanged(
-        eventTime: AnalyticsListener.EventTime,
-        width: Int,
-        height: Int
-    ) {
+    override fun onSurfaceSizeChanged(eventTime: AnalyticsListener.EventTime, width: Int, height: Int) {
         sendChannel.safeOffer(VideoEvent.Analytics.SurfaceSizeChanged(eventTime, width, height))
     }
 
@@ -415,10 +247,7 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         sendChannel.safeOffer(VideoEvent.Analytics.DrmKeysLoaded(eventTime))
     }
 
-    override fun onDrmSessionManagerError(
-        eventTime: AnalyticsListener.EventTime,
-        error: Exception
-    ) {
+    override fun onDrmSessionManagerError(eventTime: AnalyticsListener.EventTime, error: Exception) {
         sendChannel.safeOffer(VideoEvent.Analytics.DrmSessionManagerError(eventTime, error))
     }
 
