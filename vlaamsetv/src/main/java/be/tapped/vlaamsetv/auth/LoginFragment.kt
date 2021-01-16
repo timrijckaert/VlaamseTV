@@ -99,7 +99,7 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
         lifecycleScope.launch {
             when (action.id) {
                 LOGIN_BUTTON -> authenticationUIController.login(email, password)
-                SECONDARY_BUTTON -> authenticationUIController.skip()
+                SECONDARY_BUTTON -> authenticationUIController.next()
                 else -> super.onGuidedActionClicked(action)
             }
         }

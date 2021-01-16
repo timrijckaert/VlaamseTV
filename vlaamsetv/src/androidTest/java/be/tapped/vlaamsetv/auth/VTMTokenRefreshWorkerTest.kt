@@ -12,7 +12,9 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vlaamsetv.App
-import be.tapped.vtmgo.ApiResponse
+import be.tapped.vlaamsetv.ErrorMessage
+import be.tapped.vlaamsetv.errorMessageArb
+import be.tapped.vlaamsetv.gen
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -26,7 +28,7 @@ class VTMTokenRefreshWorkerTest {
     @Test
     fun tokenRefreshFailedShouldResultInAFailure() {
         val worker = TestListenableWorkerBuilder<VTMTokenRefreshWorkBuilder>(context)
-            .setWorkerFactory(buildWorkerFactory { ApiResponse.Failure.EmptyJson.left() })
+            .setWorkerFactory(buildWorkerFactory { errorMessageArb.gen().left() })
             .build() as CoroutineWorker
 
         runBlocking {
@@ -47,7 +49,7 @@ class VTMTokenRefreshWorkerTest {
         }
     }
 
-    private fun buildWorkerFactory(refreshFunc: () -> Either<ApiResponse.Failure, Boolean>): WorkerFactory {
+    private fun buildWorkerFactory(refreshFunc: () -> Either<ErrorMessage, Boolean>): WorkerFactory {
         return object : WorkerFactory() {
             override fun createWorker(
                 appContext: Context,
@@ -55,19 +57,19 @@ class VTMTokenRefreshWorkerTest {
                 workerParameters: WorkerParameters
             ): ListenableWorker {
                 return VTMTokenRefreshWorkBuilder(
-                    appContext, workerParameters,
-                    object : TokenUseCase<ApiResponse.Failure> {
+                    appContext,
+                    workerParameters,
+                    object : TokenUseCase {
                         override suspend fun performLogin(
                             username: String,
                             password: String
-                        ): Either<ApiResponse.Failure, Unit> {
+                        ): Either<ErrorMessage, Unit> {
                             throw RuntimeException("Test is not allowed to call this method.")
                         }
 
-                        override suspend fun refresh(): Either<ApiResponse.Failure, Boolean> =
+                        override suspend fun refresh(): Either<ErrorMessage, Boolean> =
                             refreshFunc()
-                    }
-                )
+                    })
             }
         }
     }

@@ -5,19 +5,18 @@ import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import arrow.core.Either
-import be.tapped.vtmgo.ApiResponse
 import java.util.concurrent.TimeUnit
 
 class VTMTokenRefreshWorkBuilder(
     appContext: Context,
     params: WorkerParameters,
-    private val vtmTokenUseCase: TokenUseCase<ApiResponse.Failure>,
+    private val vtmTokenUseCase: TokenUseCase,
 ) : CoroutineWorker(appContext, params) {
 
     companion object : TokenRefreshWorkBuilder {
         private const val VTM_GO = "VTM_GO"
         fun create(context: Context) {
-            PeriodicWorkRequestBuilder<VRTTokenRefreshWorkBuilder>(1, TimeUnit.DAYS)
+            PeriodicWorkRequestBuilder<VRTTokenRefreshWorker>(1, TimeUnit.DAYS)
                 .tokenRefreshParameters()
                 .addTag(VTM_GO)
                 .build()

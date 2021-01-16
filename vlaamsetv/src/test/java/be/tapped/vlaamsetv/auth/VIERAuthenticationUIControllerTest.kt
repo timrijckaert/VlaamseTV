@@ -18,7 +18,6 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
             val sut = VIERAuthenticationUIController(
                 vierTokenUseCase,
                 authenticationNavigator,
-                errorMessageConverter,
             )
 
             val username = Arb.string().gen()
@@ -61,7 +60,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
                     every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.HTML.EmptyHTML) } returns errorMessage
                     coEvery {
                         vierTokenUseCase.performLogin(username, password)
-                    } returns ApiResponse.Failure.HTML.EmptyHTML.left()
+                    } returns errorMessageArb.gen().left()
 
                     sut.login(username, password)
 
@@ -72,7 +71,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
             }
 
             `when`("skipping") {
-                sut.skip()
+                sut.next()
 
                 then("it should navigate to the next screen") {
                     coVerify { authenticationNavigator.navigateNext() }
