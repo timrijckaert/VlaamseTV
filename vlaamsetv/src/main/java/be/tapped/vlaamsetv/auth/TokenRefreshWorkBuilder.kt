@@ -47,7 +47,7 @@ abstract class TokenRefreshWorker(
         }
 }
 
-private class VRTTokenRefreshWorker(
+internal class VRTTokenRefreshWorker(
     appContext: Context,
     params: WorkerParameters,
     vrtTokenUseCase: TokenUseCase,
@@ -57,7 +57,7 @@ private class VRTTokenRefreshWorker(
     }
 }
 
-class VTMTokenRefreshWorker(
+internal class VTMTokenRefreshWorker(
     appContext: Context,
     params: WorkerParameters,
     vtmTokenUseCase: TokenUseCase,
@@ -68,7 +68,7 @@ class VTMTokenRefreshWorker(
     }
 }
 
-class VIERTokenRefreshWorker(
+internal class VIERTokenRefreshWorker(
     appContext: Context,
     params: WorkerParameters,
     tokenUseCase: TokenUseCase
