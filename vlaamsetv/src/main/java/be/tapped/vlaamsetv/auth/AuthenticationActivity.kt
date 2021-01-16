@@ -80,10 +80,12 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                     VIERLoginFragment::class.java.name ->
                         VIERLoginFragment(
                             VIERAuthenticationUIController(
-                                VierHttpProfileRepo(),
-                                VIERTokenStoreImpl(
-                                    this@AuthenticationActivity,
-                                    crypto
+                                VIERTokenUseCase(
+                                    VierHttpProfileRepo(),
+                                    VIERTokenStoreImpl(
+                                        this@AuthenticationActivity,
+                                        crypto
+                                    ),
                                 ),
                                 authenticationNavigator,
                                 VIERErrorMessageConverter()

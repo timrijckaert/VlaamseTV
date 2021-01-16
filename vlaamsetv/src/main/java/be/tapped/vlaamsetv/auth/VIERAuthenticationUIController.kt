@@ -2,30 +2,25 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.Either
 import be.tapped.vier.ApiResponse
-import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 
 class VIERAuthenticationUIController(
-    private val profileRepo: HttpProfileRepo,
-    private val vierTokenStore: VIERTokenStore,
+    private val vierTokenUseCase: VIERTokenUseCase,
     private val authenticationNavigator: AuthenticationNavigator,
     private val errorMessageConverter: ErrorMessageConverter<ApiResponse.Failure>,
 ) : AuthenticationUIController {
 
     override suspend fun login(username: String, password: String) {
         if (checkPreconditions(username, password)) return
-        when (val token = profileRepo.fetchTokens(username, password)) {
+        when (val token = vierTokenUseCase.performLogin(username, password)) {
             is Either.Left -> {
                 authenticationNavigator.navigateToErrorScreen(
                     errorMessageConverter.mapToHumanReadableError(token.a)
                 )
             }
             is Either.Right -> {
-                vierTokenStore.saveVierCredentials(username, password)
-                vierTokenStore.saveToken(token.b)
                 authenticationNavigator.navigateNext()
             }
         }

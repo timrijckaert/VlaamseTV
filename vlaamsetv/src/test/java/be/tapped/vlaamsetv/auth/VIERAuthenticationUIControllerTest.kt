@@ -3,9 +3,7 @@ package be.tapped.vlaamsetv.auth
 import arrow.core.left
 import arrow.core.right
 import be.tapped.vier.ApiResponse
-import be.tapped.vier.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.*
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
@@ -14,13 +12,11 @@ import io.mockk.*
 class VIERAuthenticationUIControllerTest : BehaviorSpec() {
     init {
         given("A ${VIERAuthenticationUIController::class.java.simpleName}") {
-            val profileRepo = mockk<HttpProfileRepo>()
-            val vierTokenStore = mockk<VIERTokenStore>()
+            val vierTokenUseCase = mockk<VIERTokenUseCase>()
             val authenticationNavigator = mockk<AuthenticationNavigator>()
             val errorMessageConverter = mockk<ErrorMessageConverter<ApiResponse.Failure>>()
             val sut = VIERAuthenticationUIController(
-                profileRepo,
-                vierTokenStore,
+                vierTokenUseCase,
                 authenticationNavigator,
                 errorMessageConverter,
             )
@@ -33,7 +29,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
                     sut.login("", "")
 
                     then("it should not make a call") {
-                        coVerify(exactly = 0) { profileRepo.fetchTokens("", "") }
+                        coVerify(exactly = 0) { vierTokenUseCase.performLogin("", "") }
                     }
 
                     then("it should navigate to the error screen") {
@@ -45,25 +41,16 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
                     }
                 }
 
-                val token = vierTokenArb.gen()
                 coEvery {
-                    profileRepo.fetchTokens(
+                    vierTokenUseCase.performLogin(
                         username,
                         password
                     )
-                } returns token.right()
+                } returns Unit.right()
 
                 sut.login(username, password)
 
                 and("it was successful") {
-                    then("it should save the credentials") {
-                        coVerify { vierTokenStore.saveVierCredentials(username, password) }
-                    }
-
-                    then("it should save the token") {
-                        coVerify { vierTokenStore.saveToken(token) }
-                    }
-
                     then("it should have navigated to the next screen") {
                         coVerify { authenticationNavigator.navigateNext() }
                     }
@@ -73,7 +60,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() {
                     val errorMessage = errorMessageArb.gen()
                     every { errorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.HTML.EmptyHTML) } returns errorMessage
                     coEvery {
-                        profileRepo.fetchTokens(username, password)
+                        vierTokenUseCase.performLogin(username, password)
                     } returns ApiResponse.Failure.HTML.EmptyHTML.left()
 
                     sut.login(username, password)
