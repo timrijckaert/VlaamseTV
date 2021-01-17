@@ -78,7 +78,7 @@ class VideoPlayerTVFragment(
             host = VideoSupportFragmentGlueHost(this@VideoPlayerTVFragment)
         }
 
-        mediaSession = MediaSessionCompat(requireContext(), "rtugrtugrth")
+        mediaSession = MediaSessionCompat(requireContext(), requireContext().getString(R.string.app_name))
         mediaSessionConnector = MediaSessionConnector(mediaSession)
 
         adapter = ArrayObjectAdapter(playerGlue.playbackRowPresenter).apply {
