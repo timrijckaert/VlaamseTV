@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/playback_flow_tv"
+    app:startDestination="@id/playbackFragment">
+
+    <fragment
+        android:id="@+id/playbackFragment"
+        android:name="be.tapped.vlaamsetv.playback.PlaybackFragment"
+        android:label="PlaybackFragment" />
+</navigation>
