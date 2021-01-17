@@ -16,7 +16,9 @@ interface RootNavigator {
             override suspend fun moveToStartDestination() {
                 val hasCredentialsForAtLeastOneBrand = tokenStorage.hasCredentialsForAtLeastOneBrand()
                 if (hasCredentialsForAtLeastOneBrand) {
-                    navigator.navigateToPlayback()
+
+                    // Test Leanback playback
+                    // navigator.navigateToPlayback(VideoItem("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"))
                 } else {
                     navigator.navigateToAuthenticationFlow(
                         arrayOf(
@@ -38,7 +40,7 @@ class Navigator(private val navController: NavController) : AuthenticationNaviga
         navController.navigate(MainFragmentDirections.actionMainFragmentToAuthenticationFlowTv(config))
     }
 
-    override fun navigateToPlayback() {
-        navController.navigate(MainFragmentDirections.actionMainFragmentToPlaybackActivity())
+    override fun navigateToPlayback(videoItem: VideoItem) {
+        navController.navigate(MainFragmentDirections.actionMainFragmentToPlaybackActivity(videoItem))
     }
 }

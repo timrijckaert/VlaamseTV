@@ -29,6 +29,10 @@
     <activity
         android:id="@+id/playbackActivity"
         android:name="be.tapped.vlaamsetv.playback.PlaybackActivity"
-        android:label="PlaybackActivity" />
+        android:label="PlaybackActivity">
+        <argument
+            android:name="videoItem"
+            app:argType="be.tapped.vlaamsetv.VideoItem" />
+    </activity>
 
 </navigation>
