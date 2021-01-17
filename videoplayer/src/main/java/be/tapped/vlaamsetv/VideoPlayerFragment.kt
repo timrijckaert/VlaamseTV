@@ -8,7 +8,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import be.tapped.vlaamsetv.PlayerManager._videoEvents
 import be.tapped.vlaamsetv.VideoItem.Companion.DEFAULT_START_WINDOW
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
@@ -74,9 +73,10 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
 
     private fun initializePlayer() {
         if (player == null) {
-            PlayerManager.exoPlayer(requireContext()).let { p ->
+            val playerManager = PlayerManager()
+            playerManager.exoPlayer(requireContext()).let { p ->
                 @Suppress("ConvertReferenceToLambda") lifecycleScope.launch {
-                    p.eventFlow.flowOn(Dispatchers.Default).collect(_videoEvents::emit)
+                    p.eventFlow.flowOn(Dispatchers.Default).collect(playerManager._videoEvents::emit)
                 }
                 p.playWhenReady = videoItem.startAutoPlay
                 playerView.player = p

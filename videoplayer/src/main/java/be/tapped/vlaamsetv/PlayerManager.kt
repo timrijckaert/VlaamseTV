@@ -5,7 +5,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-object PlayerManager {
+class PlayerManager {
 
     @Suppress("ObjectPropertyName")
     internal val _videoEvents: MutableStateFlow<VideoEvent> by lazy { MutableStateFlow(VideoEvent.Unknown) }

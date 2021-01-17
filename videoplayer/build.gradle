@@ -11,6 +11,11 @@ dependencies {
     implementation Dependencies.appCompat
     implementation Dependencies.material
     implementation Dependencies.constraintLayout
+    implementation Dependencies.leanbackApp
+    implementation Dependencies.exoplayerCore
+    implementation Dependencies.exoplayerExtLeanback
+    implementation Dependencies.exoplayerExtMedia2
+    implementation Dependencies.exoplayerExtMediaSession
 
     implementation Dependencies.coroutinesCore
     implementation Dependencies.lifecycleRuntimeKtx
