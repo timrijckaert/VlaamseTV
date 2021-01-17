@@ -63,6 +63,8 @@ object Dependencies {
 
     private const val coroutineVersion = "1.4.1"
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutineVersion}"
+
+    const val coil = "io.coil-kt:coil:1.1.1"
 }
 
 object Plugins {

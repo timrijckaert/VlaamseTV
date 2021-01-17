@@ -16,6 +16,7 @@ dependencies {
     implementation Dependencies.exoplayerExtLeanback
     implementation Dependencies.exoplayerExtMedia2
     implementation Dependencies.exoplayerExtMediaSession
+    implementation Dependencies.coil
 
     implementation Dependencies.coroutinesCore
     implementation Dependencies.lifecycleRuntimeKtx

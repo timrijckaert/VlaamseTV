@@ -1,18 +1,24 @@
 package be.tapped.vlaamsetv
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.View
+import androidx.core.graphics.createBitmap
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.PlaybackControlsRow
+import androidx.leanback.widget.PlaybackSeekDataProvider
 import androidx.lifecycle.lifecycleScope
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -76,6 +82,30 @@ class VideoPlayerTVFragment(
 
         playerGlue = MediaPlayerGlue(requireContext(), playerAdapter).apply {
             host = VideoSupportFragmentGlueHost(this@VideoPlayerTVFragment)
+
+            subtitle = videoItem.subtitle
+            title = videoItem.title
+
+            lifecycleScope.launch {
+                context.imageLoader.enqueue(
+                    ImageRequest.Builder(context)
+                        .data(videoItem.art)
+                        .target { art = it }
+                        .build()
+                )
+            }
+
+            seekProvider = object : PlaybackSeekDataProvider() {
+                override fun getSeekPositions(): LongArray = longArrayOf(10L, 20L, 30L)
+
+                override fun getThumbnail(index: Int, callback: ResultCallback?) {
+                    callback?.onThumbnailLoaded(createBitmap(100, 100, Bitmap.Config.ARGB_8888).also {
+                        Canvas(it).apply {
+                            drawColor(Color.RED)
+                        }
+                    }, 0)
+                }
+            }
         }
 
         mediaSession = MediaSessionCompat(requireContext(), requireContext().getString(R.string.app_name))

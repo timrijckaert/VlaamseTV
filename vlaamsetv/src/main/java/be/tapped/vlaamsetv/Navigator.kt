@@ -18,7 +18,14 @@ interface RootNavigator {
                 if (hasCredentialsForAtLeastOneBrand) {
 
                     // Test Leanback playback
-                    // navigator.navigateToPlayback(VideoItem("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"))
+                    // navigator.navigateToPlayback(
+                    //     VideoItem(
+                    //         url = "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd",
+                    //         title = "This is a test video",
+                    //         subtitle = "This is a subtitle that can span multiple lines of text. And so it will probably wrap and at some point maybe even ellipsize.",
+                    //         art = "https://images.vrt.be/orig/2021/01/07/d53ce59e-50e6-11eb-aae0-02b7b76bf47f.jpg"
+                    //     )
+                    // )
                 } else {
                     navigator.navigateToAuthenticationFlow(
                         arrayOf(

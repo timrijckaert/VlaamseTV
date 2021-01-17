@@ -5,8 +5,11 @@ import com.google.android.exoplayer2.C
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-public data class VideoItem(
+data class VideoItem(
     val url: String,
+    val title: String,
+    val subtitle: String,
+    val art: String? = null,
     val drm: Drm? = null,
     val subtitles: List<Subtitle> = emptyList(),
     val startAutoPlay: Boolean = DEFAULT_START_AUTO_PLAY,
@@ -24,13 +27,14 @@ public data class VideoItem(
     }
 
     @Parcelize
-    public class Subtitle(public val subtitleUrl: String, public val mimeType: String, public val language: String? = null) :
+    class Subtitle(val subtitleUrl: String, val mimeType: String, val language: String? = null) :
         Parcelable
 
     @Parcelize
-    public class Drm(public val licenseUrl: String, public val type: DrmType) : Parcelable {
+    class Drm(val licenseUrl: String, val type: DrmType) : Parcelable {
 
-        public enum class DrmType { WIDEVINE,
+        enum class DrmType {
+            WIDEVINE,
             PLAYREADY
         }
     }
