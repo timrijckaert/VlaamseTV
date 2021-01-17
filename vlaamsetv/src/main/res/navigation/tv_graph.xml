@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainFragment_to_authentication_flow_tv"
             app:destination="@id/authenticationActivity" />
+        <action
+            android:id="@+id/action_mainFragment_to_playbackActivity"
+            app:destination="@id/playbackActivity" />
     </fragment>
 
     <activity
@@ -22,6 +25,14 @@
         <argument
             android:name="config"
             app:argType="be.tapped.vlaamsetv.auth.AuthenticationNavigationConfiguration[]" />
+    </activity>
+    <activity
+        android:id="@+id/playbackActivity"
+        android:name="be.tapped.vlaamsetv.playback.PlaybackActivity"
+        android:label="PlaybackActivity">
+        <argument
+            android:name="videoItem"
+            app:argType="be.tapped.vlaamsetv.VideoItem" />
     </activity>
 
 </navigation>

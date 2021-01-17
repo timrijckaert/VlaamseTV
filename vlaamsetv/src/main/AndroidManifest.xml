@@ -34,6 +34,13 @@
             android:theme="@style/Theme.TV.VlaamseTV" />
 
         <activity
+            android:name=".playback.PlaybackActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true"
+            android:theme="@style/Theme.TV.VlaamseTV" />
+
+        <activity
             android:name=".TvMainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|navigation"
             android:launchMode="singleTask"

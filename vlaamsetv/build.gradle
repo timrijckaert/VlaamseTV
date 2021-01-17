@@ -48,6 +48,8 @@ dependencies {
     implementation "be.tapped.vlaamsetv:vrtnu"
     implementation "be.tapped.vlaamsetv:vtmgo"
 
+    implementation project(":videoplayer")
+
     testImplementation Testing.kotestRunner
     testImplementation Testing.kotestAssertionsCore
     testImplementation Testing.kotestAssertionsArrow
