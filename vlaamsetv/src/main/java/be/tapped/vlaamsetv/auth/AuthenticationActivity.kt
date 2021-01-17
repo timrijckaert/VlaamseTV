@@ -39,8 +39,9 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
             override fun instantiate(cls: ClassLoader, className: String): Fragment {
                 val tokenRefreshWorkScheduler = TokenRefreshWorkScheduler(WorkManager.getInstance(this@AuthenticationActivity))
                 return when (className) {
-                    AuthenticationFragment::class.java.name -> AuthenticationFragment(authenticationNavigator)
-                    VRTLoginFragment::class.java.name -> {
+                    AuthenticationFragment::class.java.name ->
+                        AuthenticationFragment(authenticationNavigator)
+                    VRTLoginFragment::class.java.name ->
                         VRTLoginFragment(
                             VRTAuthenticationUIController(
                                 VRTTokenUseCase(
@@ -53,27 +54,28 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 authenticationState,
                             ),
                         )
-                    }
-                    VTMLoginFragment::class.java.name -> VTMLoginFragment(
-                        VTMAuthenticationUIController(
-                            VTMTokenUseCase(
-                                HttpAuthenticationRepo(),
-                                app.vtmTokenStore,
-                                VTMErrorMessageConverter(),
-                                tokenRefreshWorkScheduler,
+                    VTMLoginFragment::class.java.name ->
+                        VTMLoginFragment(
+                            VTMAuthenticationUIController(
+                                VTMTokenUseCase(
+                                    HttpAuthenticationRepo(),
+                                    app.vtmTokenStore,
+                                    VTMErrorMessageConverter(),
+                                    tokenRefreshWorkScheduler,
+                                ),
+                                authenticationNavigator,
+                                authenticationState,
                             ),
-                            authenticationNavigator,
-                            authenticationState,
-                        ),
-                    )
-                    VIERLoginFragment::class.java.name -> VIERLoginFragment(
-                        VIERAuthenticationUIController(VIERTokenUseCase(
-                            VierHttpProfileRepo(),
-                            app.vierTokenStore,
-                            VIERErrorMessageConverter(),
-                            tokenRefreshWorkScheduler,
-                        ), authenticationNavigator, authenticationState),
-                    )
+                        )
+                    VIERLoginFragment::class.java.name ->
+                        VIERLoginFragment(
+                            VIERAuthenticationUIController(VIERTokenUseCase(
+                                VierHttpProfileRepo(),
+                                app.vierTokenStore,
+                                VIERErrorMessageConverter(),
+                                tokenRefreshWorkScheduler,
+                            ), authenticationNavigator, authenticationState),
+                        )
                     AuthenticationFailedDialog::class.java.name -> AuthenticationFailedDialog(authenticationNavigator)
                     else                                        -> super.instantiate(cls, className)
                 }

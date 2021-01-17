@@ -13,71 +13,70 @@ import io.mockk.mockk
 import io.mockk.verify
 
 class VRTAuthenticationUIControllerTest : BehaviorSpec({
+    given("A ${VRTAuthenticationUIController::class.simpleName}") {
+        val vrtTokenUseCase = mockk<VRTTokenUseCase>()
+        val authenticationNavigator = mockk<AuthenticationNavigator>()
+        val authenticationState = mockk<AuthenticationState>()
+        val sut = VRTAuthenticationUIController(vrtTokenUseCase,
+            authenticationNavigator,
+            authenticationState)
 
-                                                           given("A ${VRTAuthenticationUIController::class.simpleName}") {
-                                                               val vrtTokenUseCase = mockk<VRTTokenUseCase>()
-                                                               val authenticationNavigator = mockk<AuthenticationNavigator>()
-                                                               val authenticationState = mockk<AuthenticationState>()
-                                                               val sut = VRTAuthenticationUIController(vrtTokenUseCase,
-                                                                                                       authenticationNavigator,
-                                                                                                       authenticationState)
+        val stringGen = Arb.string(1)
+        val username = stringGen.gen()
+        val password = stringGen.gen()
+        `when`("logging in") {
+            and("it was successful") {
+                coEvery {
+                    vrtTokenUseCase.performLogin(username, password)
+                } returns Unit.right()
 
-                                                               val stringGen = Arb.string(1)
-                                                               val username = stringGen.gen()
-                                                               val password = stringGen.gen()
-                                                               `when`("logging in") {
-                                                                   and("it was successful") {
-                                                                       coEvery {
-                                                                           vrtTokenUseCase.performLogin(username, password)
-                                                                       } returns Unit.right()
+                sut.login(username, password)
 
-                                                                       sut.login(username, password)
+                then("it should have navigated to the next screen") {
+                    coVerify { authenticationNavigator.navigateNext() }
+                }
 
-                                                                       then("it should have navigated to the next screen") {
-                                                                           coVerify { authenticationNavigator.navigateNext() }
-                                                                       }
+                then("it should have updated the authentication state") {
+                    verify {
+                        authenticationState.updateAuthenticationState(
+                            AuthenticationState.Brand.VRT,
+                            AuthenticationState.Type.LOGGED_IN)
+                    }
+                }
+            }
 
-                                                                       then("it should have updated the authentication state") {
-                                                                           verify {
-                                                                               authenticationState.updateAuthenticationState(
-                                                                                   AuthenticationState.Brand.VRT,
-                                                                                   AuthenticationState.Type.LOGGED_IN)
-                                                                           }
-                                                                       }
-                                                                   }
+            and("it was not successful") {
+                val errorMessage = errorMessageArb.gen()
+                coEvery {
+                    vrtTokenUseCase.performLogin(username, password)
+                } returns errorMessage.left()
 
-                                                                   and("it was not successful") {
-                                                                       val errorMessage = errorMessageArb.gen()
-                                                                       coEvery {
-                                                                           vrtTokenUseCase.performLogin(username, password)
-                                                                       } returns errorMessage.left()
+                sut.login(username, password)
 
-                                                                       sut.login(username, password)
+                then("it should have updated the state") {
+                    verify {
+                        authenticationNavigator.navigateToErrorScreen(
+                            errorMessage)
+                    }
+                }
+            }
+        }
 
-                                                                       then("it should have updated the state") {
-                                                                           verify {
-                                                                               authenticationNavigator.navigateToErrorScreen(
-                                                                                   errorMessage)
-                                                                           }
-                                                                       }
-                                                                   }
-                                                               }
+        `when`("skipping") {
+            sut.next()
 
-                                                               `when`("skipping") {
-                                                                   sut.next()
+            then("it should navigate to the next screen") {
+                coVerify { authenticationNavigator.navigateNext() }
+            }
 
-                                                                   then("it should navigate to the next screen") {
-                                                                       coVerify { authenticationNavigator.navigateNext() }
-                                                                   }
-
-                                                                   then("it should have set the authentication state") {
-                                                                       verify {
-                                                                           authenticationState.updateAuthenticationState(
-                                                                               AuthenticationState.Brand.VRT,
-                                                                               AuthenticationState.Type.SKIPPED)
-                                                                       }
-                                                                   }
-                                                               }
-                                                           }
-                                                       })
+            then("it should have set the authentication state") {
+                verify {
+                    authenticationState.updateAuthenticationState(
+                        AuthenticationState.Brand.VRT,
+                        AuthenticationState.Type.SKIPPED)
+                }
+            }
+        }
+    }
+})
 
