@@ -57,7 +57,6 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
                 GuidedAction
                     .Builder(requireContext())
                     .id(EMAIL_FIELD)
-                    .editable(true)
                     .title(R.string.auth_flow_email)
                     .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or InputType.TYPE_CLASS_TEXT)
                     .descriptionEditable(true)
@@ -65,11 +64,9 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
                 GuidedAction
                     .Builder(requireContext())
                     .id(PASSWORD_FIELD)
-                    .editable(true)
                     .title(R.string.auth_flow_password)
-                    .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT or InputType.TYPE_MASK_VARIATION)
+                    .descriptionInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
                     .descriptionEditable(true)
-                    .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
                     .build()
             )
         )
