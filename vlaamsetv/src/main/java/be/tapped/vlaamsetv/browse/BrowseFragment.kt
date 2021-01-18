@@ -2,61 +2,43 @@ package be.tapped.vlaamsetv.browse
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.PageRow
-import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.lifecycleScope
-import be.tapped.vlaamsetv.R
-import be.tapped.vrtnu.content.Program
 import be.tapped.vrtnu.content.VRTApi
-import coil.load
 import kotlinx.coroutines.launch
 import androidx.leanback.widget.VerticalGridPresenter
+import be.tapped.vlaamsetv.browse.presenter.Item
+import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 
-class VRTAZFragment :
-    VerticalGridSupportFragment(),
-    BrowseSupportFragment.MainFragmentAdapterProvider {
+class VRTAZFragment : VerticalGridSupportFragment(),
+                      BrowseSupportFragment.MainFragmentAdapterProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gridPresenter = VerticalGridPresenter().apply {
             numberOfColumns = 5
         }
-        val arrayAdapter = ArrayObjectAdapter(object : Presenter() {
-            override fun onCreateViewHolder(parent: ViewGroup): ViewHolder = ViewHolder(ImageCardView(requireContext()))
-
-            override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-                val program = item as Program
-                with(viewHolder.view as ImageCardView) {
-                    titleText = program.title
-                    contentText = program.description
-                    val width: Int = resources.getDimensionPixelSize(R.dimen.card_width)
-                    val height: Int = resources.getDimensionPixelSize(R.dimen.card_height)
-                    setMainImageDimensions(width, height)
-                    mainImageView.load(program.thumbnail)
-                }
-            }
-
-            override fun onUnbindViewHolder(viewHolder: ViewHolder?) {
-
-            }
-        })
+        val arrayAdapter = ArrayObjectAdapter(PresenterSelector())
         adapter = arrayAdapter
 
         val vrtApi = VRTApi()
         lifecycleScope.launch {
             val vrtPrograms = vrtApi.fetchAZPrograms().orNull()?.programs ?: emptyList()
-
-            vrtPrograms.forEach(arrayAdapter::add)
+            vrtPrograms.map {
+                Item.ImageCard(
+                    it.title,
+                    it.description,
+                    it.thumbnail
+                )
+            }.forEach(arrayAdapter::add)
         }
     }
 
