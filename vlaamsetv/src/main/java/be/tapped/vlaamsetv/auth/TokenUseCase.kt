@@ -18,18 +18,6 @@ import be.tapped.vtmgo.profile.AuthenticationRepo
 
 interface TokenUseCase {
 
-    fun checkPreconditions(username: String, password: String): Either<ErrorMessage, Unit> {
-        if (username.isBlank()) {
-            return ErrorMessage(R.string.failure_generic_no_email).left()
-        }
-
-        if (password.isBlank()) {
-            return ErrorMessage(R.string.failure_generic_no_password).left()
-        }
-
-        return Unit.right()
-    }
-
     suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit>
 
     suspend fun refresh(): Either<ErrorMessage, Boolean>
@@ -44,7 +32,6 @@ class VRTTokenUseCase(
 ) : TokenUseCase {
 
     override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
-        !checkPreconditions(username, password)
         val tokenWrapperWithXVRTToken =
             either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
                 parMapN({ !tokenRepo.fetchTokenWrapper(username, password) },
@@ -85,7 +72,6 @@ class VTMTokenUseCase(
 ) : TokenUseCase {
 
     override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
-        !checkPreconditions(username, password)
         !when (val jwt = authenticationRepo.login(username, password)) {
             is Either.Left -> vtmErrorMessageConverter.mapToHumanReadableError(jwt.a).left()
             is Either.Right -> {
@@ -112,7 +98,6 @@ class VIERTokenUseCase(
 ) : TokenUseCase {
 
     override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
-        !checkPreconditions(username, password)
         !when (val token = profileRepo.fetchTokens(username, password)) {
             is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(token.a).left()
             is Either.Right -> {

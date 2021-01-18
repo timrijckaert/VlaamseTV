@@ -38,18 +38,6 @@ class VIERTokenUseCaseTest : BehaviorSpec({
         val password = stringGen.gen()
 
         `when`("logging in") {
-            and("you provide empty credentials") {
-                val result = sut.performLogin("", "")
-
-                then("it should return with an error message") {
-                    result shouldBe ErrorMessage(R.string.failure_generic_no_email).left()
-                }
-
-                then("it should not make a call") {
-                    coVerify(exactly = 0) { profileRepo.fetchTokens("", "") }
-                }
-            }
-
             and("it fails") {
                 coEvery {
                     profileRepo.fetchTokens(username, password)

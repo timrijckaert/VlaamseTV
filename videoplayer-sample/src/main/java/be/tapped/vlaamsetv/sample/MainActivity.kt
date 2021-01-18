@@ -26,7 +26,8 @@ public class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
             "UHD DASH - Widevine",
             VideoItem(
                 "https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears_uhd.mpd",
-                VideoItem.Drm(
+                "UHD DASH - Widevine",
+                drm = VideoItem.Drm(
                     "https://proxy.uat.widevine.com/proxy?provider=widevine_test",
                     VideoItem.Drm.DrmType.WIDEVINE,
                 ),
@@ -34,13 +35,17 @@ public class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         ),
         SampleVideoItem(
             "Clear UHD",
-            VideoItem("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd")
+            VideoItem(
+                "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd",
+                "Clear UHD"
+            )
         ),
         SampleVideoItem(
             "4K (MP4, H264, Widevine cenc)",
             VideoItem(
                 "https://storage.googleapis.com/exoplayer-test-media-1/60fps/bbb-wv-2160/manifest.mpd",
-                VideoItem.Drm(
+                "4K (MP4, H264, Widevine cenc)",
+                drm = VideoItem.Drm(
                     "https://proxy.uat.widevine.com/proxy?provider=widevine_test",
                     VideoItem.Drm.DrmType.WIDEVINE,
                 )
@@ -50,8 +55,8 @@ public class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
             "Subtitles",
             VideoItem(
                 "https://html5demos.com/assets/dizzy.mp4",
-                subtitles =
-                listOf(
+                "Subtitles",
+                subtitles = listOf(
                     VideoItem.Subtitle(
                         "https://storage.googleapis.com/exoplayer-test-media-1/webvtt/numeric-lines.vtt",
                         "text/vtt",

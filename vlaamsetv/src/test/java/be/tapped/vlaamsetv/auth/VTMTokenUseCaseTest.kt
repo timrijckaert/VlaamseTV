@@ -2,9 +2,7 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
-import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
-import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 import be.tapped.vlaamsetv.credentialsArb
 import be.tapped.vlaamsetv.errorMessageArb
@@ -38,18 +36,6 @@ class VTMTokenUseCaseTest : BehaviorSpec({
         val username = stringGen.gen()
         val password = stringGen.gen()
         `when`("logging in") {
-            and("provided empty credentials") {
-                val result = sut.performLogin("", "")
-
-                then("it should return with an error message") {
-                    result shouldBe ErrorMessage(R.string.failure_generic_no_email).left()
-                }
-
-                then("it should not make a call") {
-                    coVerify(exactly = 0) { profileRepo.login("", "") }
-                }
-            }
-
             and("it was successful") {
                 val token = vtmTokenWrapperArb.gen()
                 coEvery {
