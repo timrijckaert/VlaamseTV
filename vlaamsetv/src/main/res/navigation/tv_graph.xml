@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_mainFragment_to_playbackActivity"
             app:destination="@id/playbackActivity" />
+        <action
+            android:id="@+id/action_mainFragment_to_browseActivity"
+            app:destination="@id/browseActivity" />
     </fragment>
 
     <activity
@@ -34,5 +37,9 @@
             android:name="videoItem"
             app:argType="be.tapped.vlaamsetv.VideoItem" />
     </activity>
+    <activity
+        android:id="@+id/browseActivity"
+        android:name="be.tapped.vlaamsetv.browse.BrowseActivity"
+        android:label="BrowseActivity" />
 
 </navigation>

@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import be.tapped.vlaamsetv.auth.AuthenticationNavigation
 import be.tapped.vlaamsetv.auth.AuthenticationNavigationConfiguration
 import be.tapped.vlaamsetv.auth.prefs.TokenStorage
+import be.tapped.vlaamsetv.browse.BrowseNavigation
 import be.tapped.vlaamsetv.playback.PlaybackNavigation
 
 interface RootNavigator {
@@ -16,7 +17,7 @@ interface RootNavigator {
             override suspend fun moveToStartDestination() {
                 val hasCredentialsForAtLeastOneBrand = tokenStorage.hasCredentialsForAtLeastOneBrand()
                 if (hasCredentialsForAtLeastOneBrand) {
-
+                    navigator.navigateToBrowseContent()
                     // Test Leanback playback
                     // navigator.navigateToPlayback(
                     //     VideoItem(
@@ -41,7 +42,8 @@ interface RootNavigator {
 }
 
 class Navigator(private val navController: NavController) : AuthenticationNavigation,
-                                                            PlaybackNavigation {
+                                                            PlaybackNavigation,
+                                                            BrowseNavigation {
 
     override fun navigateToAuthenticationFlow(config: Array<AuthenticationNavigationConfiguration>) {
         navController.navigate(MainFragmentDirections.actionMainFragmentToAuthenticationFlowTv(config))
@@ -49,5 +51,9 @@ class Navigator(private val navController: NavController) : AuthenticationNaviga
 
     override fun navigateToPlayback(videoItem: VideoItem) {
         navController.navigate(MainFragmentDirections.actionMainFragmentToPlaybackActivity(videoItem))
+    }
+
+    override fun navigateToBrowseContent() {
+        navController.navigate(MainFragmentDirections.actionMainFragmentToBrowseActivity())
     }
 }

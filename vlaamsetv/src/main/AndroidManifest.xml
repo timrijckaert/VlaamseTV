@@ -34,6 +34,10 @@
             android:theme="@style/Theme.TV.VlaamseTV" />
 
         <activity
+            android:name=".browse.BrowseActivity"
+            android:theme="@style/Theme.TV.VlaamseTV" />
+
+        <activity
             android:name=".playback.PlaybackActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTask"
