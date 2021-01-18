@@ -11,6 +11,7 @@ import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.PlayerManager
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.VideoPlayerTVFragment
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PlaybackActivity : FragmentActivity(R.layout.activity_tv_playback) {
