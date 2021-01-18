@@ -42,7 +42,7 @@ class VRTAZFragment :
                     val width: Int = resources.getDimensionPixelSize(R.dimen.card_width)
                     val height: Int = resources.getDimensionPixelSize(R.dimen.card_height)
                     setMainImageDimensions(width, height)
-                    mainImageView.load("https:${program.thumbnail}")
+                    mainImageView.load(program.thumbnail)
                 }
             }
 
