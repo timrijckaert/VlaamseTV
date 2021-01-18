@@ -20,17 +20,18 @@ import be.tapped.vrtnu.content.Program
 import be.tapped.vrtnu.content.VRTApi
 import coil.load
 import kotlinx.coroutines.launch
-import androidx.leanback.widget.VerticalGridPresenter as VerticalGridPresenter1
+import androidx.leanback.widget.VerticalGridPresenter
 
-class SomeFragment : VerticalGridSupportFragment(),
-                     BrowseSupportFragment.MainFragmentAdapterProvider {
+class VRTAZFragment :
+    VerticalGridSupportFragment(),
+    BrowseSupportFragment.MainFragmentAdapterProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val myGridPresenter = VerticalGridPresenter1()
-        myGridPresenter.numberOfColumns = 5
-        gridPresenter = myGridPresenter
-        val vrtAZProgramsObjectAdapter = ArrayObjectAdapter(object : Presenter() {
+        gridPresenter = VerticalGridPresenter().apply {
+            numberOfColumns = 5
+        }
+        val arrayAdapter = ArrayObjectAdapter(object : Presenter() {
             override fun onCreateViewHolder(parent: ViewGroup): ViewHolder = ViewHolder(ImageCardView(requireContext()))
 
             override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
@@ -49,16 +50,14 @@ class SomeFragment : VerticalGridSupportFragment(),
 
             }
         })
-        adapter = vrtAZProgramsObjectAdapter
+        adapter = arrayAdapter
+
         val vrtApi = VRTApi()
         lifecycleScope.launch {
             val vrtPrograms = vrtApi.fetchAZPrograms().orNull()?.programs ?: emptyList()
 
-            vrtPrograms.forEach {
-                vrtAZProgramsObjectAdapter.add(it)
-            }
+            vrtPrograms.forEach(arrayAdapter::add)
         }
-
     }
 
     override fun getMainFragmentAdapter(): BrowseSupportFragment.MainFragmentAdapter<*> =
@@ -67,30 +66,26 @@ class SomeFragment : VerticalGridSupportFragment(),
 
 class BrowseFragment : BrowseSupportFragment() {
 
-    private lateinit var mCategoryRowAdapter: ArrayObjectAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainFragmentRegistry.registerFragment(PageRow::class.java, object : BrowseSupportFragment.FragmentFactory<Fragment>() {
-            override fun createFragment(row: Any?): Fragment {
-                return SomeFragment()
-            }
-        })
+        mainFragmentRegistry.registerFragment(
+            PageRow::class.java,
+            object : BrowseSupportFragment.FragmentFactory<Fragment>() {
+                override fun createFragment(row: Any?): Fragment = VRTAZFragment()
+            },
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareEntranceTransition()
-        mCategoryRowAdapter = ArrayObjectAdapter(ListRowPresenter())
-        adapter = mCategoryRowAdapter
+        adapter = ArrayObjectAdapter(ListRowPresenter()).apply {
+            val vrtSection = SectionRow(HeaderItem("VRT NU"))
+            val vrtAZPrograms = PageRow(HeaderItem(0L, "AZ"))
+            val divider = DividerRow()
 
-        val vrtSection = SectionRow(HeaderItem("VRT NU"))
-
-        val vrtAZPrograms = PageRow(HeaderItem(0L, "AZ"))
-
-        val divider = DividerRow()
-
-        mCategoryRowAdapter.addAll(0, listOf(vrtSection, vrtAZPrograms, divider))
+            addAll(0, listOf(vrtSection, vrtAZPrograms, divider))
+        }
     }
 }
 
