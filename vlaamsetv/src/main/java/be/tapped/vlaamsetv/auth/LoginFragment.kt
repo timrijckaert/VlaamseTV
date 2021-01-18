@@ -75,7 +75,11 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
     override fun onCreateButtonActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         actions.addAll(
             listOf(
-                GuidedAction.Builder(context).id(LOGIN_BUTTON).title(R.string.auth_flow_login).build(),
+                GuidedAction.Builder(context)
+                    .enabled(false)
+                    .id(LOGIN_BUTTON)
+                    .title(R.string.auth_flow_login)
+                    .build(),
                 GuidedAction
                     .Builder(context)
                     .id(SECONDARY_BUTTON)
@@ -95,14 +99,22 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
         }
     }
 
-    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long = when (action.id) {
-        EMAIL_FIELD -> PASSWORD_FIELD
-        PASSWORD_FIELD -> if (hasCredentials) {
-            LOGIN_BUTTON
-        } else {
-            SECONDARY_BUTTON
+    override fun onGuidedActionEditedAndProceed(action: GuidedAction): Long {
+        enableOrDisableLoginField()
+        return when (action.id) {
+            EMAIL_FIELD -> PASSWORD_FIELD
+            PASSWORD_FIELD -> if (hasCredentials) {
+                LOGIN_BUTTON
+            } else {
+                SECONDARY_BUTTON
+            }
+            else           -> super.onGuidedActionEditedAndProceed(action)
         }
-        else           -> super.onGuidedActionEditedAndProceed(action)
+    }
+
+    private fun enableOrDisableLoginField() {
+        findButtonActionById(LOGIN_BUTTON).isEnabled = email.isNotBlank() && password.isNotBlank()
+        notifyButtonActionChanged(findButtonActionPositionById(LOGIN_BUTTON))
     }
 }
 

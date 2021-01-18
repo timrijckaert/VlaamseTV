@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class VideoItem(
     val url: String,
     val title: String,
-    val subtitle: String,
+    val subtitle: String? = null,
     val art: String? = null,
     val drm: Drm? = null,
     val subtitles: List<Subtitle> = emptyList(),
