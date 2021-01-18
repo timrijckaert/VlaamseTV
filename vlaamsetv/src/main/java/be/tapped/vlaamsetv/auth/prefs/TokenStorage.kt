@@ -5,10 +5,12 @@ import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 
-interface TokenStorage { enum class Brand { VRT,
-    VTM,
-    VIER,
-}
+interface TokenStorage {
+    enum class Brand {
+        VRT,
+        VTM,
+        VIER,
+    }
 
     suspend fun hasCredentialsForAtLeastOneBrand(): Boolean
 
@@ -23,8 +25,8 @@ class CompositeTokenStorage(
 
     override suspend fun hasCredentialsForAtLeastOneBrand(): Boolean {
         val (hasVrtCredentials, hasVtmCredentials, hasVierCredentials) = parTupledN({ vrtTokenStore.vrtCredentials() != null },
-                                                                                    { vtmTokenStore.vtmCredentials() != null },
-                                                                                    { vierTokenStore.vierCredentials() != null })
+            { vtmTokenStore.vtmCredentials() != null },
+            { vierTokenStore.vierCredentials() != null })
         return hasVrtCredentials || hasVtmCredentials || hasVierCredentials
     }
 

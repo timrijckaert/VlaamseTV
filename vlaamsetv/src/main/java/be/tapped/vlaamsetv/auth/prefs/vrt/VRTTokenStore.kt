@@ -64,8 +64,8 @@ class VRTTokenStoreImpl(context: Context, crypto: Crypto) : VRTTokenStore {
     override suspend fun saveTokenWrapper(tokenWrapper: TokenWrapper) {
         vrtnuTokenDataStore.updateData {
             it.copy(accessToken = tokenWrapper.accessToken.token,
-                    refreshToken = tokenWrapper.refreshToken.token,
-                    expiry = tokenWrapper.expiry.dateInMillis)
+                refreshToken = tokenWrapper.refreshToken.token,
+                expiry = tokenWrapper.expiry.dateInMillis)
         }
     }
 

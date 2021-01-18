@@ -21,8 +21,8 @@ class VRTTokenStoreImplTest {
 
     private val crypto
         get() = CryptoImpl(AesCipherProvider("keyName",
-                                             KeyStore.getInstance("AndroidKeyStore").apply { load(null) },
-                                             "AndroidKeyStore"))
+            KeyStore.getInstance("AndroidKeyStore").apply { load(null) },
+            "AndroidKeyStore"))
 
     private val app get() = ApplicationProvider.getApplicationContext<App>()
     private val vrtnuTokenStore = VRTTokenStoreImpl(app, crypto)

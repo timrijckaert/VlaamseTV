@@ -103,17 +103,24 @@ interface AuthenticationNavigator { sealed class Screen { data class VRT(val isL
             }
 
             private fun navigateToScreen(newValue: IndexedScreen) = when (val screen = newValue.second) {
-                is Screen.VRT -> navController.navigate(R.id.action_to_vrt_login_fragment,
-                                                        VRTLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle())
-                is Screen.VTM -> navController.navigate(R.id.action_to_vtm_login_fragment,
-                                                        VTMLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle())
-                is Screen.VIER -> navController.navigate(R.id.action_to_vier_login_fragment,
-                                                         VIERLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle())
-                Screen.End -> {
-                    activity.finishAfterTransition()
-                }
+                is Screen.VRT ->
+                    navController.navigate(
+                        R.id.action_to_vrt_login_fragment,
+                        VRTLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                    )
+                is Screen.VTM ->
+                    navController.navigate(
+                        R.id.action_to_vtm_login_fragment,
+                        VTMLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                    )
+                is Screen.VIER ->
+                    navController.navigate(
+                        R.id.action_to_vier_login_fragment,
+                        VIERLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                    )
+                Screen.End -> activity.finishAfterTransition()
                 is Screen.ErrorDialog -> navController.navigate(R.id.action_to_authenticationFailedDialog,
-                                                                AuthenticationFailedDialogArgs(screen.errorMessage).toBundle())
+                    AuthenticationFailedDialogArgs(screen.errorMessage).toBundle())
             }.exhaustive
         }
     }

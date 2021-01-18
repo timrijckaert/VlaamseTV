@@ -48,8 +48,8 @@ class VRTTokenUseCase(
         val tokenWrapperWithXVRTToken =
             either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
                 parMapN({ !tokenRepo.fetchTokenWrapper(username, password) },
-                        { !tokenRepo.fetchXVRTToken(username, password) },
-                        ::Pair)
+                    { !tokenRepo.fetchXVRTToken(username, password) },
+                    ::Pair)
             }
         !when (tokenWrapperWithXVRTToken) {
             is Either.Left -> vrtErrorMessageConverter.mapToHumanReadableError(tokenWrapperWithXVRTToken.a).left()

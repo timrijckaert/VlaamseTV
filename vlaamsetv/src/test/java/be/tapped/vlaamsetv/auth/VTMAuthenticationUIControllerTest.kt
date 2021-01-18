@@ -42,7 +42,7 @@ class VTMAuthenticationUIControllerTest : BehaviorSpec() { init {
                 then("it should have updated the authentication state") {
                     verify {
                         authenticationState.updateAuthenticationState(AuthenticationState.Brand.VTM,
-                                                                      AuthenticationState.Type.LOGGED_IN)
+                            AuthenticationState.Type.LOGGED_IN)
                     }
                 }
             }

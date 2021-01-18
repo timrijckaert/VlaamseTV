@@ -31,8 +31,8 @@ internal class TokenStorageTest {
 
     private val crypto
         get() = CryptoImpl(AesCipherProvider("keyName",
-                                             KeyStore.getInstance("AndroidKeyStore").apply { load(null) },
-                                             "AndroidKeyStore"))
+            KeyStore.getInstance("AndroidKeyStore").apply { load(null) },
+            "AndroidKeyStore"))
 
     private val app get() = ApplicationProvider.getApplicationContext<App>()
     private val vrtnuTokenStore = VRTTokenStoreImpl(app, crypto)
@@ -68,8 +68,8 @@ internal class TokenStorageTest {
     fun shouldReturnFalseIfTokenIsNotExpiredForVRT() {
         runBlocking {
             vrtnuTokenStore.saveTokenWrapper(vrtTokenWrapperArb
-                                                 .gen()
-                                                 .copy(expiry = Expiry(System.currentTimeMillis() + ONE_HOUR)))
+                .gen()
+                .copy(expiry = Expiry(System.currentTimeMillis() + ONE_HOUR)))
             val isVRTTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VRT)
             isVRTTokenExpired shouldBe false
         }
@@ -79,8 +79,8 @@ internal class TokenStorageTest {
     fun shouldReturnTrueIfTokenIsExpiredForVRT() {
         runBlocking {
             vrtnuTokenStore.saveTokenWrapper(vrtTokenWrapperArb
-                                                 .gen()
-                                                 .copy(expiry = Expiry(System.currentTimeMillis() - ONE_HOUR)))
+                .gen()
+                .copy(expiry = Expiry(System.currentTimeMillis() - ONE_HOUR)))
             val isVRTTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VRT)
             isVRTTokenExpired shouldBe true
         }
@@ -90,8 +90,8 @@ internal class TokenStorageTest {
     fun shouldReturnFalseIfTokenIsNotExpiredForVTM() {
         runBlocking {
             vtmgoTokenStore.saveToken(vtmTokenWrapperArb
-                                          .gen()
-                                          .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() + ONE_HOUR)))
+                .gen()
+                .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() + ONE_HOUR)))
             val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VTM)
             isVTMTokenExpired shouldBe false
         }
@@ -101,8 +101,8 @@ internal class TokenStorageTest {
     fun shouldReturnTrueIfTokenIsExpiredForVTM() {
         runBlocking {
             vtmgoTokenStore.saveToken(vtmTokenWrapperArb
-                                          .gen()
-                                          .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() - ONE_HOUR)))
+                .gen()
+                .copy(expiry = be.tapped.vtmgo.profile.Expiry(System.currentTimeMillis() - ONE_HOUR)))
             val isVTMTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VTM)
             isVTMTokenExpired shouldBe true
         }
@@ -112,8 +112,8 @@ internal class TokenStorageTest {
     fun shouldReturnFalseIfTokenIsNotExpiredForVIER() {
         runBlocking {
             vierTokenStore.saveToken(vierTokenArb
-                                         .gen()
-                                         .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() + ONE_HOUR)))
+                .gen()
+                .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() + ONE_HOUR)))
             val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VIER)
             isVIERTokenExpired shouldBe false
         }
@@ -123,8 +123,8 @@ internal class TokenStorageTest {
     fun shouldReturnTrueIfTokenIsExpiredForVIER() {
         runBlocking {
             vierTokenStore.saveToken(vierTokenArb
-                                         .gen()
-                                         .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() - ONE_HOUR)))
+                .gen()
+                .copy(expiry = be.tapped.vier.profile.Expiry(System.currentTimeMillis() - ONE_HOUR)))
             val isVIERTokenExpired = encryptedDataStore.isTokenExpired(TokenStorage.Brand.VIER)
             isVIERTokenExpired shouldBe true
         }

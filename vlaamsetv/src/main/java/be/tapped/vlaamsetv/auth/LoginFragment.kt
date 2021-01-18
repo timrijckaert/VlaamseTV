@@ -47,39 +47,45 @@ abstract class LoginFragment(private val authenticationUIController: Authenticat
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance =
         GuidanceStylist.Guidance(getString(config.title),
-                                 getString(config.description),
-                                 getString(config.brand),
-                                 ContextCompat.getDrawable(requireContext(), config.icon))
+            getString(config.description),
+            getString(config.brand),
+            ContextCompat.getDrawable(requireContext(), config.icon))
 
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
-        actions.addAll(listOf(GuidedAction
-                                  .Builder(requireContext())
-                                  .id(EMAIL_FIELD)
-                                  .editable(true)
-                                  .title(R.string.auth_flow_email)
-                                  .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or InputType.TYPE_CLASS_TEXT)
-                                  .descriptionEditable(true)
-                                  .build(),
-                              GuidedAction
-                                  .Builder(requireContext())
-                                  .id(PASSWORD_FIELD)
-                                  .editable(true)
-                                  .title(R.string.auth_flow_password)
-                                  .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT or InputType.TYPE_MASK_VARIATION)
-                                  .descriptionEditable(true)
-                                  .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                                  .build()))
+        actions.addAll(
+            listOf(
+                GuidedAction
+                    .Builder(requireContext())
+                    .id(EMAIL_FIELD)
+                    .editable(true)
+                    .title(R.string.auth_flow_email)
+                    .editInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or InputType.TYPE_CLASS_TEXT)
+                    .descriptionEditable(true)
+                    .build(),
+                GuidedAction
+                    .Builder(requireContext())
+                    .id(PASSWORD_FIELD)
+                    .editable(true)
+                    .title(R.string.auth_flow_password)
+                    .editInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT or InputType.TYPE_MASK_VARIATION)
+                    .descriptionEditable(true)
+                    .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                    .build()
+            )
+        )
     }
 
     override fun onCreateButtonActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
-        actions.addAll(listOf(
-            GuidedAction.Builder(context).id(LOGIN_BUTTON).title(R.string.auth_flow_login).build(),
-            GuidedAction
-                .Builder(context)
-                .id(SECONDARY_BUTTON)
-                .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_next)
-                .build(),
-        ))
+        actions.addAll(
+            listOf(
+                GuidedAction.Builder(context).id(LOGIN_BUTTON).title(R.string.auth_flow_login).build(),
+                GuidedAction
+                    .Builder(context)
+                    .id(SECONDARY_BUTTON)
+                    .title(if (config.isLastScreen) R.string.auth_flow_finish else R.string.auth_flow_next)
+                    .build(),
+            )
+        )
     }
 
     override fun onGuidedActionClicked(action: GuidedAction) {
