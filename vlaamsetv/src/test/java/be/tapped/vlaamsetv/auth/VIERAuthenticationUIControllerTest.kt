@@ -39,8 +39,10 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
 
                 then("it should have updated the authentication state") {
                     verify {
-                        authenticationState.updateAuthenticationState(AuthenticationState.Brand.VIER,
-                                                                      AuthenticationState.Type.LOGGED_IN)
+                        authenticationState.updateAuthenticationState(
+                            AuthenticationState.Brand.VIER,
+                            AuthenticationState.Type.LOGGED_IN
+                        )
                     }
                 }
             }
@@ -69,7 +71,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
             then("it should have set the authentication state") {
                 verify {
                     authenticationState.updateAuthenticationState(AuthenticationState.Brand.VIER,
-                                                                  AuthenticationState.Type.SKIPPED)
+                        AuthenticationState.Type.SKIPPED)
                 }
             }
         }

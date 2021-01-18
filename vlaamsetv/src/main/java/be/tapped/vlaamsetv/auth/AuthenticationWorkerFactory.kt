@@ -22,24 +22,30 @@ object AuthenticationWorkerFactory : WorkerFactory() {
     ): ListenableWorker? {
         val tokenRefreshWorkScheduler = TokenRefreshWorkScheduler(WorkManager.getInstance(appContext))
         return when (workerClassName) {
-            VRTTokenRefreshWorker::class.java.name -> VRTTokenRefreshWorker(appContext,
-                                                                            workerParameters,
-                                                                            VRTTokenUseCase(ProfileRepo(),
-                                                                                            (appContext as App).vrtTokenStore,
-                                                                                            VRTErrorMessageConverter(),
-                                                                                            tokenRefreshWorkScheduler))
-            VTMTokenRefreshWorker::class.java.name -> VTMTokenRefreshWorker(appContext,
-                                                                            workerParameters,
-                                                                            VTMTokenUseCase(HttpAuthenticationRepo(),
-                                                                                            (appContext as App).vtmTokenStore,
-                                                                                            VTMErrorMessageConverter(),
-                                                                                            tokenRefreshWorkScheduler))
-            VIERTokenRefreshWorker::class.java.name -> VIERTokenRefreshWorker(appContext,
-                                                                              workerParameters,
-                                                                              VIERTokenUseCase(HttpProfileRepo(),
-                                                                                               (appContext as App).vierTokenStore,
-                                                                                               VIERErrorMessageConverter(),
-                                                                                               tokenRefreshWorkScheduler))
+            VRTTokenRefreshWorker::class.java.name ->
+                VRTTokenRefreshWorker(appContext,
+                    workerParameters,
+                    VRTTokenUseCase(ProfileRepo(),
+                        (appContext as App).vrtTokenStore,
+                        VRTErrorMessageConverter(),
+                        tokenRefreshWorkScheduler)
+                )
+            VTMTokenRefreshWorker::class.java.name ->
+                VTMTokenRefreshWorker(appContext,
+                    workerParameters,
+                    VTMTokenUseCase(HttpAuthenticationRepo(),
+                        (appContext as App).vtmTokenStore,
+                        VTMErrorMessageConverter(),
+                        tokenRefreshWorkScheduler)
+                )
+            VIERTokenRefreshWorker::class.java.name ->
+                VIERTokenRefreshWorker(appContext,
+                    workerParameters,
+                    VIERTokenUseCase(HttpProfileRepo(),
+                        (appContext as App).vierTokenStore,
+                        VIERErrorMessageConverter(),
+                        tokenRefreshWorkScheduler)
+                )
             else                                    -> null
         }
     }

@@ -127,9 +127,9 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         bitrateEstimate: Long,
     ) {
         sendChannel.safeOffer(VideoEvent.Analytics.BandwidthEstimate(eventTime,
-                                                                     totalLoadTimeMs,
-                                                                     totalBytesLoaded,
-                                                                     bitrateEstimate))
+            totalLoadTimeMs,
+            totalBytesLoaded,
+            bitrateEstimate))
     }
 
     override fun onMetadata(eventTime: AnalyticsListener.EventTime, metadata: Metadata) {
@@ -229,10 +229,10 @@ internal class DelegatingAnalyticsListener(private val sendChannel: SendChannel<
         pixelWidthHeightRatio: Float,
     ) {
         sendChannel.safeOffer(VideoEvent.Analytics.VideoSizeChanged(eventTime,
-                                                                    width,
-                                                                    height,
-                                                                    unappliedRotationDegrees,
-                                                                    pixelWidthHeightRatio))
+            width,
+            height,
+            unappliedRotationDegrees,
+            pixelWidthHeightRatio))
     }
 
     override fun onSurfaceSizeChanged(eventTime: AnalyticsListener.EventTime, width: Int, height: Int) {

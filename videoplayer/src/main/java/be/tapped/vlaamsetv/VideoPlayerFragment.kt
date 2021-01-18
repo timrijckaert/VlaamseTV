@@ -99,9 +99,9 @@ public class VideoPlayerFragment : Fragment(R.layout.fragment_video) {
         val mediaItem = MediaItem.Builder().setUri(videoItem.url).apply {
             videoItem.drm?.let {
                 setDrmUuid(when (it.type) {
-                               VideoItem.Drm.DrmType.WIDEVINE  -> C.WIDEVINE_UUID
-                               VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
-                           })
+                    VideoItem.Drm.DrmType.WIDEVINE  -> C.WIDEVINE_UUID
+                    VideoItem.Drm.DrmType.PLAYREADY -> C.PLAYREADY_UUID
+                })
                 setDrmLicenseUri(it.licenseUrl)
             }
 
