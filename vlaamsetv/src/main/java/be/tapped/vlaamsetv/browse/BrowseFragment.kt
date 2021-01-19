@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
@@ -13,20 +12,13 @@ import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
-import androidx.leanback.widget.VerticalGridPresenter
 import androidx.lifecycle.lifecycleScope
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
-import be.tapped.vlaamsetv.browse.vrt.ProgramMapper
 import be.tapped.vlaamsetv.browse.vrt.VRTAZFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
-import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCase
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
-import be.tapped.vrtnu.content.DefaultScreenshotRepo
-import be.tapped.vrtnu.content.LiveStreams
-import be.tapped.vrtnu.content.ScreenshotRepo
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
@@ -34,10 +26,7 @@ import java.lang.IllegalArgumentException
 class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseSupportFragment() {
 
     private val vrtBrowseUseCase = VRTBrowseUseCase(
-        VRTNUAZUseCaseImpl(
-            VRTApi(),
-            ProgramMapper(),
-        ),
+        VRTNUAZUseCaseImpl(VRTApi()),
         LiveTVUseCaseImpl(),
     )
 
