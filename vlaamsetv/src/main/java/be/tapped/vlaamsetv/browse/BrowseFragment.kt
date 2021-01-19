@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
+import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.ProgramMapper
 import be.tapped.vlaamsetv.browse.vrt.VRTAZFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
@@ -28,19 +29,32 @@ import be.tapped.vrtnu.content.LiveStreams
 import be.tapped.vrtnu.content.ScreenshotRepo
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch
-
-
+import java.lang.IllegalArgumentException
 
 class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseSupportFragment() {
+
+    private val vrtBrowseUseCase = VRTBrowseUseCase(
+        VRTNUAZUseCaseImpl(
+            VRTApi(),
+            ProgramMapper(),
+        ),
+        LiveTVUseCaseImpl(),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainFragmentRegistry.registerFragment(
             PageRow::class.java,
             object : BrowseSupportFragment.FragmentFactory<Fragment>() {
-                override fun createFragment(row: Any?): Fragment {
-                    return VRTAZFragment(backgroundManager, VRTBrowseUseCase(VRTNUAZUseCaseImpl(VRTApi(), ProgramMapper())))
-                }
+                override fun createFragment(row: Any?): Fragment =
+                    when (val id = (row as PageRow).id) {
+                        1L   ->
+                            VRTAZFragment(
+                                backgroundManager,
+                                vrtBrowseUseCase,
+                            )
+                        else -> throw IllegalArgumentException("Could not construct Browse Fragment for PageRow id: $id")
+                    }
             },
         )
     }
@@ -48,35 +62,21 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareEntranceTransition()
-        adapter = ArrayObjectAdapter(ListRowPresenter()).apply {
-            val vrtSection = SectionRow(HeaderItem(view.context.getString(R.string.vrt_nu_name)))
+        lifecycleScope.launch {
+            adapter = ArrayObjectAdapter(ListRowPresenter()).apply {
+                val vrtSection = SectionRow(HeaderItem(view.context.getString(R.string.vrt_nu_name)))
 
-            val liveStreamObjectAdapter = ArrayObjectAdapter(PresenterSelector()).apply {
-                LiveStreams.allLiveStreams.forEachIndexed { index, it ->
-                    val screenGrab = when (it.brand) {
-                        LiveStreams.LiveStream.Brand.EEN -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.EEN)
-                        LiveStreams.LiveStream.Brand.CANVAS -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.CANVAS)
-                        LiveStreams.LiveStream.Brand.KETNET -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.KETNET)
-                        LiveStreams.LiveStream.Brand.KETNET_JUNIOR,
-                        LiveStreams.LiveStream.Brand.SPORZA,
-                        LiveStreams.LiveStream.Brand.VRT_NWS,
-                        LiveStreams.LiveStream.Brand.RADIO_1,
-                        LiveStreams.LiveStream.Brand.RADIO_2,
-                        LiveStreams.LiveStream.Brand.KLARA,
-                        LiveStreams.LiveStream.Brand.STUDIO_BRUSSEL,
-                        LiveStreams.LiveStream.Brand.MNM,
-                        LiveStreams.LiveStream.Brand.VRT_NXT,
-                        -> null
-                    }
-                    add(Item.ImageCard(index, it.name, imageViewUrl = screenGrab))
+                val liveStreamObjectAdapter = ArrayObjectAdapter(PresenterSelector()).apply {
+                    addAll(0, vrtBrowseUseCase.liveStreams())
                 }
+
+                val vrtLiveStreams =
+                    ListRow(HeaderItem(0L, view.context.getString(R.string.vrt_nu_live_tv)), liveStreamObjectAdapter)
+                val vrtAZPrograms = PageRow(HeaderItem(1L, view.context.getString(R.string.vrt_nu_all_programs)))
+                val divider = DividerRow()
+
+                addAll(0, listOf(vrtSection, vrtLiveStreams, vrtAZPrograms, divider))
             }
-
-            val vrtLiveStreams = ListRow(HeaderItem(0L, "Live TV"), liveStreamObjectAdapter)
-            val vrtAZPrograms = PageRow(HeaderItem(1L, "All Programs"))
-            val divider = DividerRow()
-
-            addAll(0, listOf(vrtSection, vrtLiveStreams, vrtAZPrograms, divider))
         }
     }
 }

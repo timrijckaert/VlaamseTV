@@ -12,7 +12,7 @@ sealed class Item {
         val title: String? = null,
         val description: String? = null,
         @DrawableRes val infoAreaBackground: Int? = null,
-        @ColorRes val infoAreaBackgroundColor: Int? = null,
+        val infoAreaBackgroundColor: Int? = null,
         val imageViewUrl: String? = null,
         @DrawableRes val badgeImage: Int? = null,
     ) : Item()
