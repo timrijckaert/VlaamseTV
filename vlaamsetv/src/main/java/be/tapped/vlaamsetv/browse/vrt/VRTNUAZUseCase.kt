@@ -1,5 +1,6 @@
 package be.tapped.vlaamsetv.browse.vrt
 
+import android.widget.ImageView
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vrtnu.content.VRTApi
 
@@ -17,7 +18,8 @@ class VRTNUAZUseCaseImpl(private val vrtApi: VRTApi) : VRTNUAZUseCase {
                     index = index,
                     title = program.title,
                     description = program.description,
-                    imageViewUrl = program.thumbnail
+                    imageViewUrl = program.thumbnail,
+                    scaleType = ImageView.ScaleType.CENTER_CROP
                 )
             }
 }

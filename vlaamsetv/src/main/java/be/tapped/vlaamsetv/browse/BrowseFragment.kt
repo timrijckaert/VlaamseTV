@@ -13,16 +13,13 @@ import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.lifecycleScope
 import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.VRTAZFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
 import be.tapped.vlaamsetv.browse.vrt.VRTLiveFragment
-import be.tapped.vlaamsetv.browse.vrt.VRTLiveFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 
 class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseSupportFragment() {
 
