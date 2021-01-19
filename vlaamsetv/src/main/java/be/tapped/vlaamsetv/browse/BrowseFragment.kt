@@ -8,7 +8,6 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
@@ -18,6 +17,7 @@ import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.VRTAZFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
+import be.tapped.vlaamsetv.browse.vrt.VRTLiveFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch
@@ -37,14 +37,19 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
             object : BrowseSupportFragment.FragmentFactory<Fragment>() {
                 override fun createFragment(row: Any?): Fragment =
                     when (val id = (row as PageRow).id) {
-                        1L   ->
+                        0L ->
+                            VRTLiveFragment(
+                                backgroundManager,
+                                vrtBrowseUseCase
+                            )
+                        1L ->
                             VRTAZFragment(
                                 backgroundManager,
                                 vrtBrowseUseCase,
                             )
                         else -> throw IllegalArgumentException("Could not construct Browse Fragment for PageRow id: $id")
                     }
-            },
+            }
         )
     }
 
@@ -55,12 +60,7 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
             adapter = ArrayObjectAdapter(ListRowPresenter()).apply {
                 val vrtSection = SectionRow(HeaderItem(view.context.getString(R.string.vrt_nu_name)))
 
-                val liveStreamObjectAdapter = ArrayObjectAdapter(PresenterSelector()).apply {
-                    addAll(0, vrtBrowseUseCase.liveStreams())
-                }
-
-                val vrtLiveStreams =
-                    ListRow(HeaderItem(0L, view.context.getString(R.string.vrt_nu_live_tv)), liveStreamObjectAdapter)
+                val vrtLiveStreams = PageRow(HeaderItem(0L, view.context.getString(R.string.vrt_nu_live_tv)))
                 val vrtAZPrograms = PageRow(HeaderItem(1L, view.context.getString(R.string.vrt_nu_all_programs)))
                 val divider = DividerRow()
 
