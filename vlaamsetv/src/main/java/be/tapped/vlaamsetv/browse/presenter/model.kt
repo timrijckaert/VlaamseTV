@@ -1,6 +1,6 @@
 package be.tapped.vlaamsetv.browse.presenter
 
-import androidx.annotation.ColorRes
+import android.widget.ImageView
 import androidx.annotation.DrawableRes
 
 sealed class Item {
@@ -15,5 +15,6 @@ sealed class Item {
         val infoAreaBackgroundColor: Int? = null,
         val imageViewUrl: String? = null,
         @DrawableRes val badgeImage: Int? = null,
+        val scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
     ) : Item()
 }

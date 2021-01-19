@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.browse.presenter
 
 import android.content.Context
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.leanback.widget.ImageCardView
 import be.tapped.vlaamsetv.R
@@ -21,6 +22,7 @@ class ImageCardViewPresenter : TypedPresenter<ImageCardView, Item.ImageCard>() {
             )
             infoAreaBackground = item.infoAreaBackground?.let { ContextCompat.getDrawable(view.context, it) }
             item.infoAreaBackgroundColor?.let(::setInfoAreaBackgroundColor)
+            setMainImageScaleType(item.scaleType)
             badgeImage = item.badgeImage?.let { ContextCompat.getDrawable(view.context, it) }
             mainImageView.load(item.imageViewUrl)
         }

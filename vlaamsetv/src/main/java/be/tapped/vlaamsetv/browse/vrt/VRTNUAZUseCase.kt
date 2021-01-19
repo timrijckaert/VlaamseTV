@@ -8,12 +8,16 @@ interface VRTNUAZUseCase {
     suspend fun fetchAZPrograms(): List<Item>
 }
 
-class VRTNUAZUseCaseImpl(
-    private val vrtApi: VRTApi,
-    private val programMapper: ProgramMapper,
-) : VRTNUAZUseCase {
+class VRTNUAZUseCaseImpl(private val vrtApi: VRTApi) : VRTNUAZUseCase {
 
     override suspend fun fetchAZPrograms(): List<Item> =
         (vrtApi.fetchAZPrograms().orNull()?.programs ?: emptyList())
-            .mapIndexed(programMapper::toImageCard)
+            .mapIndexed { index, program ->
+                Item.ImageCard(
+                    index = index,
+                    title = program.title,
+                    description = program.description,
+                    imageViewUrl = program.thumbnail
+                )
+            }
 }
