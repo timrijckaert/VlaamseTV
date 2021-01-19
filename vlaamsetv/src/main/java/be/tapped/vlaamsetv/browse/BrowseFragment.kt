@@ -18,6 +18,7 @@ import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.VRTAZFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
 import be.tapped.vlaamsetv.browse.vrt.VRTLiveFragment
+import be.tapped.vlaamsetv.browse.vrt.VRTLiveFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch

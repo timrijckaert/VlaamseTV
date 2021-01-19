@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.browse.presenter
 
 import android.content.Context
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.leanback.widget.ImageCardView
 import be.tapped.vlaamsetv.R
