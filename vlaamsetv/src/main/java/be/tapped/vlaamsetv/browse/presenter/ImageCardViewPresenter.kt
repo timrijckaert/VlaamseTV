@@ -2,6 +2,7 @@ package be.tapped.vlaamsetv.browse.presenter
 
 import android.content.Context
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.leanback.widget.ImageCardView
 import be.tapped.vlaamsetv.R
 import coil.load
@@ -18,6 +19,9 @@ class ImageCardViewPresenter : TypedPresenter<ImageCardView, Item.ImageCard>() {
                 resources.getDimensionPixelSize(R.dimen.card_width),
                 resources.getDimensionPixelSize(R.dimen.card_height),
             )
+            infoAreaBackground = item.infoAreaBackground?.let { ContextCompat.getDrawable(view.context, it) }
+            item.infoAreaBackgroundColor?.let(::setInfoAreaBackgroundColor)
+            badgeImage = item.badgeImage?.let { ContextCompat.getDrawable(view.context, it) }
             mainImageView.load(item.imageViewUrl)
         }
     }

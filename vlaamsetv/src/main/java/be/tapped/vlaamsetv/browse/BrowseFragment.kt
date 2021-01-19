@@ -15,9 +15,11 @@ import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
 import androidx.leanback.widget.VerticalGridPresenter
 import androidx.lifecycle.lifecycleScope
+import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import be.tapped.vlaamsetv.browse.vrt.ProgramMapper
+import be.tapped.vlaamsetv.browse.vrt.VRTAZFragment
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCase
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
@@ -27,33 +29,7 @@ import be.tapped.vrtnu.content.ScreenshotRepo
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch
 
-class VRTAZFragment(
-    private val backgroundManager: BackgroundManager,
-    private val azUseCase: VRTNUAZUseCase,
-) : VerticalGridSupportFragment(),
-    BrowseSupportFragment.MainFragmentAdapterProvider {
 
-    private companion object {
-
-        private const val NUMBER_OF_COLUMNS = 5
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        gridPresenter = VerticalGridPresenter().apply {
-            numberOfColumns = NUMBER_OF_COLUMNS
-        }
-
-        val arrayAdapter = ArrayObjectAdapter(PresenterSelector())
-        adapter = arrayAdapter
-        lifecycleScope.launch {
-            arrayAdapter.addAll(0, azUseCase.fetchAZPrograms())
-        }
-    }
-
-    override fun getMainFragmentAdapter(): BrowseSupportFragment.MainFragmentAdapter<*> =
-        BrowseSupportFragment.MainFragmentAdapter(this)
-}
 
 class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseSupportFragment() {
 
@@ -73,7 +49,7 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
         super.onViewCreated(view, savedInstanceState)
         prepareEntranceTransition()
         adapter = ArrayObjectAdapter(ListRowPresenter()).apply {
-            val vrtSection = SectionRow(HeaderItem("VRT NU"))
+            val vrtSection = SectionRow(HeaderItem(view.context.getString(R.string.vrt_nu_name)))
 
             val liveStreamObjectAdapter = ArrayObjectAdapter(PresenterSelector()).apply {
                 LiveStreams.allLiveStreams.forEachIndexed { index, it ->

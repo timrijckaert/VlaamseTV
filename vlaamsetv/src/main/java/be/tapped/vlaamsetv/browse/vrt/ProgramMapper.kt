@@ -7,9 +7,9 @@ class ProgramMapper {
 
     fun toImageCard(index: Int, program: Program): Item.ImageCard =
         Item.ImageCard(
-            index,
-            program.title,
-            program.description,
-            program.thumbnail
+            index = index,
+            title = program.title,
+            description = program.description,
+            imageViewUrl = program.thumbnail
         )
 }
