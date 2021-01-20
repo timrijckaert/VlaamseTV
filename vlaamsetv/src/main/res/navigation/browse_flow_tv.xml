@@ -7,5 +7,13 @@
     <fragment
         android:id="@+id/browseFragment"
         android:name="be.tapped.vlaamsetv.browse.BrowseFragment"
-        android:label="BrowseFragment" />
+        android:label="BrowseFragment">
+        <action
+            android:id="@+id/action_browseFragment_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/detailActivity"
+        android:name="be.tapped.vlaamsetv.detail.DetailActivity"
+        android:label="DetailActivity" />
 </navigation>

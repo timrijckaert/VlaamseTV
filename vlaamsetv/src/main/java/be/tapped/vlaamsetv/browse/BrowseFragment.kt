@@ -21,7 +21,10 @@ import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
 import be.tapped.vrtnu.content.VRTApi
 import kotlinx.coroutines.launch
 
-class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseSupportFragment() {
+class BrowseFragment(
+    private val browseNavigator: BrowseNavigator,
+    private val backgroundManager: BackgroundManager
+) : BrowseSupportFragment() {
 
     private val vrtBrowseUseCase = VRTBrowseUseCase(
         VRTNUAZUseCaseImpl(VRTApi()),
@@ -43,6 +46,7 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
                         1L ->
                             VRTAZFragment(
                                 backgroundManager,
+                                browseNavigator,
                                 vrtBrowseUseCase,
                             )
                         else -> throw IllegalArgumentException("Could not construct Browse Fragment for PageRow id: $id")

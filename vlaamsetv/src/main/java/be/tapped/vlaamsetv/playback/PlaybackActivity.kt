@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.PlayerManager
 import be.tapped.vlaamsetv.R
@@ -18,9 +17,6 @@ class PlaybackActivity : FragmentActivity(R.layout.activity_tv_playback) {
 
     private val navArgs by navArgs<PlaybackActivityArgs>()
 
-    private val navHostFragment
-        get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-
     private val playerManager: PlayerManager = PlayerManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +24,7 @@ class PlaybackActivity : FragmentActivity(R.layout.activity_tv_playback) {
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
                 when (className) {
                     VideoPlayerTVFragment::class.java.name -> VideoPlayerTVFragment(navArgs.videoItem, playerManager)
-                    else                                   -> super.instantiate(cls, className)
+                    else -> super.instantiate(cls, className)
                 }
         }
         super.onCreate(savedInstanceState)

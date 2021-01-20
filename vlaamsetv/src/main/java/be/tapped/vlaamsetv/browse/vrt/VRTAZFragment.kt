@@ -7,11 +7,13 @@ import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.VerticalGridPresenter
 import androidx.lifecycle.lifecycleScope
+import be.tapped.vlaamsetv.browse.BrowseNavigator
 import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import kotlinx.coroutines.launch
 
 class VRTAZFragment(
     private val backgroundManager: BackgroundManager,
+    private val browseNavigator: BrowseNavigator,
     private val azUseCase: VRTNUAZUseCase,
 ) : VerticalGridSupportFragment(),
     BrowseSupportFragment.MainFragmentAdapterProvider {
@@ -31,6 +33,10 @@ class VRTAZFragment(
         adapter = arrayAdapter
         lifecycleScope.launch {
             arrayAdapter.addAll(0, azUseCase.fetchAZPrograms())
+        }
+
+        setOnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row ->
+            browseNavigator.navigateToDetail()
         }
     }
 
