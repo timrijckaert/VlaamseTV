@@ -16,10 +16,10 @@ class LiveTVUseCaseImpl : LiveTVUseCase {
     //TODO check if it has an EPG and fetch it
     override suspend fun liveStreams(): List<Item> =
         LiveStreams.allLiveStreams.mapIndexed { index, it ->
-            val thumbnailUrl = when (it.brand) {
-                Brand.EEN -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.EEN)
-                Brand.CANVAS -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.CANVAS)
-                Brand.KETNET -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.KETNET)
+            val badgeImageUrl = when (it.brand) {
+                Brand.EEN,
+                Brand.CANVAS,
+                Brand.KETNET -> null
                 Brand.KETNET_JUNIOR -> "https://images.vrt.be/orig/2019/07/19/c309360a-aa10-11e9-abcc-02b7b76bf47f.png"
                 Brand.SPORZA -> "https://images.vrt.be/orig/logo/sporza/sporza_logo_zwart.png"
                 Brand.VRT_NWS -> "https://images.vrt.be/orig/logos/vrtnws.png"
@@ -30,19 +30,21 @@ class LiveTVUseCaseImpl : LiveTVUseCase {
                 Brand.MNM -> "https://images.vrt.be/orig/logo/mnm/logo_witte_achtergrond.png"
                 Brand.VRT_NXT -> "https://images.vrt.be/orig/logo/vrt.png"
             }
+            val background = backgroundFromBrand(it.brand)
             Item.ImageCard(
                 index = index,
                 title = it.name,
-                thumbnail = thumbnailUrl,
-                background = backgroundFromBrand(it.brand, thumbnailUrl)
+                badgeImageUrl = badgeImageUrl,
+                background = background,
+                thumbnail = background
             )
         }
 
-    private fun backgroundFromBrand(brand: Brand, screenGrab: String): String? =
+    private fun backgroundFromBrand(brand: Brand): String? =
         when (brand) {
-            Brand.EEN -> screenGrab
-            Brand.CANVAS -> screenGrab
-            Brand.KETNET -> screenGrab
+            Brand.EEN -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.EEN)
+            Brand.CANVAS -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.CANVAS)
+            Brand.KETNET -> DefaultScreenshotRepo.screenshotForBrand(ScreenshotRepo.Brand.KETNET)
             else -> null
         }
 }

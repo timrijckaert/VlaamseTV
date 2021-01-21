@@ -15,7 +15,8 @@ sealed class Item {
         val infoAreaBackgroundColor: Int? = null,
         val background: String? = null,
         val thumbnail: String? = null,
-        @DrawableRes val badgeImage: Int? = null,
+        @DrawableRes val badgeImageRes: Int? = null,
+        val badgeImageUrl: String? = null,
         val scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
     ) : Item()
 }

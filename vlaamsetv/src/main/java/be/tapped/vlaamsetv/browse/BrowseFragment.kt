@@ -17,6 +17,7 @@ import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import be.tapped.vlaamsetv.browse.vrt.CategoriesUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
+import be.tapped.vlaamsetv.browse.vrt.MostRecentUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.VRTBrowseUseCase
 import be.tapped.vlaamsetv.browse.vrt.VRTNUAZUseCaseImpl
 import be.tapped.vrtnu.content.VRTApi
@@ -31,33 +32,42 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
     private val vrtBrowseUseCase = VRTBrowseUseCase(
         VRTNUAZUseCaseImpl(vrtApi),
         LiveTVUseCaseImpl(),
-        CategoriesUseCaseImpl(vrtApi)
+        CategoriesUseCaseImpl(vrtApi),
+        MostRecentUseCaseImpl(vrtApi),
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val ctx = view.context
         prepareEntranceTransition()
         lifecycleScope.launch {
             adapter = ArrayObjectAdapter(ListRowPresenter().apply { setNumRows(2) }).apply {
-                add(SectionRow(HeaderItem(view.context.getString(R.string.vrt_nu_name))))
+                add(SectionRow(HeaderItem(ctx.getString(R.string.vrt_nu_name))))
 
                 add(
                     ListRow(
-                        HeaderItem(view.context.getString(R.string.vrt_nu_live_tv)),
+                        HeaderItem(ctx.getString(R.string.vrt_nu_live_tv)),
                         ArrayObjectAdapter(PresenterSelector()).apply {
                             addAll(0, vrtBrowseUseCase.liveStreams())
                         })
                 )
                 add(
                     ListRow(
-                        HeaderItem(view.context.getString(R.string.vrt_nu_all_programs)),
+                        HeaderItem(ctx.getString(R.string.vrt_nu_most_recent_episodes)),
+                        ArrayObjectAdapter(PresenterSelector()).apply {
+                            addAll(0, vrtBrowseUseCase.fetchMostRecentEpisodes())
+                        })
+                )
+                add(
+                    ListRow(
+                        HeaderItem(ctx.getString(R.string.vrt_nu_all_programs)),
                         ArrayObjectAdapter(PresenterSelector()).apply {
                             addAll(0, vrtBrowseUseCase.fetchAZPrograms())
                         })
                 )
                 add(
                     ListRow(
-                        HeaderItem(view.context.getString(R.string.vrt_nu_categories)),
+                        HeaderItem(ctx.getString(R.string.vrt_nu_categories)),
                         ArrayObjectAdapter(PresenterSelector()).apply {
                             addAll(0, vrtBrowseUseCase.fetchCategories())
                         })
@@ -78,8 +88,8 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
                     } else {
                         backgroundImageDownloadJob = lifecycleScope.launch {
                             backgroundManager.setBitmap(
-                                view.context.imageLoader.execute(
-                                    ImageRequest.Builder(view.context)
+                                ctx.imageLoader.execute(
+                                    ImageRequest.Builder(ctx)
                                         .data(background)
                                         .build()
                                 ).drawable?.toBitmap()
