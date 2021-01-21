@@ -3,4 +3,5 @@
     <string name="vrt_nu_name">VRT NU</string>
     <string name="vrt_nu_live_tv">Live TV</string>
     <string name="vrt_nu_all_programs">All Programs</string>
+    <string name="vrt_nu_categories">Categorieën</string>
 </resources>
