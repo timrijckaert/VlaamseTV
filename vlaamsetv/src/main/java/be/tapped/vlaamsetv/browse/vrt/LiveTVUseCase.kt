@@ -1,6 +1,5 @@
 package be.tapped.vlaamsetv.browse.vrt
 
-import android.graphics.Color
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vrtnu.content.DefaultScreenshotRepo
 import be.tapped.vrtnu.content.LiveStreams
@@ -35,7 +34,6 @@ class LiveTVUseCaseImpl : LiveTVUseCase {
                 index = index,
                 title = it.name,
                 imageViewUrl = screenGrab,
-                infoAreaBackgroundColor = if (screenGrab.isBlank()) Color.RED else null
             )
         }
 
