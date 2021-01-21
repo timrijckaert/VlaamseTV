@@ -1,5 +1,6 @@
 package be.tapped.vlaamsetv.browse.vrt
 
+import android.widget.ImageView
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vrtnu.content.VRTApi
 
@@ -17,7 +18,9 @@ class CategoriesUseCaseImpl(private val vrtApi: VRTApi) : CategoriesUseCase {
                 index,
                 category.title,
                 category.description,
-                imageViewUrl = category.imageStoreUrl
+                thumbnail = category.imageStoreUrl,
+                scaleType = ImageView.ScaleType.CENTER_CROP,
+                background = category.imageStoreUrl
             )
         }
     }

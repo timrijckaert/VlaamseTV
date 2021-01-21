@@ -14,12 +14,14 @@ class VRTNUAZUseCaseImpl(private val vrtApi: VRTApi) : VRTNUAZUseCase {
     override suspend fun fetchAZPrograms(): List<Item> =
         (vrtApi.fetchAZPrograms().orNull()?.programs ?: emptyList())
             .mapIndexed { index, program ->
+                val background = if (program.alternativeImage.isNotBlank()) program.alternativeImage else program.thumbnail
                 Item.ImageCard(
                     index = index,
                     title = program.title,
                     description = program.description,
-                    imageViewUrl = program.thumbnail,
-                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    thumbnail = program.thumbnail,
+                    scaleType = ImageView.ScaleType.CENTER_CROP,
+                    background = background
                 )
             }
 }

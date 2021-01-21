@@ -23,7 +23,7 @@ class BrowseActivity : FragmentActivity(R.layout.activity_tv_browse) {
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(cls: ClassLoader, className: String): Fragment =
                 when (className) {
-                    BrowseFragment::class.java.name -> BrowseFragment(browseNavigator, backgroundManager)
+                    BrowseFragment::class.java.name -> BrowseFragment(backgroundManager)
                     else -> super.instantiate(cls, className)
                 }
         }

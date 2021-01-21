@@ -23,7 +23,7 @@ class ImageCardViewPresenter : TypedPresenter<ImageCardView, Item.ImageCard>() {
             item.infoAreaBackgroundColor?.let(::setInfoAreaBackgroundColor)
             setMainImageScaleType(item.scaleType)
             badgeImage = item.badgeImage?.let { ContextCompat.getDrawable(cardView.context, it) }
-            mainImageView.load(item.imageViewUrl)
+            mainImageView.load(item.thumbnail)
         }
     }
 }
