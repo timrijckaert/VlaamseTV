@@ -26,7 +26,10 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseSupportFragment() {
+class BrowseFragment(
+    private val backgroundManager: BackgroundManager,
+    private val browseNavigator: BrowseNavigator
+) : BrowseSupportFragment() {
 
     private val vrtApi = VRTApi()
     private val vrtBrowseUseCase = VRTBrowseUseCase(
@@ -112,6 +115,7 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
                 is Item.ImageCard.Episode -> item.episode
                 is Item.ImageCard.Program -> item.program
             }
+            browseNavigator.navigateToDetail()
             Log.d("TAG", "You clicked $clickedItem")
         }
     }
