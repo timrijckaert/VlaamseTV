@@ -9,12 +9,12 @@ import coil.imageLoader
 import coil.load
 import coil.request.ImageRequest
 
-class ImageCardViewPresenter : TypedPresenter<ImageCardView, Item.ImageCard>() {
+abstract class ImageCardViewPresenter<in T : Item.ImageCard> : TypedPresenter<ImageCardView, T>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, context: Context): ImageCardView = ImageCardView(parent.context)
 
-    override fun bindViewHolder(viewHolder: ViewHolder, cardView: ImageCardView, item: Item.ImageCard) {
-        with(cardView) {
+    override fun bindViewHolder(viewHolder: ViewHolder, view: ImageCardView, item: T) {
+        with(view) {
             titleText = item.title
             contentText = item.description
             setMainImageDimensions(
@@ -24,7 +24,7 @@ class ImageCardViewPresenter : TypedPresenter<ImageCardView, Item.ImageCard>() {
             infoAreaBackground = item.infoAreaBackground?.let { ContextCompat.getDrawable(context, it) }
             item.infoAreaBackgroundColor?.let(::setInfoAreaBackgroundColor)
             setMainImageScaleType(item.scaleType)
-            badgeImage = item.badgeImageRes?.let { ContextCompat.getDrawable(cardView.context, it) }
+            badgeImage = item.badgeImageRes?.let { ContextCompat.getDrawable(view.context, it) }
             context.imageLoader.enqueue(
                 ImageRequest.Builder(context)
                     .data(item.badgeImageUrl)
@@ -36,3 +36,10 @@ class ImageCardViewPresenter : TypedPresenter<ImageCardView, Item.ImageCard>() {
     }
 }
 
+class LiveCardPresenter : ImageCardViewPresenter<Item.ImageCard.Live>()
+
+class CategoryCardPresenter : ImageCardViewPresenter<Item.ImageCard.Category>()
+
+class EpisodeCardPresenter : ImageCardViewPresenter<Item.ImageCard.Episode>()
+
+class ProgramCardPresenter : ImageCardViewPresenter<Item.ImageCard.Program>()

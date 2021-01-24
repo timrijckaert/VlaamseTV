@@ -1,12 +1,12 @@
 package be.tapped.vlaamsetv.browse
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.graphics.drawable.toBitmap
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
@@ -36,10 +36,14 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
         MostRecentUseCaseImpl(vrtApi),
     )
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        prepareEntranceTransition()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val ctx = view.context
-        prepareEntranceTransition()
         lifecycleScope.launch {
             adapter = ArrayObjectAdapter(ListRowPresenter().apply { setNumRows(2) }).apply {
                 add(SectionRow(HeaderItem(ctx.getString(R.string.vrt_nu_name))))
@@ -72,32 +76,43 @@ class BrowseFragment(private val backgroundManager: BackgroundManager) : BrowseS
                             addAll(0, vrtBrowseUseCase.fetchCategories())
                         })
                 )
-                add(DividerRow())
-
+                //add(DividerRow())
+                startEntranceTransition()
             }
+        }
 
-            var backgroundImageDownloadJob: Job? = null
-            setOnItemViewSelectedListener { itemViewHolder, rawItem, rowViewHolder, row ->
-                backgroundImageDownloadJob?.cancel()
-                rawItem?.let {
-                    val background = when (val item = (it as Item)) {
-                        is Item.ImageCard -> item.background
-                    }
-                    if (background == null) {
-                        backgroundManager.clearDrawable()
-                    } else {
-                        backgroundImageDownloadJob = lifecycleScope.launch {
-                            backgroundManager.setBitmap(
-                                ctx.imageLoader.execute(
-                                    ImageRequest.Builder(ctx)
-                                        .data(background)
-                                        .build()
-                                ).drawable?.toBitmap()
-                            )
-                        }
+        var backgroundImageDownloadJob: Job? = null
+        setOnItemViewSelectedListener { itemViewHolder, rawItem, rowViewHolder, row ->
+            backgroundImageDownloadJob?.cancel()
+            rawItem?.let {
+                val background = when (val item = (it as Item)) {
+                    is Item.ImageCard -> item.background
+                }
+                if (background == null) {
+                    backgroundManager.clearDrawable()
+                } else {
+                    backgroundImageDownloadJob = lifecycleScope.launch {
+                        backgroundManager.setBitmap(
+                            ctx.imageLoader.execute(
+                                ImageRequest.Builder(ctx)
+                                    .data(background)
+                                    .build()
+                            ).drawable?.toBitmap()
+                        )
                     }
                 }
             }
+        }
+
+        setOnItemViewClickedListener { _, untypedItem, _, _ ->
+            //TODO map to a detail object
+            val clickedItem = when (val item = untypedItem as Item) {
+                is Item.ImageCard.Live -> item.liveStream
+                is Item.ImageCard.Category -> item.category
+                is Item.ImageCard.Episode -> item.episode
+                is Item.ImageCard.Program -> item.program
+            }
+            Log.d("TAG", "You clicked $clickedItem")
         }
     }
 }
