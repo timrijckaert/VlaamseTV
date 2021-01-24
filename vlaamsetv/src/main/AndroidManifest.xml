@@ -28,6 +28,14 @@
             android:theme="@style/Theme.TV.VlaamseTV" />
 
         <activity
+            android:name=".browse.BrowseActivity"
+            android:theme="@style/Theme.TV.VlaamseTV" />
+
+        <activity
+            android:name=".detail.DetailActivity"
+            android:theme="@style/Theme.TV.VlaamseTV" />
+
+        <activity
             android:name=".playback.PlaybackActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTask"
@@ -51,6 +59,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/browse_flow_tv"
+    app:startDestination="@id/browseFragment">
+
+    <fragment
+        android:id="@+id/browseFragment"
+        android:name="be.tapped.vlaamsetv.browse.BrowseFragment"
+        android:label="BrowseFragment">
+        <action
+            android:id="@+id/action_browseFragment_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/detailActivity"
+        android:name="be.tapped.vlaamsetv.detail.DetailActivity"
+        android:label="DetailActivity" />
+</navigation>

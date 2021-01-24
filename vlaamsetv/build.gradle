@@ -43,6 +43,7 @@ dependencies {
     implementation Dependencies.androidXDataStore
     implementation Dependencies.wireRuntime
     implementation Dependencies.workRuntime
+    implementation Dependencies.coil
 
     implementation "be.tapped.vlaamsetv:vier"
     implementation "be.tapped.vlaamsetv:vrtnu"
