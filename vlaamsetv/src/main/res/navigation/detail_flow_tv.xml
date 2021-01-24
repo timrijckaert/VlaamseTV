@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detail_flow_tv"
+    app:startDestination="@id/detailFragment">
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="be.tapped.vlaamsetv.detail.DetailFragment"
+        android:label="DetailFragment" />
+</navigation>

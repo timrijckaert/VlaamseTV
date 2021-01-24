@@ -6,7 +6,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import androidx.work.WorkManager
 import be.tapped.vlaamsetv.*
@@ -18,9 +17,6 @@ import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
 
     private val app get() = application as App
-
-    private val navHostFragment
-        get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
     private val navArgs by navArgs<AuthenticationActivityArgs>()
     private val authenticationState = AuthenticationState()
@@ -69,15 +65,19 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                         )
                     VIERLoginFragment::class.java.name ->
                         VIERLoginFragment(
-                            VIERAuthenticationUIController(VIERTokenUseCase(
-                                VierHttpProfileRepo(),
-                                app.vierTokenStore,
-                                VIERErrorMessageConverter(),
-                                tokenRefreshWorkScheduler,
-                            ), authenticationNavigator, authenticationState),
+                            VIERAuthenticationUIController(
+                                VIERTokenUseCase(
+                                    VierHttpProfileRepo(),
+                                    app.vierTokenStore,
+                                    VIERErrorMessageConverter(),
+                                    tokenRefreshWorkScheduler,
+                                ),
+                                authenticationNavigator,
+                                authenticationState
+                            ),
                         )
                     AuthenticationFailedDialog::class.java.name -> AuthenticationFailedDialog(authenticationNavigator)
-                    else                                        -> super.instantiate(cls, className)
+                    else -> super.instantiate(cls, className)
                 }
             }
         }
@@ -85,8 +85,9 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
     }
 }
 
-sealed class AuthenticationNavigationConfiguration : Parcelable { @Parcelize
-object VRT : AuthenticationNavigationConfiguration()
+sealed class AuthenticationNavigationConfiguration : Parcelable {
+    @Parcelize
+    object VRT : AuthenticationNavigationConfiguration()
 
     @Parcelize
     object VTM : AuthenticationNavigationConfiguration()

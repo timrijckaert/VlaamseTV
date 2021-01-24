@@ -4,6 +4,8 @@ class VRTBrowseUseCase(
     azUseCase: VRTNUAZUseCase,
     liveTVUseCase: LiveTVUseCase,
     categoryUseCase: CategoriesUseCase,
+    mostRecentUseCase: MostRecentUseCase,
 ) : VRTNUAZUseCase by azUseCase,
     LiveTVUseCase by liveTVUseCase,
-    CategoriesUseCase by categoryUseCase
+    CategoriesUseCase by categoryUseCase,
+    MostRecentUseCase by mostRecentUseCase
