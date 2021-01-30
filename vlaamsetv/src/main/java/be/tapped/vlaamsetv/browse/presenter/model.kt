@@ -18,17 +18,20 @@ sealed class Item {
         val scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
     ) : Item() {
 
-        data class Live(
-            val liveStream: LiveStreams.LiveStream,
-            val brandName: String,
-            val brandImageUrl: String?,
-            val image: String?,
-        ) : ImageCard(
-            title = brandName,
-            badgeImageUrl = brandImageUrl,
-            background = image,
-            thumbnail = image
-        )
+        sealed class Live(bName: String, brandImg: String?, img: String?) : ImageCard(
+            title = bName,
+            badgeImageUrl = brandImg,
+            background = img,
+            thumbnail = img
+        ) {
+
+            data class VRT(
+                val liveStream: LiveStreams.LiveStream,
+                val brandName: String,
+                val brandImageUrl: String?,
+                val image: String?,
+            ) : Live(brandName, brandImageUrl, image)
+        }
 
         data class Category(
             val category: be.tapped.vrtnu.content.Category,

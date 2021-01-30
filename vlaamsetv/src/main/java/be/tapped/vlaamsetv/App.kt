@@ -41,9 +41,10 @@ class App : Application(), Configuration.Provider {
         GoPlayTokenStoreImpl(this@App, crypto)
     }
 
-    override fun getWorkManagerConfiguration(): Configuration = Configuration
-        .Builder()
-        .setMinimumLoggingLevel(android.util.Log.DEBUG)
-        .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
-        .build()
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration
+            .Builder()
+            .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
+            .build()
 }

@@ -14,15 +14,19 @@ interface BrowseNavigator : DetailNavigation, PlaybackNavigation {
 
                 private fun clickedItemToBrowseNavigationAction(clickedItem: Item): Any {
                     return when (clickedItem) {
-                        is Item.ImageCard.Live -> clickedItem.liveStream //TODO go to playback screen
+                        is Item.ImageCard.Live ->
+                            when (clickedItem) {
+                                //TODO go to playback screen
+                                is Item.ImageCard.Live.VRT -> clickedItem.liveStream
+                            }
                         is Item.ImageCard.Category -> clickedItem.category //TODO go to category detail screen
                         is Item.ImageCard.Episode -> clickedItem.episode //TODO go to playback screen
                         is Item.ImageCard.Program -> clickedItem.program
                     }
                 }
 
-                override fun navigateToDetail(untypedItem: Item) {
-                    val detailItem = clickedItemToBrowseNavigationAction(untypedItem)
+                override fun navigateToDetail(clickedItem: Item) {
+                    val detailItem = clickedItemToBrowseNavigationAction(clickedItem)
 
                     navController.navigate(BrowseFragmentDirections.actionBrowseFragmentToDetailActivity())
                 }

@@ -31,7 +31,7 @@ class LiveTVUseCaseImpl : LiveTVUseCase {
                 Brand.VRT_NXT -> "https://images.vrt.be/orig/logo/vrt.png"
             }
             val background = backgroundFromBrand(it.brand)
-            Item.ImageCard.Live(
+            Item.ImageCard.Live.VRT(
                 liveStream = it,
                 brandName = it.name,
                 brandImageUrl = badgeImageUrl,

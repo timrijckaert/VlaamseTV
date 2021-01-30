@@ -4,5 +4,5 @@ import be.tapped.vlaamsetv.browse.presenter.Item
 
 interface DetailNavigation {
 
-    fun navigateToDetail(untypedItem: Item)
+    fun navigateToDetail(clickedItem: Item)
 }
