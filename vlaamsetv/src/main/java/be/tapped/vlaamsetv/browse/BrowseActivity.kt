@@ -5,14 +5,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.leanback.app.BackgroundManager
+import be.tapped.vlaamsetv.App
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.navHostFragment
 
 class BrowseActivity : FragmentActivity(R.layout.activity_tv_browse) {
 
     private val backgroundManager by lazy { BackgroundManager.getInstance(this) }
+    private val app get() = application as App
 
-    private val browseNavigator by lazy { BrowseNavigator.create(navHostFragment.navController) }
+    private val browseNavigator by lazy { BrowseNavigator.create(navHostFragment.navController, app.appStateController) }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()

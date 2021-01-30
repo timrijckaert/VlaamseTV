@@ -14,12 +14,14 @@ import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.CryptoImpl
 import java.security.KeyStore
 
-class App : Application(), Configuration.Provider {
+class App : Application(), Configuration.Provider, AppState.Provider {
 
     companion object {
 
         private const val KEYSTORE_NAME: String = "AndroidKeyStore"
     }
+
+    override val appStateController: AppState.Controller = AppState.Controller()
 
     private val keyStore: KeyStore by lazy {
         KeyStore.getInstance(KEYSTORE_NAME).apply { load(null) }

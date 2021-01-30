@@ -1,15 +1,20 @@
 package be.tapped.vlaamsetv.browse
 
 import androidx.navigation.NavController
+import be.tapped.vlaamsetv.AppState
 import be.tapped.vlaamsetv.VideoItem
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vlaamsetv.detail.DetailNavigation
 import be.tapped.vlaamsetv.playback.PlaybackNavigation
+import be.tapped.vrtnu.content.Program
 
 interface BrowseNavigator : DetailNavigation, PlaybackNavigation {
     companion object {
 
-        fun create(navController: NavController): BrowseNavigator =
+        fun create(
+            navController: NavController,
+            appStateController: AppState.Controller
+        ): BrowseNavigator =
             object : BrowseNavigator {
 
                 private fun clickedItemToBrowseNavigationAction(clickedItem: Item): Any {
@@ -27,7 +32,7 @@ interface BrowseNavigator : DetailNavigation, PlaybackNavigation {
 
                 override fun navigateToDetail(clickedItem: Item) {
                     val detailItem = clickedItemToBrowseNavigationAction(clickedItem)
-
+                    appStateController.pushState(AppState.Detail.VRT.Program(detailItem as Program))
                     navController.navigate(BrowseFragmentDirections.actionBrowseFragmentToDetailActivity())
                 }
 

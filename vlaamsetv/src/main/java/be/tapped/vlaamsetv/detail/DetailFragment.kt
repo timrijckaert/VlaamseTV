@@ -12,18 +12,21 @@ import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.ClassPresenterSelector
 import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
+import be.tapped.vlaamsetv.AppState
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.browse.presenter.TypedPresenter
 
-class DetailFragment : DetailsSupportFragment() {
+class DetailFragment(private val appStateController: AppState.Controller) : DetailsSupportFragment() {
 
     private lateinit var mRowsAdapter: ArrayObjectAdapter
     private val mDetailsBackground = DetailsSupportFragmentBackgroundController(this)
+    private val selectedItem get() = appStateController.currentState as AppState.Detail
 
     data class SampleObject(val sampleField: String)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val rowPresenter =
             object : FullWidthDetailsOverviewRowPresenter(
                 object : TypedPresenter<TextView, Any>() {
