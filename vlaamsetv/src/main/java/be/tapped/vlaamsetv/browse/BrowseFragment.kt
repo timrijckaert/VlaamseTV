@@ -50,7 +50,7 @@ class BrowseFragment(
         }
 
         var backgroundImageDownloadJob: Job? = null
-        setOnItemViewSelectedListener { itemViewHolder, rawItem, rowViewHolder, row ->
+        setOnItemViewSelectedListener { _, rawItem, _, _ ->
             backgroundImageDownloadJob?.cancel()
             rawItem?.let {
                 val background = when (val item = (it as Item)) {
@@ -74,7 +74,7 @@ class BrowseFragment(
 
         setOnItemViewClickedListener { _, untypedItem, _, _ ->
             check(untypedItem is Item) { "$untypedItem was not of type ${Item::class}!" }
-            browseNavigator.navigateToDetail(untypedItem as Item)
+            browseNavigator.navigateToDetail(untypedItem)
         }
     }
 }
