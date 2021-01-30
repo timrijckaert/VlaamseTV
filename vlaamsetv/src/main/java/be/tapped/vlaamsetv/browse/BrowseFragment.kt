@@ -6,14 +6,9 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
-import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.lifecycleScope
-import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.browse.presenter.Item
-import be.tapped.vlaamsetv.browse.presenter.PresenterSelector
 import be.tapped.vlaamsetv.browse.vrt.CategoriesUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.LiveTVUseCaseImpl
 import be.tapped.vlaamsetv.browse.vrt.MostRecentUseCaseImpl
@@ -48,36 +43,7 @@ class BrowseFragment(
         val ctx = view.context
         lifecycleScope.launch {
             adapter = ArrayObjectAdapter(ListRowPresenter().apply { setNumRows(2) }).apply {
-                add(SectionRow(HeaderItem(ctx.getString(R.string.vrt_nu_name))))
-
-                add(
-                    ListRow(
-                        HeaderItem(ctx.getString(R.string.vrt_nu_live_tv)),
-                        ArrayObjectAdapter(PresenterSelector()).apply {
-                            addAll(0, vrtBrowseUseCase.liveStreams())
-                        })
-                )
-                add(
-                    ListRow(
-                        HeaderItem(ctx.getString(R.string.vrt_nu_most_recent_episodes)),
-                        ArrayObjectAdapter(PresenterSelector()).apply {
-                            addAll(0, vrtBrowseUseCase.fetchMostRecentEpisodes())
-                        })
-                )
-                add(
-                    ListRow(
-                        HeaderItem(ctx.getString(R.string.vrt_nu_all_programs)),
-                        ArrayObjectAdapter(PresenterSelector()).apply {
-                            addAll(0, vrtBrowseUseCase.fetchAZPrograms())
-                        })
-                )
-                add(
-                    ListRow(
-                        HeaderItem(ctx.getString(R.string.vrt_nu_categories)),
-                        ArrayObjectAdapter(PresenterSelector()).apply {
-                            addAll(0, vrtBrowseUseCase.fetchCategories())
-                        })
-                )
+                addAll(0, vrtBrowseUseCase.constructMenu(ctx))
                 //add(DividerRow())
                 startEntranceTransition()
             }
