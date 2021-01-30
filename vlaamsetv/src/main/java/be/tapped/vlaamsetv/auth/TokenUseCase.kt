@@ -5,11 +5,10 @@ import arrow.core.computations.either
 import arrow.core.left
 import arrow.core.right
 import arrow.fx.coroutines.parMapN
-import be.tapped.vier.profile.ProfileRepo
+import be.tapped.goplay.profile.ProfileRepo
 import be.tapped.vlaamsetv.ErrorMessage
 import be.tapped.vlaamsetv.ErrorMessageConverter
-import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 import be.tapped.vrtnu.ApiResponse
@@ -90,33 +89,33 @@ class VTMTokenUseCase(
     }
 }
 
-class VIERTokenUseCase(
+class GoPlayTokenUseCase(
     private val profileRepo: ProfileRepo,
-    private val vierTokenStore: VIERTokenStore,
-    private val vierErrorMessageConverter: ErrorMessageConverter<be.tapped.vier.ApiResponse.Failure>,
+    private val goPlayTokenStore: GoPlayTokenStore,
+    private val goPlayErrorMessageConverter: ErrorMessageConverter<be.tapped.goplay.ApiResponse.Failure>,
     private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
     override suspend fun performLogin(username: String, password: String): Either<ErrorMessage, Unit> = either {
         !when (val token = profileRepo.fetchTokens(username, password)) {
-            is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(token.a).left()
+            is Either.Left -> goPlayErrorMessageConverter.mapToHumanReadableError(token.a).left()
             is Either.Right -> {
-                with(vierTokenStore) {
-                    saveVierCredentials(username, password)
+                with(goPlayTokenStore) {
+                    saveGoPlayCredentials(username, password)
                     saveToken(token.b.token)
                 }
-                tokenRefreshWorkScheduler.scheduleTokenRefreshVIER()
+                tokenRefreshWorkScheduler.scheduleTokenRefreshGoPlay()
                 Unit.right()
             }
         }
     }
 
     override suspend fun refresh(): Either<ErrorMessage, Boolean> {
-        val refreshToken = vierTokenStore.token()?.refreshToken ?: return false.right()
+        val refreshToken = goPlayTokenStore.token()?.refreshToken ?: return false.right()
         return when (val newTokens = profileRepo.refreshTokens(refreshToken)) {
-            is Either.Left -> vierErrorMessageConverter.mapToHumanReadableError(newTokens.a).left()
+            is Either.Left -> goPlayErrorMessageConverter.mapToHumanReadableError(newTokens.a).left()
             is Either.Right -> {
-                vierTokenStore.saveToken(newTokens.b.token)
+                goPlayTokenStore.saveToken(newTokens.b.token)
                 true.right()
             }
         }

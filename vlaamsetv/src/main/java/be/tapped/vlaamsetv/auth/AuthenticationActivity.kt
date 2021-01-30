@@ -12,7 +12,7 @@ import be.tapped.vlaamsetv.*
 import be.tapped.vrtnu.profile.ProfileRepo
 import be.tapped.vtmgo.profile.HttpAuthenticationRepo
 import kotlinx.parcelize.Parcelize
-import be.tapped.vier.profile.HttpProfileRepo as VierHttpProfileRepo
+import be.tapped.goplay.profile.HttpProfileRepo as GoPlayHttpProfileRepo
 
 class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication) {
 
@@ -63,13 +63,13 @@ class AuthenticationActivity : FragmentActivity(R.layout.activity_authentication
                                 authenticationState,
                             ),
                         )
-                    VIERLoginFragment::class.java.name ->
-                        VIERLoginFragment(
-                            VIERAuthenticationUIController(
-                                VIERTokenUseCase(
-                                    VierHttpProfileRepo(),
-                                    app.vierTokenStore,
-                                    VIERErrorMessageConverter(),
+                    GoPlayLoginFragment::class.java.name ->
+                        GoPlayLoginFragment(
+                            GoPlayAuthenticationUIController(
+                                GoPlayTokenUseCase(
+                                    GoPlayHttpProfileRepo(),
+                                    app.goPlayTokenStore,
+                                    GoPlayErrorMessageConverter(),
                                     tokenRefreshWorkScheduler,
                                 ),
                                 authenticationNavigator,
@@ -93,5 +93,5 @@ sealed class AuthenticationNavigationConfiguration : Parcelable {
     object VTM : AuthenticationNavigationConfiguration()
 
     @Parcelize
-    object VIER : AuthenticationNavigationConfiguration()
+    object GoPlay : AuthenticationNavigationConfiguration()
 }

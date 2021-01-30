@@ -3,8 +3,8 @@ package be.tapped.vlaamsetv
 import android.app.Application
 import androidx.work.Configuration
 import be.tapped.vlaamsetv.auth.AuthenticationWorkerFactory
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStoreImpl
+import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStore
+import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStoreImpl
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStoreImpl
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
@@ -37,8 +37,8 @@ class App : Application(), Configuration.Provider {
         VTMTokenStoreImpl(this@App, crypto)
     }
 
-    val vierTokenStore: VIERTokenStore by lazy {
-        VIERTokenStoreImpl(this@App, crypto)
+    val goPlayTokenStore: GoPlayTokenStore by lazy {
+        GoPlayTokenStoreImpl(this@App, crypto)
     }
 
     override fun getWorkManagerConfiguration(): Configuration = Configuration

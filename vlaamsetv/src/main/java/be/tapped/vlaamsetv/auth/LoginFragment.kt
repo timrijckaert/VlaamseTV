@@ -145,16 +145,18 @@ class VTMLoginFragment(vtmAuthenticationUseCase: VTMAuthenticationUIController) 
         )
 }
 
-class VIERLoginFragment(vierAuthenticationUseCase: VIERAuthenticationUIController) : LoginFragment(vierAuthenticationUseCase) {
+class GoPlayLoginFragment(goPlayAuthenticationUseCase: GoPlayAuthenticationUIController) : LoginFragment(
+    goPlayAuthenticationUseCase
+) {
 
-    private val navArg by navArgs<VIERLoginFragmentArgs>()
+    private val navArg by navArgs<GoPlayLoginFragmentArgs>()
 
     override val config: Configuration
         get() = Configuration(
             R.string.auth_flow_login_title,
-            R.string.auth_flow_vier_description,
-            R.string.auth_flow_vier_step_breadcrumb,
-            R.drawable.vier_logo,
+            R.string.auth_flow_goplay_description,
+            R.string.auth_flow_goplay_step_breadcrumb,
+            R.drawable.goplay_logo,
             navArg.config.isLastScreen,
         )
 }

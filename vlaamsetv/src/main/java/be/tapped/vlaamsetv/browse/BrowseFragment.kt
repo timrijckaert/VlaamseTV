@@ -1,7 +1,6 @@
 package be.tapped.vlaamsetv.browse
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.graphics.drawable.toBitmap
 import androidx.leanback.app.BackgroundManager
@@ -108,15 +107,8 @@ class BrowseFragment(
         }
 
         setOnItemViewClickedListener { _, untypedItem, _, _ ->
-            //TODO map to a detail object
-            val clickedItem = when (val item = untypedItem as Item) {
-                is Item.ImageCard.Live -> item.liveStream
-                is Item.ImageCard.Category -> item.category
-                is Item.ImageCard.Episode -> item.episode
-                is Item.ImageCard.Program -> item.program
-            }
-            browseNavigator.navigateToDetail()
-            Log.d("TAG", "You clicked $clickedItem")
+            check(untypedItem is Item) { "$untypedItem was not of type ${Item::class}!" }
+            browseNavigator.navigateToDetail(untypedItem as Item)
         }
     }
 }

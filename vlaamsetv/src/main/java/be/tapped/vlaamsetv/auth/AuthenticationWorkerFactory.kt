@@ -5,9 +5,9 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkManager
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import be.tapped.vier.profile.HttpProfileRepo
+import be.tapped.goplay.profile.HttpProfileRepo
 import be.tapped.vlaamsetv.App
-import be.tapped.vlaamsetv.VIERErrorMessageConverter
+import be.tapped.vlaamsetv.GoPlayErrorMessageConverter
 import be.tapped.vlaamsetv.VRTErrorMessageConverter
 import be.tapped.vlaamsetv.VTMErrorMessageConverter
 import be.tapped.vrtnu.profile.ProfileRepo
@@ -23,30 +23,39 @@ object AuthenticationWorkerFactory : WorkerFactory() {
         val tokenRefreshWorkScheduler = TokenRefreshWorkScheduler(WorkManager.getInstance(appContext))
         return when (workerClassName) {
             VRTTokenRefreshWorker::class.java.name ->
-                VRTTokenRefreshWorker(appContext,
+                VRTTokenRefreshWorker(
+                    appContext,
                     workerParameters,
-                    VRTTokenUseCase(ProfileRepo(),
+                    VRTTokenUseCase(
+                        ProfileRepo(),
                         (appContext as App).vrtTokenStore,
                         VRTErrorMessageConverter(),
-                        tokenRefreshWorkScheduler)
+                        tokenRefreshWorkScheduler
+                    )
                 )
             VTMTokenRefreshWorker::class.java.name ->
-                VTMTokenRefreshWorker(appContext,
+                VTMTokenRefreshWorker(
+                    appContext,
                     workerParameters,
-                    VTMTokenUseCase(HttpAuthenticationRepo(),
+                    VTMTokenUseCase(
+                        HttpAuthenticationRepo(),
                         (appContext as App).vtmTokenStore,
                         VTMErrorMessageConverter(),
-                        tokenRefreshWorkScheduler)
+                        tokenRefreshWorkScheduler
+                    )
                 )
-            VIERTokenRefreshWorker::class.java.name ->
-                VIERTokenRefreshWorker(appContext,
+            GoPlayTokenRefreshWorker::class.java.name ->
+                GoPlayTokenRefreshWorker(
+                    appContext,
                     workerParameters,
-                    VIERTokenUseCase(HttpProfileRepo(),
-                        (appContext as App).vierTokenStore,
-                        VIERErrorMessageConverter(),
-                        tokenRefreshWorkScheduler)
+                    GoPlayTokenUseCase(
+                        HttpProfileRepo(),
+                        (appContext as App).goPlayTokenStore,
+                        GoPlayErrorMessageConverter(),
+                        tokenRefreshWorkScheduler
+                    )
                 )
-            else                                    -> null
+            else -> null
         }
     }
 }

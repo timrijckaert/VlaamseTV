@@ -32,7 +32,7 @@ interface RootNavigator {
                         arrayOf(
                             AuthenticationNavigationConfiguration.VRT,
                             AuthenticationNavigationConfiguration.VTM,
-                            AuthenticationNavigationConfiguration.VIER,
+                            AuthenticationNavigationConfiguration.GoPlay,
                         )
                     )
                 }

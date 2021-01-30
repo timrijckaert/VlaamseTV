@@ -1,12 +1,12 @@
-package be.tapped.vlaamsetv.auth.prefs.vier
+package be.tapped.vlaamsetv.auth.prefs.goplay
 
 import be.tapped.vlaamsetv.prefs.Crypto
 import be.tapped.vlaamsetv.prefs.EncryptedProtoSerializer
 
 class TokenSerializer(crypto: Crypto) : EncryptedProtoSerializer<Token>(crypto, Token(), Token.ADAPTER)
 
-class VIERCredentialsSerializer(crypto: Crypto) : EncryptedProtoSerializer<VIERCredentials>(
+class GoPlayCredentialsSerializer(crypto: Crypto) : EncryptedProtoSerializer<GoPlayCredentials>(
     crypto,
-    VIERCredentials(),
-    VIERCredentials.ADAPTER
+    GoPlayCredentials(),
+    GoPlayCredentials.ADAPTER
 )

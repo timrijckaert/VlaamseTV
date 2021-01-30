@@ -1,7 +1,7 @@
 package be.tapped.vlaamsetv.auth.prefs
 
 import arrow.fx.coroutines.parTupledN
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
 
@@ -9,7 +9,7 @@ interface TokenStorage {
     enum class Brand {
         VRT,
         VTM,
-        VIER,
+        GoPlay,
     }
 
     suspend fun hasCredentialsForAtLeastOneBrand(): Boolean
@@ -20,14 +20,14 @@ interface TokenStorage {
 class CompositeTokenStorage(
     private val vrtTokenStore: VRTTokenStore,
     private val vtmTokenStore: VTMTokenStore,
-    private val vierTokenStore: VIERTokenStore,
+    private val goPlayTokenStore: GoPlayTokenStore,
 ) : TokenStorage {
 
     override suspend fun hasCredentialsForAtLeastOneBrand(): Boolean {
-        val (hasVrtCredentials, hasVtmCredentials, hasVierCredentials) = parTupledN({ vrtTokenStore.vrtCredentials() != null },
+        val (hasVrtCredentials, hasVtmCredentials, hasGoPlayCredentials) = parTupledN({ vrtTokenStore.vrtCredentials() != null },
             { vtmTokenStore.vtmCredentials() != null },
-            { vierTokenStore.vierCredentials() != null })
-        return hasVrtCredentials || hasVtmCredentials || hasVierCredentials
+            { goPlayTokenStore.goPlayCredentials() != null })
+        return hasVrtCredentials || hasVtmCredentials || hasGoPlayCredentials
     }
 
     override suspend fun isTokenExpired(brand: TokenStorage.Brand): Boolean {
@@ -36,7 +36,7 @@ class CompositeTokenStorage(
         val expiryInMillis = when (brand) {
             TokenStorage.Brand.VRT -> vrtTokenStore.token()?.expiry?.dateInMillis
             TokenStorage.Brand.VTM -> vtmTokenStore.token()?.expiry?.dateInMillis
-            TokenStorage.Brand.VIER -> vierTokenStore.token()?.expiry?.dateInMillis
+            TokenStorage.Brand.GoPlay -> goPlayTokenStore.token()?.expiry?.dateInMillis
         }
         return isExpired(expiryInMillis)
     }

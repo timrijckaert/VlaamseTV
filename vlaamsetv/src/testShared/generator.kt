@@ -1,6 +1,6 @@
 package be.tapped.vlaamsetv
 
-import be.tapped.vier.profile.IdToken
+import be.tapped.goplay.profile.IdToken
 import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vrtnu.profile.AccessToken
 import be.tapped.vrtnu.profile.Expiry
@@ -34,18 +34,18 @@ val errorMessageArb: Arb<ErrorMessage> = arbitrary {
     ErrorMessage(error, extras)
 }
 
-val vierAccessTokenArb: Arb<be.tapped.vier.profile.AccessToken> =
-    arbitrary { be.tapped.vier.profile.AccessToken(Arb.string().gen()) }
-val vierRefreshTokenArb: Arb<be.tapped.vier.profile.RefreshToken> =
-    arbitrary { be.tapped.vier.profile.RefreshToken(Arb.string().gen()) }
-val vierIdTokenARb: Arb<IdToken> = arbitrary { IdToken(Arb.string().gen()) }
-val vierTokenArb: Arb<be.tapped.vier.profile.TokenWrapper> = arbitrary {
-    val accessToken = vierAccessTokenArb.gen()
-    val expiresIn = vierExpiryArb.gen()
+val goPlayAccessTokenArb: Arb<be.tapped.goplay.profile.AccessToken> =
+    arbitrary { be.tapped.goplay.profile.AccessToken(Arb.string().gen()) }
+val goPlayRefreshTokenArb: Arb<be.tapped.goplay.profile.RefreshToken> =
+    arbitrary { be.tapped.goplay.profile.RefreshToken(Arb.string().gen()) }
+val goPlayIdTokenARb: Arb<IdToken> = arbitrary { IdToken(Arb.string().gen()) }
+val goPlayTokenArb: Arb<be.tapped.goplay.profile.TokenWrapper> = arbitrary {
+    val accessToken = goPlayAccessTokenArb.gen()
+    val expiresIn = goPlayExpiryArb.gen()
     val tokenType = Arb.string().gen()
-    val refreshToken = vierRefreshTokenArb.gen()
-    val idToken = vierIdTokenARb.gen()
-    be.tapped.vier.profile.TokenWrapper(
+    val refreshToken = goPlayRefreshTokenArb.gen()
+    val idToken = goPlayIdTokenARb.gen()
+    be.tapped.goplay.profile.TokenWrapper(
         accessToken,
         expiresIn,
         tokenType,
@@ -54,7 +54,7 @@ val vierTokenArb: Arb<be.tapped.vier.profile.TokenWrapper> = arbitrary {
     )
 }
 
-val vierExpiryArb: Arb<be.tapped.vier.profile.Expiry> = arbitrary { be.tapped.vier.profile.Expiry(Arb.long().gen()) }
+val goPlayExpiryArb: Arb<be.tapped.goplay.profile.Expiry> = arbitrary { be.tapped.goplay.profile.Expiry(Arb.long().gen()) }
 val vtmJWTArb: Arb<JWT> = arbitrary { JWT(Arb.string().gen()) }
 val expiryArb: Arb<be.tapped.vtmgo.profile.Expiry> = arbitrary { be.tapped.vtmgo.profile.Expiry(Arb.long().gen()) }
 val vtmTokenWrapperArb: Arb<be.tapped.vtmgo.profile.TokenWrapper> = arbitrary {

@@ -23,8 +23,8 @@ class TokenRefreshWorkScheduler(private val workManager: WorkManager) {
         workManager.enqueue(tokenRefreshVTM)
     }
 
-    fun scheduleTokenRefreshVIER() {
-        workManager.enqueue(tokenRefreshVIER)
+    fun scheduleTokenRefreshGoPlay() {
+        workManager.enqueue(tokenRefreshGoPlay)
     }
 
     private val tokenRefreshVRT: WorkRequest
@@ -33,8 +33,8 @@ class TokenRefreshWorkScheduler(private val workManager: WorkManager) {
     private val tokenRefreshVTM: WorkRequest
         get() = create<VTMTokenRefreshWorker>(VTMTokenRefreshWorker.brandTag)
 
-    private val tokenRefreshVIER: WorkRequest
-        get() = create<VIERTokenRefreshWorker>(VIERTokenRefreshWorker.brandTag)
+    private val tokenRefreshGoPlay: WorkRequest
+        get() = create<GoPlayTokenRefreshWorker>(GoPlayTokenRefreshWorker.brandTag)
 
     private inline fun <reified T : TokenRefreshWorker> create(brandTag: String): WorkRequest {
         return PeriodicWorkRequest
@@ -83,11 +83,11 @@ internal class VTMTokenRefreshWorker(
     }
 }
 
-internal class VIERTokenRefreshWorker(appContext: Context, params: WorkerParameters, tokenUseCase: TokenUseCase) :
+internal class GoPlayTokenRefreshWorker(appContext: Context, params: WorkerParameters, tokenUseCase: TokenUseCase) :
     TokenRefreshWorker(appContext, params, tokenUseCase) {
 
     internal companion object {
 
-        const val brandTag: String = "VIER"
+        const val brandTag: String = "GO_PLAY"
     }
 }

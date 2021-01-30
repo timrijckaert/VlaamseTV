@@ -2,15 +2,13 @@ package be.tapped.vlaamsetv.auth
 
 import arrow.core.left
 import arrow.core.right
-import be.tapped.vier.ApiResponse
-import be.tapped.vier.profile.ProfileRepo
-import be.tapped.vlaamsetv.ErrorMessage
+import be.tapped.goplay.ApiResponse
+import be.tapped.goplay.profile.ProfileRepo
 import be.tapped.vlaamsetv.ErrorMessageConverter
-import be.tapped.vlaamsetv.R
-import be.tapped.vlaamsetv.auth.prefs.vier.VIERTokenStore
+import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStore
 import be.tapped.vlaamsetv.errorMessageArb
 import be.tapped.vlaamsetv.gen
-import be.tapped.vlaamsetv.vierTokenArb
+import be.tapped.vlaamsetv.goPlayTokenArb
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -20,18 +18,20 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
 
-class VIERTokenUseCaseTest : BehaviorSpec({
-    given("A ${VIERTokenUseCase::class.simpleName}") {
+class GoPlayTokenUseCaseTest : BehaviorSpec({
+    given("A ${GoPlayTokenUseCase::class.simpleName}") {
         val profileRepo = mockk<ProfileRepo>()
-        val vierTokenStore = mockk<VIERTokenStore>()
-        val vierErrorMessageConverter =
+        val goPlayTokenStore = mockk<GoPlayTokenStore>()
+        val goPlayErrorMessageConverter =
             mockk<ErrorMessageConverter<ApiResponse.Failure>>()
         val tokenRefreshWorkScheduler = mockk<TokenRefreshWorkScheduler>()
 
-        val sut = VIERTokenUseCase(profileRepo,
-            vierTokenStore,
-            vierErrorMessageConverter,
-            tokenRefreshWorkScheduler)
+        val sut = GoPlayTokenUseCase(
+            profileRepo,
+            goPlayTokenStore,
+            goPlayErrorMessageConverter,
+            tokenRefreshWorkScheduler
+        )
 
         val stringGen = Arb.string(minSize = 1)
         val username = stringGen.gen()
@@ -45,7 +45,7 @@ class VIERTokenUseCaseTest : BehaviorSpec({
 
                 val errorMessage = errorMessageArb.gen()
                 coEvery {
-                    vierErrorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.Authentication.Login)
+                    goPlayErrorMessageConverter.mapToHumanReadableError(ApiResponse.Failure.Authentication.Login)
                 } returns errorMessage
 
                 val result = sut.performLogin(username, password)
@@ -56,30 +56,30 @@ class VIERTokenUseCaseTest : BehaviorSpec({
             }
 
             and("it is successful") {
-                val token = vierTokenArb.gen()
+                val token = goPlayTokenArb.gen()
                 coEvery {
                     profileRepo.fetchTokens(username, password)
                 } returns ApiResponse.Success.Authentication.Token(token).right()
 
                 sut.performLogin(username, password)
 
-                then("it should have saved the vier credentials") {
-                    coVerify { vierTokenStore.saveVierCredentials(username, password) }
+                then("it should have saved the GoPlay credentials") {
+                    coVerify { goPlayTokenStore.saveGoPlayCredentials(username, password) }
                 }
 
                 then("it should save the token") {
-                    coVerify { vierTokenStore.saveToken(token) }
+                    coVerify { goPlayTokenStore.saveToken(token) }
                 }
 
                 then("it should schedule the background token refresh job") {
-                    verify { tokenRefreshWorkScheduler.scheduleTokenRefreshVIER() }
+                    verify { tokenRefreshWorkScheduler.scheduleTokenRefreshGoPlay() }
                 }
             }
         }
 
         `when`("refreshing") {
             and("we did not have a refresh token") {
-                coEvery { vierTokenStore.token() } returns null
+                coEvery { goPlayTokenStore.token() } returns null
 
                 val result = sut.refresh()
 
@@ -89,9 +89,9 @@ class VIERTokenUseCaseTest : BehaviorSpec({
             }
 
             and("we have a refresh token") {
-                val oldToken = vierTokenArb.gen()
-                val newToken = vierTokenArb.gen()
-                coEvery { vierTokenStore.token() } returns oldToken
+                val oldToken = goPlayTokenArb.gen()
+                val newToken = goPlayTokenArb.gen()
+                coEvery { goPlayTokenStore.token() } returns oldToken
                 coEvery { profileRepo.refreshTokens(oldToken.refreshToken) } returns ApiResponse.Success.Authentication
                     .Token(newToken)
                     .right()
@@ -99,7 +99,7 @@ class VIERTokenUseCaseTest : BehaviorSpec({
                 val result = sut.refresh()
 
                 then("we should have saved the tokens") {
-                    coVerify { vierTokenStore.saveToken(newToken) }
+                    coVerify { goPlayTokenStore.saveToken(newToken) }
                 }
 
                 then("it should return true") {

@@ -28,8 +28,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/VIERLoginFragment"
-        android:name="be.tapped.vlaamsetv.auth.VIERLoginFragment"
+        android:id="@+id/GoPlayLoginFragment"
+        android:name="be.tapped.vlaamsetv.auth.GoPlayLoginFragment"
         tools:layout="@layout/lb_guidedstep_fragment">
         <argument
             android:name="config"
@@ -58,10 +58,10 @@
         app:popUpTo="@id/VTMLoginFragment" />
 
     <action
-        android:id="@+id/action_to_vier_login_fragment"
-        app:destination="@id/VIERLoginFragment"
+        android:id="@+id/action_to_goplay_login_fragment"
+        app:destination="@id/GoPlayLoginFragment"
         app:launchSingleTop="true"
-        app:popUpTo="@id/VIERLoginFragment" />
+        app:popUpTo="@id/GoPlayLoginFragment" />
 
     <action
         android:id="@+id/action_to_authenticationFailedDialog"

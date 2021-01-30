@@ -3,7 +3,7 @@ package be.tapped.vlaamsetv.auth
 class AuthenticationState {
 
     private val _state: MutableMap<Brand, Type> =
-        mutableMapOf(Brand.VRT to Type.UNDEFINED, Brand.VTM to Type.UNDEFINED, Brand.VIER to Type.UNDEFINED)
+        mutableMapOf(Brand.VRT to Type.UNDEFINED, Brand.VTM to Type.UNDEFINED, Brand.GO_PLAY to Type.UNDEFINED)
 
     fun updateAuthenticationState(brand: Brand, authenticationState: Type) {
         _state[brand] = authenticationState
@@ -14,7 +14,7 @@ class AuthenticationState {
     enum class Brand {
         VRT,
         VTM,
-        VIER
+        GO_PLAY
     }
 
     enum class Type {

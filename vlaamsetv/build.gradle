@@ -45,7 +45,7 @@ dependencies {
     implementation Dependencies.workRuntime
     implementation Dependencies.coil
 
-    implementation "be.tapped.vlaamsetv:vier"
+    implementation "be.tapped.vlaamsetv:goplay"
     implementation "be.tapped.vlaamsetv:vrtnu"
     implementation "be.tapped.vlaamsetv:vtmgo"
 

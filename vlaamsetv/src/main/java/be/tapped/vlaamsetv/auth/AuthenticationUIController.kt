@@ -54,24 +54,27 @@ class VRTAuthenticationUIController(
     }
 }
 
-class VIERAuthenticationUIController(
-    private val vierTokenUseCase: VIERTokenUseCase,
+class GoPlayAuthenticationUIController(
+    private val goPlayTokenUseCase: GoPlayTokenUseCase,
     private val authenticationNavigator: AuthenticationNavigator,
     private val authenticationState: AuthenticationState,
 ) : AuthenticationUIController {
 
     override suspend fun login(username: String, password: String) {
-        when (val token = vierTokenUseCase.performLogin(username, password)) {
+        when (val token = goPlayTokenUseCase.performLogin(username, password)) {
             is Either.Left -> authenticationNavigator.navigateToErrorScreen(token.a)
             is Either.Right -> {
-                authenticationState.updateAuthenticationState(AuthenticationState.Brand.VIER, AuthenticationState.Type.LOGGED_IN)
+                authenticationState.updateAuthenticationState(
+                    AuthenticationState.Brand.GO_PLAY,
+                    AuthenticationState.Type.LOGGED_IN
+                )
                 authenticationNavigator.navigateNext()
             }
         }
     }
 
     override suspend fun next() {
-        authenticationState.updateAuthenticationState(AuthenticationState.Brand.VIER, AuthenticationState.Type.SKIPPED)
+        authenticationState.updateAuthenticationState(AuthenticationState.Brand.GO_PLAY, AuthenticationState.Type.SKIPPED)
         authenticationNavigator.navigateNext()
     }
 }

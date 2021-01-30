@@ -12,13 +12,13 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
 
-class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
-    given("A ${VIERAuthenticationUIController::class.java.simpleName}") {
-        val vierTokenUseCase = mockk<VIERTokenUseCase>()
+class GoPlayAuthenticationUIControllerTest : BehaviorSpec() { init {
+    given("A ${GoPlayAuthenticationUIController::class.java.simpleName}") {
+        val goPlayTokenUseCase = mockk<GoPlayTokenUseCase>()
         val authenticationNavigator = mockk<AuthenticationNavigator>()
         val authenticationState = mockk<AuthenticationState>()
-        val sut = VIERAuthenticationUIController(
-            vierTokenUseCase,
+        val sut = GoPlayAuthenticationUIController(
+            goPlayTokenUseCase,
             authenticationNavigator,
             authenticationState,
         )
@@ -27,7 +27,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
         val password = Arb.string().gen()
         `when`("logging in") {
             coEvery {
-                vierTokenUseCase.performLogin(username, password)
+                goPlayTokenUseCase.performLogin(username, password)
             } returns Unit.right()
 
             sut.login(username, password)
@@ -40,7 +40,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
                 then("it should have updated the authentication state") {
                     verify {
                         authenticationState.updateAuthenticationState(
-                            AuthenticationState.Brand.VIER,
+                            AuthenticationState.Brand.GO_PLAY,
                             AuthenticationState.Type.LOGGED_IN
                         )
                     }
@@ -50,7 +50,7 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
             and("it was not successful") {
                 val errorMessage = errorMessageArb.gen()
                 coEvery {
-                    vierTokenUseCase.performLogin(username, password)
+                    goPlayTokenUseCase.performLogin(username, password)
                 } returns errorMessage.left()
 
                 sut.login(username, password)
@@ -70,8 +70,10 @@ class VIERAuthenticationUIControllerTest : BehaviorSpec() { init {
 
             then("it should have set the authentication state") {
                 verify {
-                    authenticationState.updateAuthenticationState(AuthenticationState.Brand.VIER,
-                        AuthenticationState.Type.SKIPPED)
+                    authenticationState.updateAuthenticationState(
+                        AuthenticationState.Brand.GO_PLAY,
+                        AuthenticationState.Type.SKIPPED
+                    )
                 }
             }
         }

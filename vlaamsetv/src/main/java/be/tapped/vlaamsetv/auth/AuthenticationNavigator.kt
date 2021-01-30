@@ -7,9 +7,10 @@ import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.exhaustive
 import kotlin.properties.Delegates
 
-interface AuthenticationNavigator { sealed class Screen { data class VRT(val isLastScreen: Boolean) : Screen()
+interface AuthenticationNavigator { sealed class Screen {
+    data class VRT(val isLastScreen: Boolean) : Screen()
     data class VTM(val isLastScreen: Boolean) : Screen()
-    data class VIER(val isLastScreen: Boolean) : Screen()
+    data class GoPlay(val isLastScreen: Boolean) : Screen()
     data class ErrorDialog(val errorMessage: String) : Screen()
     object End : Screen()
 }
@@ -33,9 +34,11 @@ interface AuthenticationNavigator { sealed class Screen { data class VRT(val isL
             authenticationState: AuthenticationState,
         ): AuthenticationNavigator = object : AuthenticationNavigator {
             override val currentScreen: Screen get() = _currentScreen.second
-            private var _currentScreen: IndexedScreen by Delegates.observable(0 to authenticationScreenConfig
-                .first()
-                .calculateNextScreen(1)) { _, _, newValue -> navigateToScreen(newValue) }
+            private var _currentScreen: IndexedScreen by Delegates.observable(
+                0 to authenticationScreenConfig
+                    .first()
+                    .calculateNextScreen(1)
+            ) { _, _, newValue -> navigateToScreen(newValue) }
 
             init {
                 check(authenticationScreenConfig.isNotEmpty()) {
@@ -61,7 +64,7 @@ interface AuthenticationNavigator { sealed class Screen { data class VRT(val isL
                     val isAllowedToNavigateBack = when (screen) {
                         is Screen.VRT -> authenticationState.stateForBrand(AuthenticationState.Brand.VRT) != AuthenticationState.Type.LOGGED_IN
                         is Screen.VTM -> authenticationState.stateForBrand(AuthenticationState.Brand.VTM) != AuthenticationState.Type.LOGGED_IN
-                        is Screen.VIER -> authenticationState.stateForBrand(AuthenticationState.Brand.VIER) != AuthenticationState.Type.LOGGED_IN
+                        is Screen.GoPlay -> authenticationState.stateForBrand(AuthenticationState.Brand.GO_PLAY) != AuthenticationState.Type.LOGGED_IN
                         is Screen.ErrorDialog -> false
                         Screen.End -> false
                     }
@@ -98,7 +101,7 @@ interface AuthenticationNavigator { sealed class Screen { data class VRT(val isL
                 return when (this) {
                     AuthenticationNavigationConfiguration.VRT -> Screen.VRT(isLastItem)
                     AuthenticationNavigationConfiguration.VTM -> Screen.VTM(isLastItem)
-                    AuthenticationNavigationConfiguration.VIER -> Screen.VIER(isLastItem)
+                    AuthenticationNavigationConfiguration.GoPlay -> Screen.GoPlay(isLastItem)
                 }
             }
 
@@ -113,14 +116,16 @@ interface AuthenticationNavigator { sealed class Screen { data class VRT(val isL
                         R.id.action_to_vtm_login_fragment,
                         VTMLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
                     )
-                is Screen.VIER ->
+                is Screen.GoPlay ->
                     navController.navigate(
-                        R.id.action_to_vier_login_fragment,
-                        VIERLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
+                        R.id.action_to_goplay_login_fragment,
+                        GoPlayLoginFragmentArgs(DefaultLoginConfiguration(screen.isLastScreen)).toBundle()
                     )
                 Screen.End -> activity.finishAfterTransition()
-                is Screen.ErrorDialog -> navController.navigate(R.id.action_to_authenticationFailedDialog,
-                    AuthenticationFailedDialogArgs(screen.errorMessage).toBundle())
+                is Screen.ErrorDialog -> navController.navigate(
+                    R.id.action_to_authenticationFailedDialog,
+                    AuthenticationFailedDialogArgs(screen.errorMessage).toBundle()
+                )
             }.exhaustive
         }
     }

@@ -25,7 +25,7 @@ class TvMainActivity : FragmentActivity(R.layout.activity_tv_main) {
                                 CompositeTokenStorage(
                                     app.vrtTokenStore,
                                     app.vtmTokenStore,
-                                    app.vierTokenStore
+                                    app.goPlayTokenStore
                                 )
                             )
                         )
