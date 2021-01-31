@@ -1,17 +1,28 @@
 package be.tapped.vlaamsetv.detail
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
+import androidx.navigation.navArgs
 import be.tapped.vlaamsetv.App
 import be.tapped.vlaamsetv.R
 import be.tapped.vlaamsetv.browse.presenter.Item
 import be.tapped.vrtnu.content.LiveStreams
+import kotlinx.android.parcel.Parcelize
 
 class DetailActivity : FragmentActivity(R.layout.activity_detail) {
 
+    sealed class InputArgument : Parcelable {
+        sealed class VRT : InputArgument() {
+            @Parcelize
+            data class Program(val programName: String) : VRT()
+        }
+    }
+
     private val app get() = application as App
+    private val navArgs by navArgs<DetailActivityArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = object : FragmentFactory() {
