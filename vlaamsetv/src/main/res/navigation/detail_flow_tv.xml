@@ -2,9 +2,17 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/detail_flow_tv"
-    app:startDestination="@id/detailFragment">
+    app:startDestination="@id/loadingFragment">
     <fragment
         android:id="@+id/detailFragment"
         android:name="be.tapped.vlaamsetv.detail.DetailFragment"
         android:label="DetailFragment" />
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="be.tapped.vlaamsetv.detail.LoadingFragment"
+        android:label="LoadingFragment">
+        <action
+            android:id="@+id/action_loadingFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 </navigation>
