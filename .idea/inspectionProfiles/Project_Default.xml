@@ -15,6 +15,10 @@
     <inspection_tool class="ConflictingExtensionProperty" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ConstPropertyName" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ConstantConditionIf" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+    </inspection_tool>
     <inspection_tool class="ControlFlowWithEmptyBody" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ConvertCallChainIntoSequence" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ConvertLambdaToReference" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
@@ -32,7 +36,7 @@
     <inspection_tool class="DelegationToVarProperty" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="DeprecatedCallableAddReplaceWith" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="DeprecatedGradleDependency" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="Destructure" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="Destructure" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="DestructuringWrongName" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="DifferentKotlinGradleVersion" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="DifferentStdlibGradleVersion" enabled="true" level="ERROR" enabled_by_default="true" />
