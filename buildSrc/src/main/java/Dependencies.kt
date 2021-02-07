@@ -4,7 +4,7 @@ object Versions {
     const val compileSdkVersion = 30
     const val minSdkVersion = 26
     const val targetSdkVersion = 30
-    const val kotlinVersion = "1.4.21"
+    const val kotlinVersion = "1.4.30"
 }
 
 private const val navVersion = "2.3.2"

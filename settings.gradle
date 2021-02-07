@@ -1,7 +1,6 @@
 rootProject.name = "Vlaamse TV"
 
 include ':vlaamsetv'
-include ':videoplayer'
 include ':videoplayer-sample'
 
 includeBuild('../vrtnu-vtmgo-vier-service') {

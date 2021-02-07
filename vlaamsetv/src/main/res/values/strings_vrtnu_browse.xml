@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="vrt_nu_name">VRT NU</string>
-    <string name="vrt_nu_live_tv">Live TV</string>
-    <string name="vrt_nu_all_programs">All Programs</string>
-    <string name="vrt_nu_most_recent_episodes">Meest Recent</string>
-    <string name="vrt_nu_categories">Categorieën</string>
-</resources>
