@@ -35,10 +35,6 @@ object Dependencies {
     const val exoplayerExtMediaSession = "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
     const val exoplayerExtWorkManager = "com.google.android.exoplayer:extension-workmanager:${exoPlayerVersion}"
 
-    // Android TV
-    const val leanbackApp = "androidx.leanback:leanback:1.1.0-beta01"
-    const val leanbackPrefs = "androidx.leanback:leanback-preference:1.1.0-beta01"
-
     const val okHttp3 = "com.squareup.okhttp3:okhttp:4.9.0"
 
     const val coreKtx = "androidx.core:core-ktx:1.3.2"
