@@ -1,5 +1,6 @@
 rootProject.name = "Vlaamse TV"
 
+include ':app'
 include ':videoplayer'
 include ':videoplayer-sample'
 
