@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_package = "be.tapped.vlaamsetv.auth.prefs.goplay";
+option java_multiple_files = true;
+
+message Token {
+  string accessToken = 1;
+  int64 expiresIn = 2;
+  string tokenType = 3;
+  string refreshToken = 4;
+  string idToken = 5;
+}
+
+// We only use this as a back-up.
+// It is preferred to use the tokens as much as possible
+message GoPlayCredentials {
+  string username = 1;
+  string password = 2;
+}

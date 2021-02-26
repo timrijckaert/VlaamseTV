@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_package = "be.tapped.vlaamsetv.auth.prefs.vrt";
+option java_multiple_files = true;
+
+message VRTTokenWrapper {
+  string accessToken = 1;
+  string refreshToken = 2;
+  int64 expiry = 3;
+}
+
+message XVRTToken {
+  string token = 1;
+}
+
+// We only use this as a back-up.
+// It is preferred to use the tokens as much as possible
+message VRTNUCredentials {
+  string username = 1;
+  string password = 2;
+}
