@@ -36,12 +36,11 @@ class CompositeTokenStorage(
     override suspend fun isTokenExpired(brand: TokenStorage.Brand): Boolean {
         fun isExpired(expireDateInMillis: Long?): Boolean = expireDateInMillis ?: -1 <= System.currentTimeMillis()
 
-        val expiryInMillis = when (brand) {
-            TokenStorage.Brand.VRT -> vrtTokenStore.token()?.expiry?.dateInMillis
-            TokenStorage.Brand.VTM -> 0 // VTM does not have a expiry?
-            TokenStorage.Brand.GoPlay -> goPlayTokenStore.token()?.expiry?.dateInMillis
+        return when (brand) {
+            TokenStorage.Brand.VRT -> isExpired(vrtTokenStore.token()?.expiry?.dateInMillis)
+            TokenStorage.Brand.VTM -> false // TODO Check VTM does not has an
+            TokenStorage.Brand.GoPlay -> isExpired(goPlayTokenStore.token()?.expiry?.dateInMillis)
         }
-        return isExpired(expiryInMillis)
     }
 
 }
