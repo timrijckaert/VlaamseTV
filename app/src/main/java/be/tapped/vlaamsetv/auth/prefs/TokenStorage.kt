@@ -1,6 +1,6 @@
 package be.tapped.vlaamsetv.auth.prefs
 
-import arrow.fx.coroutines.parMapN
+import arrow.fx.coroutines.parZip
 import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vtm.VTMTokenStore
@@ -23,15 +23,12 @@ class CompositeTokenStorage(
     private val goPlayTokenStore: GoPlayTokenStore,
 ) : TokenStorage {
 
-    override suspend fun hasCredentialsForAtLeastOneBrand(): Boolean {
-        val (hasVrtCredentials, hasVtmCredentials, hasGoPlayCredentials) = parMapN(
+    override suspend fun hasCredentialsForAtLeastOneBrand(): Boolean =
+        parZip(
             { vrtTokenStore.vrtCredentials() != null },
             { vtmTokenStore.vtmCredentials() != null },
-            { goPlayTokenStore.goPlayCredentials() != null },
-            ::Triple
-        )
-        return hasVrtCredentials || hasVtmCredentials || hasGoPlayCredentials
-    }
+            { goPlayTokenStore.goPlayCredentials() != null }
+        ) { hasVrtCredentials, hasVtmCredentials, hasGoPlayCredentials -> hasVrtCredentials || hasVtmCredentials || hasGoPlayCredentials }
 
     override suspend fun isTokenExpired(brand: TokenStorage.Brand): Boolean {
         fun isExpired(expireDateInMillis: Long?): Boolean = expireDateInMillis ?: -1 <= System.currentTimeMillis()

@@ -48,7 +48,7 @@ object Dependencies {
     const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
     const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$navVersion"
 
-    private const val arrowVersion = "0.12.0-SNAPSHOT"
+    private const val arrowVersion = "1.0.0-SNAPSHOT"
     const val arrowCore = "io.arrow-kt:arrow-core:${arrowVersion}"
     const val arrowSyntax = "io.arrow-kt:arrow-syntax:${arrowVersion}"
     const val arrowMeta = "io.arrow-kt:arrow-meta:${arrowVersion}"

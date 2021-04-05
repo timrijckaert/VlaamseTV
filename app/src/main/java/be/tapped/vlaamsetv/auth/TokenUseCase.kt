@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.computations.either
 import arrow.core.left
 import arrow.core.right
-import arrow.fx.coroutines.parMapN
+import arrow.fx.coroutines.parZip
 import be.tapped.goplay.profile.ProfileRepo
 import be.tapped.vlaamsetv.auth.prefs.goplay.GoPlayTokenStore
 import be.tapped.vlaamsetv.auth.prefs.vrt.VRTTokenStore
@@ -28,26 +28,25 @@ class VRTTokenUseCase(
 ) : TokenUseCase {
 
     override suspend fun performLogin(username: String, password: String): Either<Unit, Unit> = either {
-        val tokenWrapperWithXVRTToken =
-            either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> {
-                parMapN(
-                    { !tokenRepo.fetchTokenWrapper(username, password) },
-                    { !tokenRepo.fetchXVRTToken(username, password) },
-                    ::Pair
-                )
+        val tokenWrapperWithXVRTToken: Either<ApiResponse.Failure, Pair<ApiResponse.Success.Authentication.Token, ApiResponse.Success.Authentication.VRTToken>> =
+            parZip(
+                { tokenRepo.fetchTokenWrapper(username, password) },
+                { tokenRepo.fetchXVRTToken(username, password) }) { a, b ->
+                either { Pair(a.bind(), b.bind()) }
             }
-        !when (tokenWrapperWithXVRTToken) {
+
+        when (tokenWrapperWithXVRTToken) {
             is Either.Left -> Unit.left()
             is Either.Right -> {
                 with(dataStore) {
                     saveVRTCredentials(username, password)
-                    saveTokenWrapper(tokenWrapperWithXVRTToken.b.first.tokenWrapper)
-                    saveXVRTToken(tokenWrapperWithXVRTToken.b.second.xVRTToken)
+                    saveTokenWrapper(tokenWrapperWithXVRTToken.value.first.tokenWrapper)
+                    saveXVRTToken(tokenWrapperWithXVRTToken.value.second.xVRTToken)
                 }
                 tokenRefreshWorkScheduler.scheduleTokenRefreshVRT()
                 Unit.right()
             }
-        }
+        }.bind()
     }
 
     override suspend fun refresh(): Either<Unit, Boolean> {
@@ -55,7 +54,7 @@ class VRTTokenUseCase(
         return when (val tokenWrapper = tokenRepo.refreshTokenWrapper(refreshToken)) {
             is Either.Left -> Unit.left()
             is Either.Right -> {
-                dataStore.saveTokenWrapper(tokenWrapper.b.tokenWrapper)
+                dataStore.saveTokenWrapper(tokenWrapper.value.tokenWrapper)
                 true.right()
             }
         }
@@ -68,17 +67,18 @@ class VTMTokenUseCase(
     private val tokenRefreshWorkerScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
-    override suspend fun performLogin(username: String, password: String): Either<Unit, Unit> = either {
-        !when (val jwt = authenticationRepo.login(username, password)) {
-            is Either.Left -> Unit.left()
-            is Either.Right -> {
-                vtmTokenStore.saveVTMCredentials(username, password)
-                vtmTokenStore.saveToken(jwt.b.token)
-                tokenRefreshWorkerScheduler.scheduleTokenRefreshVTM()
-                Unit.right()
-            }
+    override suspend fun performLogin(username: String, password: String): Either<Unit, Unit> =
+        either {
+            when (val jwt = authenticationRepo.login(username, password)) {
+                is Either.Left -> Unit.left()
+                is Either.Right -> {
+                    vtmTokenStore.saveVTMCredentials(username, password)
+                    vtmTokenStore.saveToken(jwt.value.token)
+                    tokenRefreshWorkerScheduler.scheduleTokenRefreshVTM()
+                    Unit.right()
+                }
+            }.bind()
         }
-    }
 
     override suspend fun refresh(): Either<Unit, Boolean> {
         val (username, password) = vtmTokenStore.vtmCredentials() ?: return false.right()
@@ -93,26 +93,25 @@ class GoPlayTokenUseCase(
     private val tokenRefreshWorkScheduler: TokenRefreshWorkScheduler,
 ) : TokenUseCase {
 
-    override suspend fun performLogin(username: String, password: String): Either<Unit, Unit> = either {
-        !when (val token = profileRepo.fetchTokens(username, password)) {
+    override suspend fun performLogin(username: String, password: String): Either<Unit, Unit> =
+        when (val token = profileRepo.fetchTokens(username, password)) {
             is Either.Left -> Unit.left()
             is Either.Right -> {
                 with(goPlayTokenStore) {
                     saveGoPlayCredentials(username, password)
-                    saveToken(token.b.token)
+                    saveToken(token.value.token)
                 }
                 tokenRefreshWorkScheduler.scheduleTokenRefreshGoPlay()
                 Unit.right()
             }
         }
-    }
 
     override suspend fun refresh(): Either<Unit, Boolean> {
         val refreshToken = goPlayTokenStore.token()?.refreshToken ?: return false.right()
         return when (val newTokens = profileRepo.refreshTokens(refreshToken)) {
             is Either.Left -> Unit.left()
             is Either.Right -> {
-                goPlayTokenStore.saveToken(newTokens.b.token)
+                goPlayTokenStore.saveToken(newTokens.value.token)
                 true.right()
             }
         }
