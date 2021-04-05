@@ -25,25 +25,16 @@ class App : Application(), Configuration.Provider {
         KeyStore.getInstance(KEYSTORE_NAME).apply { load(null) }
     }
 
-    private val crypto: Crypto by lazy {
-        CryptoImpl(AesCipherProvider("VlaamseTvKey", keyStore, KEYSTORE_NAME))
-    }
+    private val crypto: Crypto by lazy { CryptoImpl(AesCipherProvider("VlaamseTvKey", keyStore, KEYSTORE_NAME)) }
 
-    val vrtTokenStore: VRTTokenStore by lazy {
-        VRTTokenStoreImpl(this@App, crypto)
-    }
+    val vrtTokenStore: VRTTokenStore by lazy { VRTTokenStoreImpl(this@App, crypto) }
+    val vtmTokenStore: VTMTokenStore by lazy { VTMTokenStoreImpl(this@App, crypto) }
+    val goPlayTokenStore: GoPlayTokenStore by lazy { GoPlayTokenStoreImpl(this@App, crypto) }
 
-    val vtmTokenStore: VTMTokenStore by lazy {
-        VTMTokenStoreImpl(this@App, crypto)
-    }
-
-    val goPlayTokenStore: GoPlayTokenStore by lazy {
-        GoPlayTokenStoreImpl(this@App, crypto)
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration = Configuration
-        .Builder()
-        .setMinimumLoggingLevel(android.util.Log.DEBUG)
-        .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
-        .build()
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration
+            .Builder()
+            .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .setWorkerFactory(WorkerFactory(listOf(AuthenticationWorkerFactory)))
+            .build()
 }

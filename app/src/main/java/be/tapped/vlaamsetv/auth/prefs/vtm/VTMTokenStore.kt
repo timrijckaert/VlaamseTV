@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.createDataStore
 import be.tapped.vlaamsetv.auth.prefs.Credential
 import be.tapped.vlaamsetv.prefs.Crypto
-import be.tapped.vtmgo.profile.Expiry
 import be.tapped.vtmgo.profile.JWT
 import be.tapped.vtmgo.profile.TokenWrapper
 import kotlinx.coroutines.flow.firstOrNull
@@ -29,7 +28,7 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
 
     override suspend fun token(): TokenWrapper? = jwtTokenDataStore.data.firstOrNull()?.let {
         if (it.token.isNotBlank() && it.expiry != 0L) {
-            TokenWrapper(JWT(it.token), Expiry(it.expiry))
+            TokenWrapper(JWT(it.token))
         } else {
             null
         }
@@ -37,7 +36,7 @@ class VTMTokenStoreImpl(context: Context, crypto: Crypto) : VTMTokenStore {
 
     override suspend fun saveToken(token: TokenWrapper) {
         jwtTokenDataStore.updateData {
-            it.copy(token = token.jwt.token, expiry = token.expiry.dateInMillis)
+            it.copy(token = token.jwt.token)
         }
     }
 

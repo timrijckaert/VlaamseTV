@@ -38,7 +38,7 @@ class CompositeTokenStorage(
 
         val expiryInMillis = when (brand) {
             TokenStorage.Brand.VRT -> vrtTokenStore.token()?.expiry?.dateInMillis
-            TokenStorage.Brand.VTM -> vtmTokenStore.token()?.expiry?.dateInMillis
+            TokenStorage.Brand.VTM -> 0 // VTM does not have a expiry?
             TokenStorage.Brand.GoPlay -> goPlayTokenStore.token()?.expiry?.dateInMillis
         }
         return isExpired(expiryInMillis)
